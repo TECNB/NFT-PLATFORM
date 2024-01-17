@@ -1,0 +1,52 @@
+/* 全局样式表 */
+html,
+body{
+    height: 100%;
+    width: 100%;
+    min-height: 100vh;
+    min-width: 100vh;
+    
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow-y: scroll;
+
+    
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /*忽略边框的盒装模型*/
+}
+#app{
+    min-height: 100vh;
+    min-width: 100vh;
+
+    max-width: 2880px;
+
+    height: 100%;
+    width: 100%;
+
+    padding: 0 50px;
+    padding-top: 15px;
+}
+
+:root {
+    --primary-100: #8B5FBF;
+    --primary-200: #61398F;
+    --primary-300: #FFFFFF;
+    --accent-100: #D6C6E1;
+    --accent-200: #9A73B5;
+    --text-100: #4A4A4A;
+    --text-200: #878787;
+    --bg-100: #F5F3F7;
+    --bg-200: #E9E4ED;
+    --bg-300: #FFFFFF;
+}
+
+body {
+    background-color: var(--bg-100);
+    color: var(--text-100);
+}
