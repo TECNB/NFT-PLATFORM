@@ -21,9 +21,9 @@
 <script setup lang="ts">
 import {  } from "vue";
 
-import { SelectedIndexStore } from '../stores/SelectedIndexStore'
+import { SelectedTypeIndexStore } from '../stores/SelectedIndexStore'
 
-const TypeIndex = SelectedIndexStore()
+const TypeIndex = SelectedTypeIndexStore()
 
 
 const selectType = (index: number) => {

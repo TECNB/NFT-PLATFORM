@@ -3,12 +3,12 @@
         <div class="MainNavbarItems">
             <div class="MainNavbarItem" style="display: flex;justify-content: start;align-items: center;">
                 <img width="40px" src="https://opensea.io/static/images/logos/opensea-logo.svg" />
-                <p style="padding-left: 10px;">NFT Platform</p>
+                <p style="padding-left: 10px;" @click="toIndex">NFT Platform</p>
             </div>
 
             <p class="MainNavbarItem">中心</p>
             <p class="MainNavbarItem">广场</p>
-            <p class="MainNavbarItem" @click="toCreate()">创建</p>
+            <p class="MainNavbarItem" @click="toCreate">创建</p>
         </div>
         <div class="MainNavbarInput">
             <el-icon :size="16">
@@ -135,6 +135,16 @@ const toCreate = () => {
         name: 'CreateView',
     })
 }
+const toUser = () =>{
+    router.push({
+        name: 'UserView',
+    })
+}
+const toIndex = () => {
+    router.push({
+        name: 'IndexView',
+    })
+}
 
 const isUserMenuVisible = ref(false);
 
@@ -145,11 +155,7 @@ const showUserMenu = () => {
 const hideUserMenu = () => {
     isUserMenuVisible.value = false;
 };
-const toUser = () =>{
-    router.push({
-        name: 'UserView',
-    })
-}
+
 
 import { ElMessageBox } from 'element-plus'
 

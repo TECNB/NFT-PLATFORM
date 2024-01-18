@@ -6,7 +6,7 @@ import CollectionList from '../components/CollectionList.vue'
 import Rank from '../components/Rank.vue'
 import { } from "vue"
 import { RecommendedCollectionStore, CollectionRankingStore, PopularAnimationCollectionStore, PopularRealityCollectionStore, PopularTechnologyCollectionStore, PopularAnimalCollectionStore } from '../stores/CollectionStore'
-import { SelectedIndexStore } from '../stores/SelectedIndexStore'
+import { SelectedTypeIndexStore } from '../stores/SelectedIndexStore'
 import { Collection } from '../interfaces/Collection';
 
 
@@ -20,7 +20,7 @@ const PopularRealityCollection = PopularRealityCollectionStore()
 const PopularTechnologyCollection = PopularTechnologyCollectionStore()
 const PopularAnimalCollection = PopularAnimalCollectionStore()
 
-const TypeIndex = SelectedIndexStore()
+const TypeIndex = SelectedTypeIndexStore()
 
 console.log("SelectedIndex:" + TypeIndex.index)
 
