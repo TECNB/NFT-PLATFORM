@@ -3,6 +3,7 @@
 import MainNavbar from '../components/MainNavbar.vue'
 import TypeNavbar from '../components/TypeNavbar.vue'
 import CollectionList from '../components/CollectionList.vue'
+import Rank from '../components/Rank.vue'
 import { } from "vue"
 import { RecommendedCollectionStore, CollectionRankingStore, PopularAnimationCollectionStore, PopularRealityCollectionStore, PopularTechnologyCollectionStore, PopularAnimalCollectionStore } from '../stores/CollectionStore'
 import { SelectedIndexStore } from '../stores/SelectedIndexStore'
@@ -55,6 +56,12 @@ const recommendedCollections: Collection[] = [
         price: '0.01 ETH',
         tradingVolume: '68 ETH',
     },
+    {
+        imageUrl: 'https://i.seadn.io/gcs/files/25059d629ad50cad3009a1f553a44401.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gcs/files/25059d629ad50cad3009a1f553a44401.jpg?auto=format&dpr=1&h=500&fr=1 2x',
+        title: 'Mint Genesis NFT',
+        price: '0.01 ETH',
+        tradingVolume: '68 ETH',
+    },
 ]
 
 // 使用 setState 方法赋值
@@ -82,6 +89,7 @@ PopularAnimalCollection.collections = recommendedCollections
                 <p>{{ item.tradingVolume }}</p>
             </el-carousel-item>
         </el-carousel>
+        <Rank/>
         <CollectionList msg="推荐数字藏品" />
         <CollectionList msg="今日数字藏品排行榜" />
         <CollectionList msg="热门动画数字藏品" />
@@ -100,7 +108,7 @@ PopularAnimalCollection.collections = recommendedCollections
                 <p>{{ item.tradingVolume }}</p>
             </el-carousel-item>
         </el-carousel>
-        
+
         <CollectionList msg="热门动画数字藏品" />
 
     </div>

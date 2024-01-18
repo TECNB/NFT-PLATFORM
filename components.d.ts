@@ -19,8 +19,10 @@ declare module 'vue' {
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     MainNavbar: typeof import('./src/components/MainNavbar.vue')['default']
     Navbar: typeof import('./src/components/Navbar.vue')['default']
+    Rank: typeof import('./src/components/Rank.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TypeNavbar: typeof import('./src/components/TypeNavbar.vue')['default']
+    UserBackground: typeof import('./src/components/UserBackground.vue')['default']
   }
 }

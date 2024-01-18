@@ -32,7 +32,7 @@
             <transition name="fade">
                 <div class="MainNavbarUserMenu" v-if="isUserMenuVisible" @mouseover="showUserMenu"
                     @mouseleave="hideUserMenu">
-                    <div class="MainNavbarUserMenuItem">
+                    <div class="MainNavbarUserMenuItem" @click="toUser">
                         <el-icon>
                             <UserFilled />
                         </el-icon>
@@ -145,6 +145,11 @@ const showUserMenu = () => {
 const hideUserMenu = () => {
     isUserMenuVisible.value = false;
 };
+const toUser = () =>{
+    router.push({
+        name: 'UserView',
+    })
+}
 
 import { ElMessageBox } from 'element-plus'
 
