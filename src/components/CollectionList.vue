@@ -1,7 +1,7 @@
 <template>
     <div class="CollectionList">
         <p style="text-align: left;margin-bottom: 20px;height: 10%;">{{ props.msg }}</p>
-        <div class="CollectionListItems">
+        <div class="CollectionListItems" @click="toNft">
             <div v-for="(item, index) in collectionItems" :key="index" class="CollectionListItem">
                 <div class="CollectionListItemImage" style="height: 150px; width: 280px;">
                     <img style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;"
@@ -29,6 +29,16 @@ import { } from "vue"
 
 import { RecommendedCollectionStore,CollectionRankingStore,PopularAnimationCollectionStore,PopularRealityCollectionStore,PopularTechnologyCollectionStore,PopularAnimalCollectionStore } from '../stores/CollectionStore'
 import { Collection } from '../interfaces/Collection';
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const toNft = () => {
+    router.push({
+        name: 'NftView',
+    })
+}
+
 
 
 const props = defineProps<{ msg: string }>()

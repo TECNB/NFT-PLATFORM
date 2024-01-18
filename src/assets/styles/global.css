@@ -1,17 +1,17 @@
 /* 全局样式表 */
 html,
-body{
+body {
     height: 100%;
     width: 100%;
     min-height: 100vh;
     min-width: 100vh;
-    
+
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     overflow-y: scroll;
 
-    
+
 }
 
 * {
@@ -20,7 +20,8 @@ body{
     box-sizing: border-box;
     /*忽略边框的盒装模型*/
 }
-#app{
+
+#app {
     min-height: 100vh;
     min-width: 100vh;
 
@@ -49,4 +50,18 @@ body{
 body {
     background-color: var(--bg-100);
     color: var(--text-100);
+}
+
+/* 去除a标签的默认样式 */
+a {
+    text-decoration: none;
+    /* 去除下划线 */
+    color: inherit;
+    /* 使用继承的颜色，保持链接文字颜色与父元素一致 */
+}
+
+a:hover {
+    text-decoration: none;
+    /* 在悬停时仍然去除下划线 */
+    color: inherit;
 }
