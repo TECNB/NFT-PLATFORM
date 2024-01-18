@@ -8,7 +8,8 @@
 
             <p class="MainNavbarItem">中心</p>
             <p class="MainNavbarItem">广场</p>
-            <p class="MainNavbarItem" @click="toCreate">创建</p>
+            <p class="MainNavbarItem" @click="toStatistics">统计信息</p>
+
         </div>
         <div class="MainNavbarInput">
             <el-icon :size="16">
@@ -52,7 +53,7 @@
                         </el-icon>
                         <p>交易</p>
                     </div>
-                    <div class="MainNavbarUserMenuItem" style="border-bottom: 1px solid var(--accent-100);">
+                    <div class="MainNavbarUserMenuItem" style="border-bottom: 1px solid var(--accent-100);" @click="toCreate">
                         <el-icon>
                             <EditPen />
                         </el-icon>
@@ -145,6 +146,11 @@ const toIndex = () => {
         name: 'IndexView',
     })
 }
+const toStatistics = () => {
+    router.push({
+        name: 'StatisticsView',
+    })
+}
 
 const isUserMenuVisible = ref(false);
 
@@ -208,7 +214,7 @@ function confirmClick() {
 
         flex: 1;
         max-width: 400px;
-        min-width: 300px;
+        min-width: 400px;
 
         .MainNavbarItem {
             font-size: 20px;
