@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import { } from "vue"
 
-import { RecommendedCollectionStore,CollectionRankingStore,PopularAnimationCollectionStore,PopularRealityCollectionStore,PopularTechnologyCollectionStore,PopularAnimalCollectionStore } from '../stores/CollectionStore'
+import { RecommendedCollectionStore, CollectionRankingStore, PopularAnimationCollectionStore, PopularRealityCollectionStore, PopularTechnologyCollectionStore, PopularAnimalCollectionStore } from '../stores/CollectionStore'
 import { Collection } from '../interfaces/Collection';
 import { useRouter } from 'vue-router'
 
@@ -107,6 +107,8 @@ console.log(RecommendedCollection)
         width: 100%;
         height: 90%;
 
+        margin-left: 15px;
+
         .CollectionListItem {
             height: 100%;
             width: 280px;
@@ -115,6 +117,8 @@ console.log(RecommendedCollection)
             box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
             /* 调整阴影效果 */
             transition: box-shadow 0.3s ease, transform 0.3s ease;
+
+            
 
             /* 添加过渡效果 */
             .CollectionListItemDetail {
@@ -126,17 +130,13 @@ console.log(RecommendedCollection)
 
             }
         }
+
+        .CollectionListItem:hover {
+            box-shadow: 0 20px 20px rgba(0, 0, 0, 0.2);
+            /* 鼠标悬停时的阴影效果 */
+            transform: translateY(-5px);
+            /* 鼠标悬停时向上移动10px */
+        }
     }
-}
-
-
-
-
-
-.CollectionListItem:hover {
-    box-shadow: 0 20px 20px rgba(0, 0, 0, 0.2);
-    /* 鼠标悬停时的阴影效果 */
-    transform: translateY(-5px);
-    /* 鼠标悬停时向上移动10px */
 }
 </style>

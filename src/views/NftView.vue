@@ -32,14 +32,17 @@
                             <Operation />
                         </el-icon>
                         <p style="font-size: 20px;">描述 </p>
-                        
+
                     </div>
                     <div class="NftViewBodyRightPriceButton" style="text-align: start;">
-                        <p style="color: var(--text-200);font-size: 20px;font-weight: bold;display: inline-block;margin-top: 10px;">创作者</p>
+                        <p
+                            style="color: var(--text-200);font-size: 20px;font-weight: bold;display: inline-block;margin-top: 10px;">
+                            创作者</p>
                         <p style="color: var(--accent-200);font-size: 20px;display: inline;margin-left: 10px;"><router-link
-                        to="/user">TEC</router-link>
-                        <p style="color: #000;font-size: 16px;">A collection 8888 Cute Chubby Pudgy Penquins sliding around on the freezing ETH blockchain.</p>
-                </p>
+                                to="/user">TEC</router-link>
+                        <p style="color: #000;font-size: 16px;">A collection 8888 Cute Chubby Pudgy Penquins sliding around
+                            on the freezing ETH blockchain.</p>
+                        </p>
                     </div>
 
 
@@ -299,5 +302,4 @@ import MainNavbar from '../components/MainNavbar.vue'
 
 
 
-}
-</style>
+}</style>

@@ -1,16 +1,12 @@
 <template>
     <div class="CreateView">
-
         <div class="CreateViewHead">
-
             <div class="CreateViewHeadBack" @click="toIndex()">
-
                 <el-icon :size="20">
                     <Back />
                 </el-icon>
             </div>
             <div class="CreateViewHeadUser">
-
                 <el-icon :size="20">
                     <User />
                 </el-icon>
@@ -108,7 +104,7 @@ const toIndex = () => {
             height: 80%;
             width: 100%;
             min-width: 80%;
-            width: 100%;
+
             max-height: 600px;
             border: 1px dashed var(--text-200);
             border-radius: 20px;

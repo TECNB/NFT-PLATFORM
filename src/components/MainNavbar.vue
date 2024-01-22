@@ -189,7 +189,11 @@ function confirmClick() {
 
 .fade-enter-active,
 .fade-leave-active {
-    transition: opacity 0.5s ease;
+    transition: opacity 2s ease;
+}
+.fade-enter-to,
+.fade-leave-from{
+    opacity: 1;
 }
 
 .fade-enter-from,
@@ -334,7 +338,7 @@ function confirmClick() {
             backdrop-filter: blur(20px);
             border-radius: 16px;
             // 指定转化时的效果
-            transition: background-color 0.2s cubic-bezier(0.05, 0, 0.2, 1) 0s;
+            transition: background-color 0.2s ease 0s;
 
         }
 
@@ -359,7 +363,7 @@ function confirmClick() {
             backdrop-filter: blur(20px);
             border-radius: 16px;
             // 指定转化时的效果
-            transition: background-color 0.2s cubic-bezier(0.05, 0, 0.2, 1) 0s;
+            transition: background-color 0.2s ease 0s;
         }
 
         .MainNavbarUserInfo:hover {
@@ -383,7 +387,7 @@ function confirmClick() {
             backdrop-filter: blur(20px);
             border-radius: 16px;
             // 指定转化时的效果
-            transition: background-color 0.2s cubic-bezier(0.05, 0, 0.2, 1) 0s;
+            transition: background-color 0.2s ease 0s;
         }
 
         .MainNavbarUserCart:hover {

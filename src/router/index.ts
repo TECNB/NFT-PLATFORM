@@ -27,6 +27,11 @@ const routes: Array<RouteRecordRaw> = [
         name:"NftView",
         component: () => import("../views/NftView.vue"),
     },
+    {
+        path: "/series",
+        name:"SeriesView",
+        component: () => import("../views/SeriesView.vue"),
+    },
     
 ];
 // 1.返回一个 router 实列，为函数，里面有配置项（对象） history

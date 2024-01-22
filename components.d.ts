@@ -22,6 +22,7 @@ declare module 'vue' {
     Rank: typeof import('./src/components/Rank.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SeriesInfo: typeof import('./src/components/SeriesInfo.vue')['default']
     TypeNavbar: typeof import('./src/components/TypeNavbar.vue')['default']
     UserBackground: typeof import('./src/components/UserBackground.vue')['default']
     UserContent: typeof import('./src/components/UserContent.vue')['default']
