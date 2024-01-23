@@ -1,28 +1,70 @@
 <template>
     <div class="Rank">
-        <div v-for="(collectionGroup, index) in groupedCollections" :key="index" class="RankLeft">
-            <div class="RankTitle">
-                <p style="flex: 1;">#</p>
-                <p style="flex: 7;">系列</p>
-                <p style="flex: 4;text-align: end;">交易量</p>
+        <div class="RankUp" style="">
+            <div class="RankUpType" style="flex: 2;">
+                <div class="RankUpTypeHot">
+                    <p>热门</p>
+                </div>
+                <div class="RankUpTypeBest">
+                    <p>最佳</p>
+                </div>
+
+
             </div>
-            <div class="RankBody">
-                <div v-for="(collection, innerIndex) in collectionGroup" :key="innerIndex" class="RankBodyItem">
-                    <p style="flex: 1;">{{ collection.rank }}</p>
-                    <div style="flex: 7;" class="RankBodyItemContent">
-                        <div style="flex: 0.3;">
-                            <img :src="collection.imageUrl" alt=""
-                                style="height: 100%; width: 100%; border-radius: 20px; object-fit: cover; aspect-ratio: 1/1;">
+            <div style="flex: 13;">
+
+            </div>
+
+
+            <div class="RankUpTime" style="flex: 5;">
+                <div class="Selected">
+                    <p>1小时</p>
+                </div>
+                <div class="NotSelected">
+                    <p>6小时</p>
+                </div>
+                <div class="NotSelected">
+                    <p>24小时</p>
+                </div>
+                <div class="NotSelected">
+                    <p>7天</p>
+                </div>
+            </div>
+
+
+
+            <div class="RankUpToAll" style="flex: 2;">
+                <p>查看全部</p>
+            </div>
+
+
+        </div>
+        <div class="RankBelow">
+            <div v-for="(collectionGroup, index) in groupedCollections" :key="index" class="RankLeft">
+                <div class="RankTitle">
+                    <p style="flex: 1;">#</p>
+                    <p style="flex: 7;">系列</p>
+                    <p style="flex: 4;text-align: end;">交易量</p>
+                </div>
+                <div class="RankBody">
+                    <div v-for="(collection, innerIndex) in collectionGroup" :key="innerIndex" class="RankBodyItem">
+                        <p style="flex: 1;">{{ collection.rank }}</p>
+                        <div style="flex: 7;" class="RankBodyItemContent">
+                            <div style="flex: 0.3;">
+                                <img :src="collection.imageUrl" alt=""
+                                    style="height: 100%; width: 100%; border-radius: 20px; object-fit: cover; aspect-ratio: 1/1;">
+                            </div>
+                            <div style="padding-left: 20px;">
+                                <p>{{ collection.title }}</p>
+                                <p style="color: var(--text-200); padding-top: 10px;">地板价:{{ collection.price }}</p>
+                            </div>
                         </div>
-                        <div style="padding-left: 20px;">
-                            <p>{{ collection.title }}</p>
-                            <p style="color: var(--text-200); padding-top: 10px;">地板价:{{ collection.price }}</p>
-                        </div>
+                        <p style="flex: 4; text-align: end;">{{ collection.tradingVolume }}</p>
                     </div>
-                    <p style="flex: 4; text-align: end;">{{ collection.tradingVolume }}</p>
                 </div>
             </div>
         </div>
+
     </div>
 </template>
 <script setup lang="ts">
@@ -106,57 +148,168 @@ const groupedCollections = computed(() => {
 .Rank {
     width: 100%;
     height: 100%;
-    display: flex;
-    // 控制两个排行中间的间隔
-    gap: 80px;
 
-    .RankLeft {
-        width: 50%;
-        height: 100%;
+    .RankUp {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        gap: 10px;
+
+        text-align: start;
+        font-size: 18px;
+        font-weight: bold;
+
+
         margin-top: 20px;
+        text-align: center;
+        
 
-        .RankTitle {
-
+        .RankUpType {
             display: flex;
-            justify-content: start;
+            justify-content: center;
             align-items: center;
-            font-weight: bold;
 
-            border-bottom: 1px solid var(--text-200);
 
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            min-width: 150px;
+            height: 40px;
 
-            p {
-                text-align: start;
-                color: var(--accent-200);
+            border-radius: 10px;
+
+
+            background-color: var(--accent-100);
+
+
+            .RankUpTypeHot {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                width: 47%;
+                height: 80%;
+
+
+
+            }
+
+            .RankUpTypeBest {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                width: 47%;
+                height: 80%;
+
+                border-radius: 10px;
+                background-color: var(--bg-100);
+
             }
         }
 
-        .RankBody {
-            
+        .RankUpTime {
+            display: flex;
+            justify-content: end;
+            align-items: center;
+            gap: 20px;
 
-            .RankBodyItem {
-                margin-top: 20px;
+            min-width: 350px;
+            height: 40px;
+
+            border-radius: 10px;
+
+
+            background-color: var(--accent-100);
+
+            .Selected{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                width: 19%;
+                height: 80%;
+
+                border-radius: 10px;
+                background-color: var(--bg-100);
+            }
+            .NotSelected{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                width: 21%;
+                height: 80%;
+            }
+        }
+
+        .RankUpToAll {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+
+            min-width: 100px;
+            height: 40px;
+
+            border-radius: 10px;
+
+
+            background-color: var(--accent-100);
+        }
+    }
+
+    .RankBelow {
+        display: flex;
+        // 控制两个排行中间的间隔
+        gap: 80px;
+
+        .RankLeft {
+            width: 50%;
+            height: 100%;
+            margin-top: 20px;
+
+            .RankTitle {
+
                 display: flex;
                 justify-content: start;
                 align-items: center;
+                font-weight: bold;
+
+                border-bottom: 1px solid var(--text-200);
+
+                padding-bottom: 10px;
+                margin-bottom: 20px;
 
                 p {
                     text-align: start;
-                    color: var(--text-100);
-                    font-weight: bold;
-                }
-
-                .RankBodyItemContent {
-                    display: flex;
-                    justify-content: start;
-                    align-items: center;
+                    color: var(--accent-200);
                 }
             }
 
+            .RankBody {
+
+
+                .RankBodyItem {
+                    margin-top: 20px;
+                    display: flex;
+                    justify-content: start;
+                    align-items: center;
+
+                    p {
+                        text-align: start;
+                        color: var(--text-100);
+                        font-weight: bold;
+                    }
+
+                    .RankBodyItemContent {
+                        display: flex;
+                        justify-content: start;
+                        align-items: center;
+                    }
+                }
+
+            }
         }
     }
+
 
 }
 </style>
