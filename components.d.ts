@@ -27,6 +27,7 @@ declare module 'vue' {
     TypeNavbar: typeof import('./src/components/TypeNavbar.vue')['default']
     UserBackground: typeof import('./src/components/UserBackground.vue')['default']
     UserContent: typeof import('./src/components/UserContent.vue')['default']
+    UserFilterSection: typeof import('./src/components/UserFilterSection.vue')['default']
     UserInfo: typeof import('./src/components/UserInfo.vue')['default']
     UserNavbar: typeof import('./src/components/UserNavbar.vue')['default']
   }

@@ -25,13 +25,16 @@
             </div>
 
         </div>
-        <UserNavbar/>
+        <UserNavbar style="border-bottom: 0.5px solid var(--text-200);padding-bottom: 25px;"/>
+        <UserFilterSection />
     </div>
 </template>
 
 <script setup lang="ts">
 import { } from "vue"
 import UserNavbar from '../components/UserNavbar.vue'
+// 引入UserFilterSection
+import UserFilterSection from '../components/UserFilterSection.vue'
 
 </script>
 
@@ -70,6 +73,8 @@ import UserNavbar from '../components/UserNavbar.vue'
 
     .UserInfoDetail {
         margin-top: 40px;
+        
+        
 
         .UserInfoDetailLine1 {
             display: flex;
@@ -85,6 +90,7 @@ import UserNavbar from '../components/UserNavbar.vue'
             text-align: start;
 
             margin-top: 10px;
+            
         }
     }
 }

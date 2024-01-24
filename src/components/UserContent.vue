@@ -1,6 +1,6 @@
 <template>
     <div class="UserContent">
-        <p style="text-align: start;font-weight: bold;">0个项目</p>
+        <p style="text-align: start;font-weight: bold;margin-bottom: 20px;">0个项目</p>
         <div class="UserContentDetail">
             <h2>未找到收集的项目</h2>
             <button style="color: white;background-color: var(--accent-200);margin-top: 20px;">返回所有项目</button>

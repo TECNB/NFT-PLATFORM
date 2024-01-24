@@ -250,7 +250,7 @@ function confirmClick() {
         align-items: center;
         padding: 12px;
         flex: 0.2;
-        background-color: #FFFFFF;
+        background-color: var(--bg-200);
         border-radius: 12px;
         max-width: 500px;
 
@@ -260,6 +260,7 @@ function confirmClick() {
             font-size: 16px;
             width: 200px;
             border: 0px;
+            background-color: var(--bg-200);
             /* 调整输入框的宽度 */
         }
     }
