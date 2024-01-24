@@ -20,3 +20,8 @@ export const FilterSectionTimeIndexStore = defineStore('FilterSectionTimeIndexSt
         index: 0,
     }),
 });
+export const StatisticsTypeIndexStore = defineStore('StatisticsTypeIndexStore', {
+    state: () => ({
+        index: 0,
+    }),
+});

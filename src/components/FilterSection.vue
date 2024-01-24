@@ -18,7 +18,7 @@
 
         <div class="FilterSectionTime" style="flex: 6;">
             <!-- 应用selectTime方法，未选中则class为NotSelected -->
-            <div class="NotSelected"  @click="selectTime(0)" :class="{ 'Selected': TimeIndex.index === 0 }">
+            <div class="NotSelected" @click="selectTime(0)" :class="{ 'Selected': TimeIndex.index === 0 }">
                 <p>1小时</p>
             </div>
             <div class="NotSelected" @click="selectTime(1)" :class="{ 'Selected': TimeIndex.index === 1 }">
@@ -35,7 +35,8 @@
 
 
 
-        <div class="FilterSectionToAll" style="flex: 2;">
+        <!-- 如何props.from为IndexView，则显示查看全部，否则不显示 -->
+        <div class="FilterSectionToAll" style="flex: 2;" v-if="props.from == 'IndexView'" @click="toStatisticsView">
             <p>查看全部</p>
         </div>
     </div>
@@ -45,9 +46,22 @@
 import { } from "vue"
 import { FilterSectionTypeIndexStore } from '../stores/SelectedIndexStore'
 import { FilterSectionTimeIndexStore } from '../stores/SelectedIndexStore'
+
+const props = defineProps<{ from: string }>()
+
+
 // 实例化
 const TypeIndex = FilterSectionTypeIndexStore()
 const TimeIndex = FilterSectionTimeIndexStore()
+// 引入router
+import { useRouter } from 'vue-router'
+const router = useRouter()
+// 跳转到StatisticsView
+const toStatisticsView = () => {
+    router.push({
+        name: 'StatisticsView',
+    })
+};
 
 // 选中类型
 const selectType = (index: number) => {
@@ -91,11 +105,16 @@ const selectTime = (index: number) => {
         background-color: var(--accent-100);
 
 
-        @keyframes slide {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(100%); }
-}
-        
+        // @keyframes slide {
+        //     0% {
+        //         transform: translateX(0);
+        //     }
+
+        //     100% {
+        //         transform: translateX(100%);
+        //     }
+        // }
+
         .NotSelected {
             display: flex;
             justify-content: center;
@@ -103,10 +122,10 @@ const selectTime = (index: number) => {
 
             width: 47%;
             height: 80%;
- 
+
             border-radius: 10px;
-            
-            
+
+
 
         }
 
@@ -121,18 +140,12 @@ const selectTime = (index: number) => {
             border-radius: 10px;
             background-color: var(--bg-100);
 
-            
+
             transition: all 0.8s;
             // 使用transform向点击位置移动
             animation: slide 0.5s forwards;
-            
-
-  
 
         }
-
-        
-        
     }
 
     .FilterSectionTime {
@@ -186,5 +199,4 @@ const selectTime = (index: number) => {
 
         background-color: var(--accent-100);
     }
-}
-</style>
+}</style>

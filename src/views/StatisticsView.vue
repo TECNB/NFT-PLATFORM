@@ -14,7 +14,7 @@
             </div>
 
         </div>
-        <FilterSection />
+        <FilterSection from="StatisticsView"/>
         <div class="StatisticsContent">
             <div class="StatisticsContentTitle">
                 <p style="flex: 12;">系列</p>

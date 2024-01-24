@@ -1,6 +1,6 @@
 <template>
     <div class="Rank">
-        <FilterSection/>
+        <FilterSection from="IndexView"/>
         <div class="RankBelow">
             <div v-for="(collectionGroup, index) in groupedCollections" :key="index" class="RankLeft">
                 <div class="RankTitle">
