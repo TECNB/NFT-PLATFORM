@@ -10,3 +10,13 @@ export const SelectedUserIndexStore = defineStore('SelectedUserIndexStore', {
         index: 0,
     }),
 });
+export const FilterSectionTypeIndexStore = defineStore('FilterSectionTypeIndexStore', {
+    state: () => ({
+        index: 0,
+    }),
+});
+export const FilterSectionTimeIndexStore = defineStore('FilterSectionTimeIndexStore', {
+    state: () => ({
+        index: 0,
+    }),
+});

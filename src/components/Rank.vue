@@ -1,44 +1,6 @@
 <template>
     <div class="Rank">
-        <div class="RankUp" style="">
-            <div class="RankUpType" style="flex: 2;">
-                <div class="RankUpTypeHot">
-                    <p>热门</p>
-                </div>
-                <div class="RankUpTypeBest">
-                    <p>最佳</p>
-                </div>
-
-
-            </div>
-            <div style="flex: 13;">
-
-            </div>
-
-
-            <div class="RankUpTime" style="flex: 5;">
-                <div class="Selected">
-                    <p>1小时</p>
-                </div>
-                <div class="NotSelected">
-                    <p>6小时</p>
-                </div>
-                <div class="NotSelected">
-                    <p>24小时</p>
-                </div>
-                <div class="NotSelected">
-                    <p>7天</p>
-                </div>
-            </div>
-
-
-
-            <div class="RankUpToAll" style="flex: 2;">
-                <p>查看全部</p>
-            </div>
-
-
-        </div>
+        <FilterSection/>
         <div class="RankBelow">
             <div v-for="(collectionGroup, index) in groupedCollections" :key="index" class="RankLeft">
                 <div class="RankTitle">
@@ -69,6 +31,7 @@
 </template>
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import FilterSection from '../components/FilterSection.vue'
 
 const recommendedCollections = ref([
     // Your collection data here
@@ -149,112 +112,7 @@ const groupedCollections = computed(() => {
     width: 100%;
     height: 100%;
 
-    .RankUp {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        gap: 10px;
-
-        text-align: start;
-        font-size: 18px;
-        font-weight: bold;
-
-
-        margin-top: 20px;
-        text-align: center;
-        
-
-        .RankUpType {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-
-            min-width: 150px;
-            height: 40px;
-
-            border-radius: 10px;
-
-
-            background-color: var(--accent-100);
-
-
-            .RankUpTypeHot {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-                width: 47%;
-                height: 80%;
-
-
-
-            }
-
-            .RankUpTypeBest {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-                width: 47%;
-                height: 80%;
-
-                border-radius: 10px;
-                background-color: var(--bg-100);
-
-            }
-        }
-
-        .RankUpTime {
-            display: flex;
-            justify-content: end;
-            align-items: center;
-            gap: 20px;
-
-            min-width: 350px;
-            height: 40px;
-
-            border-radius: 10px;
-
-
-            background-color: var(--accent-100);
-
-            .Selected{
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-                width: 19%;
-                height: 80%;
-
-                border-radius: 10px;
-                background-color: var(--bg-100);
-            }
-            .NotSelected{
-                display: flex;
-                justify-content: center;
-                align-items: center;
-
-                width: 21%;
-                height: 80%;
-            }
-        }
-
-        .RankUpToAll {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-
-            min-width: 100px;
-            height: 40px;
-
-            border-radius: 10px;
-
-
-            background-color: var(--accent-100);
-        }
-    }
+    
 
     .RankBelow {
         display: flex;

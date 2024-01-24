@@ -14,7 +14,7 @@
             </div>
 
         </div>
-
+        <FilterSection />
         <div class="StatisticsContent">
             <div class="StatisticsContentTitle">
                 <p style="flex: 12;">系列</p>
@@ -50,7 +50,8 @@
 <script setup lang="ts">
 import { } from "vue"
 import MainNavbar from '../components/MainNavbar.vue'
-import { } from "vue";
+import FilterSection from '../components/FilterSection.vue'
+
 
 import { SelectedTypeIndexStore } from '../stores/SelectedIndexStore'
 
@@ -107,6 +108,7 @@ const selectType = (index: number) => {
     }
 
     .StatisticsContent {
+        margin-top: 30px;
         .StatisticsContentTitle {
             display: flex;
             justify-content: start;

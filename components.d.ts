@@ -16,6 +16,7 @@ declare module 'vue' {
     ElInput: typeof import('element-plus/es')['ElInput']
     ElRadio: typeof import('element-plus/es')['ElRadio']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
+    FilterSection: typeof import('./src/components/FilterSection.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     MainNavbar: typeof import('./src/components/MainNavbar.vue')['default']
     Navbar: typeof import('./src/components/Navbar.vue')['default']
