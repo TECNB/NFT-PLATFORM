@@ -18,7 +18,7 @@
             <input type="text" placeholder="搜索">
         </div>
         <div class="MainNavbarUser">
-            <div class="MainNavbarUserLogin">
+            <div class="MainNavbarUserLogin" @click="showLogin">
                 <el-icon :size="20">
                     <Message />
                 </el-icon>
@@ -141,6 +141,7 @@ const toUser = () =>{
         name: 'UserView',
     })
 }
+
 const toIndex = () => {
     router.push({
         name: 'IndexView',
@@ -161,6 +162,12 @@ const showUserMenu = () => {
 const hideUserMenu = () => {
     isUserMenuVisible.value = false;
 };
+
+const showLogin = () =>{
+    router.push({
+        name: 'UserView',
+    })
+}
 
 
 import { ElMessageBox } from 'element-plus'

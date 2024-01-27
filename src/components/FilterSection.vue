@@ -2,14 +2,14 @@
     <div class="FilterSection">
         <div class="FilterSectionType" style="flex: 2;">
             <!-- 应用selectType方法 -->
-            <div class="NotSelected"  :class="{ 'Selected0': TypeIndex.index === 0 }">
-                
+            <div class="NotSelected" :class="{ 'Selected0': TypeIndex.index === 0 }">
+
             </div>
             <p @click="selectType(0)" style="position: absolute;left: 72px;z-index: 9999;">热门</p>
             <div class="NotSelected" :class="{ 'Selected1': TypeIndex.index === 1 }">
-                
+
             </div>
-            <p  @click="selectType(1)" style="position: absolute;left: 145px;;z-index: 9999;">最佳</p>
+            <p @click="selectType(1)" style="position: absolute;left: 145px;;z-index: 9999;">最佳</p>
 
 
         </div>
@@ -20,22 +20,21 @@
 
         <div class="FilterSectionTime" style="flex: 6;">
             <!-- 应用selectTime方法，未选中则class为NotSelected -->
-            <div class="NotSelected" :class="{ 'Selected0': TimeIndex.index === 0 }">
-                
+            <!-- 下面的四个relative定位的p标签平分FilterSectionTime区域 -->
+            
+            <p @click="selectTime(0)" style="flex: 1;z-index: 9999;">1小时</p>
+
+            <p @click="selectTime(1)" style="flex: 1;z-index: 9999;">6小时</p>
+
+            <p @click="selectTime(2)" style="flex: 1;z-index: 9999;">24小时</p>
+
+            <p @click="selectTime(3)" style="flex: 1;z-index: 9999;">7天</p>
+
+            <!-- 根据点击的p标签决定Selected -->
+            <div
+                :class="{ 'Selected0': TimeIndex.index === 0, 'Selected1': TimeIndex.index === 1, 'Selected2': TimeIndex.index === 2, 'Selected3': TimeIndex.index === 3 }">
+                <!-- Content of the div -->
             </div>
-            <p @click="selectTime(0)" style="position: absolute;right: 475px;;z-index: 9999;">1小时</p>
-            <div class="NotSelected" :class="{ 'Selected1': TimeIndex.index === 1 }">
-                
-            </div>
-            <p @click="selectTime(1)" style="position: absolute;right: 380px;;z-index: 9999;">6小时</p>
-            <div class="NotSelected"  :class="{ 'Selected2': TimeIndex.index === 2 }">
-                
-            </div>
-            <p @click="selectTime(2)" style="position: absolute;right: 285px;;z-index: 9999;">24小时</p>
-            <div class="NotSelected" :class="{ 'Selected3': TimeIndex.index === 3 }">
-                
-            </div>
-            <p @click="selectTime(3)" style="position: absolute;right: 210px;;z-index: 9999;">7天</p>
 
         </div>
 
@@ -81,6 +80,8 @@ const selectType = (index: number) => {
 // 选中时间
 const selectTime = (index: number) => {
     TimeIndex.index = index;
+    // 打印TimeIndex.index
+    console.log(TimeIndex.index);
 };
 
 
@@ -118,8 +119,8 @@ const selectTime = (index: number) => {
 
         // 定义一个变量--selectedIndex-position，用于记录js中点击的selectedIndex
         --selectedIndex-position: v-bind(selectedIndex);
-        
-        
+
+
 
         // 使用transform向点击位置移动
 
@@ -133,6 +134,7 @@ const selectTime = (index: number) => {
                 transform: translateX(0);
             }
         }
+
         @keyframes slideRight {
             0% {
                 transform: translateX(100%);
@@ -173,6 +175,7 @@ const selectTime = (index: number) => {
             animation: slideRight 0.5s;
 
         }
+
         .Selected1 {
             display: flex;
             justify-content: center;
@@ -196,6 +199,8 @@ const selectTime = (index: number) => {
         align-items: center;
         gap: 20px;
 
+        position: relative;
+
         min-width: 350px;
         height: 40px;
 
@@ -203,51 +208,10 @@ const selectTime = (index: number) => {
 
 
         background-color: var(--accent-100);
-        @keyframes slide0 {
-            0% {
-                transform: translateX(-100%);
-            }
 
-            100% {
-                // 使用v-bind使用js中的selectedIndex
-                transform: translateX(0);
-            }
-        }
-        @keyframes slide1 {
-            0% {
-                transform: translateX(100%);
-            }
-
-            100% {
-                // 使用v-bind使用js中的selectedIndex
-                transform: translateX(0);
-            }
-        }
-        @keyframes slide2 {
-            0% {
-                transform: translateX(100%);
-            }
-
-            100% {
-                // 使用v-bind使用js中的selectedIndex
-                transform: translateX(0);
-            }
-        }
-        @keyframes slide3 {
-            0% {
-                transform: translateX(100%);
-            }
-
-            100% {
-                // 使用v-bind使用js中的selectedIndex
-                transform: translateX(0);
-            }
-        }
 
         .Selected0 {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: absolute;
 
             width: 20%;
             height: 80%;
@@ -255,13 +219,13 @@ const selectTime = (index: number) => {
             border-radius: 10px;
             background-color: var(--bg-100);
 
-            // 使用transform向点击位置移动
-            animation: slide0 0.5s;
+            transform: translateX(-395%);
+            transition: 0.25s ease-out;
+
         }
+
         .Selected1 {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: absolute;
 
             width: 20%;
             height: 80%;
@@ -270,12 +234,12 @@ const selectTime = (index: number) => {
             background-color: var(--bg-100);
 
             // 使用transform向点击位置移动
-            animation: slide0 0.5s;
+            transform: translateX(-265%);
+            transition: 0.25s ease-out;
         }
+
         .Selected2 {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: absolute;
 
             width: 20%;
             height: 80%;
@@ -284,12 +248,12 @@ const selectTime = (index: number) => {
             background-color: var(--bg-100);
 
             // 使用transform向点击位置移动
-            animation: slide0 0.5s;
+            transform: translateX(-135%);
+            transition: 0.25s ease-out;
         }
+
         .Selected3 {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: absolute;
 
             width: 20%;
             height: 80%;
@@ -298,7 +262,8 @@ const selectTime = (index: number) => {
             background-color: var(--bg-100);
 
             // 使用transform向点击位置移动
-            animation: slide0 0.5s;
+            transform: translateX(-5%);
+            transition: 0.25s ease-out;
         }
 
         .NotSelected {
@@ -309,6 +274,8 @@ const selectTime = (index: number) => {
             width: 20%;
             height: 80%;
             margin-right: 2px;
+
+
         }
     }
 
