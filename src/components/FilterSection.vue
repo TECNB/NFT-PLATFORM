@@ -5,11 +5,11 @@
             <div class="NotSelected" :class="{ 'Selected0': TypeIndex.index === 0 }">
 
             </div>
-            <p @click="selectType(0)" style="position: absolute;left: 72px;z-index: 9999;">热门</p>
+            <p @click="selectType(0)" style="position: absolute;left: 15%;z-index: 9999;">热门</p>
             <div class="NotSelected" :class="{ 'Selected1': TypeIndex.index === 1 }">
 
             </div>
-            <p @click="selectType(1)" style="position: absolute;left: 145px;;z-index: 9999;">最佳</p>
+            <p @click="selectType(1)" style="position: absolute;right: 15%;;z-index: 9999;">最佳</p>
 
 
         </div>
@@ -107,6 +107,8 @@ const selectTime = (index: number) => {
         display: flex;
         justify-content: center;
         align-items: center;
+
+        position: relative;
 
 
         min-width: 150px;
