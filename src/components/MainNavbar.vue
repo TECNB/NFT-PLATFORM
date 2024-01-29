@@ -100,30 +100,17 @@
                 </div>
             </transition>
 
-            <div class="MainNavbarUserCart" @click="drawer2 = true">
+            <div class="MainNavbarUserCart" @click="showCartList">
                 <el-icon :size="20">
                     <ShoppingCart />
                 </el-icon>
             </div>
         </div>
-        <el-drawer v-model="drawer2" direction="rtl">
 
-            <template #default>
-                <div>
-                    <p>
-                        还没有物品，快去购物吧
-                    </p>
-                </div>
-            </template>
-            <template #footer>
-                <div style="flex: auto">
-                    <el-button @click="cancelClick">取消</el-button>
-                    <el-button type="primary" @click="confirmClick">确定</el-button>
-                </div>
-            </template>
-        </el-drawer>
         <MaskLayer :ifShow="isLoginBoxVisible" />
         <LoginBox :ifShow="isLoginBoxVisible" @updateIfShow="updateIsLoginBoxVisible" />
+        <CartList :ifShow="isCartListVisible" @updateIfShow="updateIsCartListVisible"/>
+        <MaskLayer :ifShow="isCartListVisible" />
     </div>
 </template>
 
@@ -135,6 +122,8 @@ import { useRouter } from 'vue-router'
 import MaskLayer from '../components/MaskLayer.vue'
 // 引入LoginBox
 import LoginBox from '../components/LoginBox.vue'
+// 引入CartList
+import CartList from '../components/CartList.vue'
 
 const router = useRouter()
 const value1 = ref(false)
@@ -174,7 +163,7 @@ const hideUserMenu = () => {
 const isLoginBoxVisible = ref(false);
 
 
-// hideMaskLayer方法控制更新isLoginBoxVisible
+// updateIsLoginBoxVisible方法控制更新isLoginBoxVisible
 const updateIsLoginBoxVisible = (value: boolean) => {
     isLoginBoxVisible.value = value;
 };
@@ -185,25 +174,15 @@ const showLogin = () => {
 }
 
 
-import { ElMessageBox } from 'element-plus'
-
-
-const drawer2 = ref(false)
-
-const radio1 = ref('Option 1')
-
-function cancelClick() {
-    drawer2.value = false
+const isCartListVisible = ref(false)
+// updateIsCartListVisible方法控制更新isCartListVisible
+const updateIsCartListVisible = (value: boolean) => {
+    isCartListVisible.value = value;
+};
+const showCartList = () => {
+    updateIsCartListVisible(true);
 }
-function confirmClick() {
-    ElMessageBox.confirm(`Are you confirm to chose ${radio1.value} ?`)
-        .then(() => {
-            drawer2.value = false
-        })
-        .catch(() => {
-            // catch error
-        })
-}
+
 </script>
 
 <style lang="scss" scoped>
