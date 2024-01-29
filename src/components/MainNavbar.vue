@@ -121,6 +121,8 @@
                 </div>
             </template>
         </el-drawer>
+        <MaskLayer :isMaskLayerVisible="isMaskLayerVisible" @updateIsMaskLayer="updateIsMaskLayer"/>
+        <LoginBox :isMaskLayerVisible="isMaskLayerVisible" @updateIsMaskLayer="updateIsMaskLayer"/>
     </div>
 </template>
 
@@ -128,6 +130,10 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { useRouter } from 'vue-router'
+// 引入MaskLayer
+import MaskLayer from '../components/MaskLayer.vue'
+// 引入LoginBox
+import LoginBox from '../components/LoginBox.vue'
 
 const router = useRouter()
 const value1 = ref(false)
@@ -163,10 +169,20 @@ const hideUserMenu = () => {
     isUserMenuVisible.value = false;
 };
 
+// isMaskLayerVisible设置默认为false
+const isMaskLayerVisible = ref(false);
+// showMaskLayer方法控制展示isMaskLayerVisible
+const showMaskLayer = () => {
+    isMaskLayerVisible.value = true;
+};
+// hideMaskLayer方法控制隐藏isMaskLayerVisible
+const updateIsMaskLayer = () => {
+    isMaskLayerVisible.value = false;
+};
+
+
 const showLogin = () =>{
-    router.push({
-        name: 'UserView',
-    })
+    showMaskLayer();
 }
 
 
