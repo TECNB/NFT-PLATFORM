@@ -1,5 +1,5 @@
 <template>
-    <div class="LoginBox" v-if="props.isMaskLayerVisible">
+    <div class="LoginBox" v-if="props.ifShow">
         <div class="Background">
             <div class="Close" @click="toggleVisibility">
                 <el-icon style="height: 90%; width: 90%; border-radius: 50%; object-fit: cover; aspect-ratio: 1/1;">
@@ -44,11 +44,11 @@
 <script setup lang="ts">
 import {  } from 'vue';
 
-const props = defineProps(['isMaskLayerVisible']);
+const props = defineProps(['ifShow']);
 const emit = defineEmits();
 
 const toggleVisibility = () => {
-    emit('updateIsMaskLayer', true);
+    emit('updateIfShow', false);
 };
 
 </script>

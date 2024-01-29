@@ -1,5 +1,5 @@
 <template>
-    <div class="MaskLayer" v-if="props.isMaskLayerVisible">
+    <div class="MaskLayer" v-if="props.ifShow">
 
     </div>
 </template>
@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import {  } from 'vue';
 
-const props = defineProps(['isMaskLayerVisible']);
+const props = defineProps(['ifShow']);
 
 
 

@@ -53,7 +53,8 @@
                         </el-icon>
                         <p>交易</p>
                     </div>
-                    <div class="MainNavbarUserMenuItem" style="border-bottom: 1px solid var(--accent-100);" @click="toCreate">
+                    <div class="MainNavbarUserMenuItem" style="border-bottom: 1px solid var(--accent-100);"
+                        @click="toCreate">
                         <el-icon>
                             <EditPen />
                         </el-icon>
@@ -121,8 +122,8 @@
                 </div>
             </template>
         </el-drawer>
-        <MaskLayer :isMaskLayerVisible="isMaskLayerVisible" @updateIsMaskLayer="updateIsMaskLayer"/>
-        <LoginBox :isMaskLayerVisible="isMaskLayerVisible" @updateIsMaskLayer="updateIsMaskLayer"/>
+        <MaskLayer :ifShow="isLoginBoxVisible" />
+        <LoginBox :ifShow="isLoginBoxVisible" @updateIfShow="updateIsLoginBoxVisible" />
     </div>
 </template>
 
@@ -142,7 +143,7 @@ const toCreate = () => {
         name: 'CreateView',
     })
 }
-const toUser = () =>{
+const toUser = () => {
     router.push({
         name: 'UserView',
     })
@@ -169,20 +170,18 @@ const hideUserMenu = () => {
     isUserMenuVisible.value = false;
 };
 
-// isMaskLayerVisible设置默认为false
-const isMaskLayerVisible = ref(false);
-// showMaskLayer方法控制展示isMaskLayerVisible
-const showMaskLayer = () => {
-    isMaskLayerVisible.value = true;
-};
-// hideMaskLayer方法控制隐藏isMaskLayerVisible
-const updateIsMaskLayer = () => {
-    isMaskLayerVisible.value = false;
+// isLoginBoxVisible设置默认为false
+const isLoginBoxVisible = ref(false);
+
+
+// hideMaskLayer方法控制更新isLoginBoxVisible
+const updateIsLoginBoxVisible = (value: boolean) => {
+    isLoginBoxVisible.value = value;
 };
 
 
-const showLogin = () =>{
-    showMaskLayer();
+const showLogin = () => {
+    updateIsLoginBoxVisible(true);
 }
 
 
@@ -214,8 +213,9 @@ function confirmClick() {
 .fade-leave-active {
     transition: opacity 2s ease;
 }
+
 .fade-enter-to,
-.fade-leave-from{
+.fade-leave-from {
     opacity: 1;
 }
 
