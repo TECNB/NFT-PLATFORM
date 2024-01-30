@@ -21,7 +21,7 @@
                 <div class="NftImage">
 
                     <div class="NftImageImg">
-                        <img src='https://i.seadn.io/s/raw/files/6662e4fbea8ad15eb84990bc68351d57.png?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/s/raw/files/6662e4fbea8ad15eb84990bc68351d57.png?auto=format&dpr=1&h=500&fr=1 2x'
+                        <img :src="collectionItem.imageUrl"
                             alt=""
                             style="height: 100%; width: 100%;border-radius: 0 0 20px 20px; object-fit: cover; aspect-ratio: 1/1;">
                     </div>
@@ -51,7 +51,7 @@
 
             </div>
             <div class="NftViewBodyRight">
-                <p style="font-size: 36px;font-weight: bold;margin-bottom: 30px;">Mint Genesis NFT #1695</p>
+                <p style="font-size: 36px;font-weight: bold;margin-bottom: 30px;">{{ collectionItem.title }}</p>
                 <p style="font-weight: bold;display: inline;">拥有者</p>
                 <p style="color: var(--accent-200);display: inline;margin-left: 10px;"><router-link
                         to="/user">TEC</router-link>
@@ -80,10 +80,25 @@
                     </div>
 
                     <p style="color: var(--text-200);margin-top: 20px;">当前价格</p>
-                    <p style="font-size: 32px;font-weight: bold;">19.69 ETH</p>
+                    <p style="font-size: 32px;font-weight: bold;">{{ collectionItem.price }}</p>
                     <div class="NftViewBodyRightPriceButton">
-                        <button>立即购买</button>
-                        <button>报价</button>
+                        <div class="button">
+                            <div class="buyWord" @click="updateIsPayBoxVisible(true)">
+                                <p>立即购买</p>
+                            </div>
+                            <div class="cartIcon" @click="addCart">
+                                <el-icon>
+                                    <ShoppingCart />
+                                </el-icon>
+                            </div>
+                        </div>
+
+                        <div class="button">
+                            <el-icon>
+                                <CollectionTag />
+                            </el-icon>
+                            <p style="margin-left: 10px;">报价</p>
+                        </div>
                     </div>
                 </div>
                 <div class="NftViewBodyRightPrice">
@@ -105,22 +120,24 @@
                             <ChatSquare />
                         </el-icon>
                         <p style="font-size: 20px;">报价 </p>
-
                     </div>
-
-
                 </div>
             </div>
-
         </div>
-
-
+        <MaskLayer :ifShow="isPayBoxVisible" />
+        <PayBox :ifShow="isPayBoxVisible" @updateIfShow="updateIsPayBoxVisible" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { } from "vue"
+import { ref } from "vue"
 import MainNavbar from '../components/MainNavbar.vue'
+// 引入Collection
+import { Collection } from '../interfaces/Collection';
+// 引入MaskLayer
+import MaskLayer from '../components/MaskLayer.vue'
+// 引入PayBox
+import PayBox from '../components/PayBox.vue'
 // import { useRouter } from 'vue-router'
 
 // const router = useRouter()
@@ -130,7 +147,63 @@ import MainNavbar from '../components/MainNavbar.vue'
 //         name: 'UserView',
 //     })
 // }
+// 引入CartListCollectionStore
+import { CartListCollectionStore } from '../stores/CollectionStore'
+// 实例化CartListCollectionStore
+let CartListCollection = CartListCollectionStore()
+// 建立一个变量，该变量内有商品的信息，类型为Collection
+let collectionItem: Collection = {
+    imageUrl: 'https://i.seadn.io/s/raw/files/6662e4fbea8ad15eb84990bc68351d57.png?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/s/raw/files/6662e4fbea8ad15eb84990bc68351d57.png?auto=format&dpr=1&h=500&fr=1 2x',
+    title: 'Mint Genesis NFT',
+    price: '0.01 ETH',
+    tradingVolume: '68 ETH',
+}
+const cartList = ref<Collection[]>([
+    {
+        imageUrl: 'https://i.seadn.io/s/raw/files/6662e4fbea8ad15eb84990bc68351d57.png?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/s/raw/files/6662e4fbea8ad15eb84990bc68351d57.png?auto=format&dpr=1&h=500&fr=1 2x',
+        title: 'Mint Genesis NFT',
+        price: '0.01 ETH',
+        tradingVolume: '68 ETH',
+    },
+    {
+        imageUrl: 'https://i.seadn.io/gae/WRcl2YH8E3_7884mcJ0DRN7STGqA8xZQKd-0MFmPftlxUR6i1xB9todMXRW2M6SIpXKAZ842UqKDm1UrkKG8nr7l9NjCkIw-GLQSFQ?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gae/WRcl2YH8E3_7884mcJ0DRN7STGqA8xZQKd-0MFmPftlxUR6i1xB9todMXRW2M6SIpXKAZ842UqKDm1UrkKG8nr7l9NjCkIw-GLQSFQ?auto=format&dpr=1&h=500&fr=1 2x',
+        title: 'Mint Genesis NFT',
+        price: '0.01 ETH',
+        tradingVolume: '68 ETH',
+    },
+    {
+        imageUrl: 'https://i.seadn.io/s/raw/files/c2343055844908c788fb0fac667d9063.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/s/raw/files/c2343055844908c788fb0fac667d9063.jpg?auto=format&dpr=1&h=500&fr=1 2x',
+        title: 'Mint Genesis NFT',
+        price: '0.01 ETH',
+        tradingVolume: '68 ETH',
+    },
+    {
+        imageUrl: 'https://i.seadn.io/gcs/files/cd3e28d133070f314c751ccb1291a532.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gcs/files/cd3e28d133070f314c751ccb1291a532.jpg?auto=format&dpr=1&h=500&fr=1 2x',
+        title: 'Mint Genesis NFT',
+        price: '0.01 ETH',
+        tradingVolume: '68 ETH',
+    },
+    {
+        imageUrl: 'https://i.seadn.io/gcs/files/b3f8881dc097cc7de7bc7250622118e5.png?auto=format&dpr=1&h=500&fr=1',
+        title: 'Mint Genesis NFT',
+        price: '0.01 ETH',
+        tradingVolume: '68 ETH',
+    },
 
+])
+// cartList赋值给CartListCollection
+CartListCollection.collections = cartList.value;
+// 点击ShoppingCart图标后将该商品collectionItem添加进CartListCollection的方法
+const addCart = () => {
+    CartListCollection.collections.push(collectionItem)
+    console.log(CartListCollection.collections)
+}
+// 定义变量isPayBoxVisible
+let isPayBoxVisible = ref(false);
+// 实现updateIsPayBoxVisible方法
+const updateIsPayBoxVisible = (newIsPayBoxVisible: boolean) => {
+    isPayBoxVisible.value = newIsPayBoxVisible;
+};
 </script>
 
 <style lang="scss" scoped>
@@ -241,32 +314,70 @@ import MainNavbar from '../components/MainNavbar.vue'
                 .NftViewBodyRightPriceButton {
                     display: flex;
                     gap: 10px;
+
+                    .button {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        flex: 1;
+
+                        height: 5vh;
+
+                        font-size: 16px;
+                        background-color: var(--accent-200);
+                        color: #fff;
+                        border: none;
+                        border-radius: 12.5px;
+                        // 将光标图标更改为手型指针
+                        cursor: pointer;
+
+                        margin-top: 10px;
+
+                        .buyWord {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            flex: 8;
+
+                            border-radius: 12.5px 0 0 12.5px;
+
+                            height: 100%;
+                        }
+
+                        .buyWord:hover {
+                            background-color: var(--accent-100);
+                        }
+
+                        .cartIcon {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            flex: 1;
+
+                            border-radius: 0 12.5px 12.5px 0;
+
+                            height: 100%;
+                            border-left: 1px solid white;
+                        }
+
+                        .cartIcon:hover {
+                            background-color: var(--accent-100);
+                        }
+                    }
+
+
+                    .button:nth-child(2) {
+                        background-color: white;
+                        color: #000;
+                    }
+
+                    .button:nth-child(2):hover {
+                        background-color: var(--text-200);
+                    }
                 }
 
-                .NftViewBodyRightPriceButton button {
-                    flex: 1;
-                    padding: 10px 15px;
-                    font-size: 16px;
-                    background-color: var(--accent-200);
-                    color: #fff;
-                    border: none;
-                    border-radius: 12.5px;
-                    cursor: pointer;
-                    margin-top: 10px;
-                }
 
-                .NftViewBodyRightPriceButton button:hover {
-                    background-color: var(--accent-100);
-                }
-
-                .NftViewBodyRightPriceButton button:nth-child(2) {
-                    background-color: white;
-                    color: #000;
-                }
-
-                .NftViewBodyRightPriceButton button:nth-child(2):hover {
-                    background-color: var(--text-200);
-                }
 
             }
         }
@@ -302,4 +413,5 @@ import MainNavbar from '../components/MainNavbar.vue'
 
 
 
-}</style>
+}
+</style>

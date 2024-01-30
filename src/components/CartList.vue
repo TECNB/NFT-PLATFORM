@@ -32,7 +32,8 @@
                     </div>
 
                     <div style="flex: 1;">
-                        <p v-if="!isDeleteVisible[index].value">{{ item.price }}</p>
+                        <p v-if="isDeleteVisible[index] && !isDeleteVisible[index].value">{{ item.price }}</p>
+
                         <div @click="deleteCart(index)" v-else>
                             <el-icon>
                                 <Delete />
@@ -70,47 +71,36 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { watch,ref } from "vue"
 import { Collection } from '../interfaces/Collection';
+// 引入CartListCollectionStore
+import { CartListCollectionStore } from '../stores/CollectionStore'
+
+// 实例化CartListCollectionStore
+let CartListCollection = CartListCollectionStore()
 
 const props = defineProps(['ifShow']);
 const emit = defineEmits();
 
 // 定义一个数组用于储存购物车的内容,并且为响应式
 // TODO:记得cartList一定是要放在全局变量里面的，否则清除所有就是清除不了的
-const cartList = ref<Collection[]>([
-    {
-        imageUrl: 'https://i.seadn.io/s/raw/files/6662e4fbea8ad15eb84990bc68351d57.png?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/s/raw/files/6662e4fbea8ad15eb84990bc68351d57.png?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
-        price: '0.01 ETH',
-        tradingVolume: '68 ETH',
-    },
-    {
-        imageUrl: 'https://i.seadn.io/gae/WRcl2YH8E3_7884mcJ0DRN7STGqA8xZQKd-0MFmPftlxUR6i1xB9todMXRW2M6SIpXKAZ842UqKDm1UrkKG8nr7l9NjCkIw-GLQSFQ?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gae/WRcl2YH8E3_7884mcJ0DRN7STGqA8xZQKd-0MFmPftlxUR6i1xB9todMXRW2M6SIpXKAZ842UqKDm1UrkKG8nr7l9NjCkIw-GLQSFQ?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
-        price: '0.01 ETH',
-        tradingVolume: '68 ETH',
-    },
-    {
-        imageUrl: 'https://i.seadn.io/s/raw/files/c2343055844908c788fb0fac667d9063.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/s/raw/files/c2343055844908c788fb0fac667d9063.jpg?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
-        price: '0.01 ETH',
-        tradingVolume: '68 ETH',
-    },
-    {
-        imageUrl: 'https://i.seadn.io/gcs/files/cd3e28d133070f314c751ccb1291a532.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gcs/files/cd3e28d133070f314c751ccb1291a532.jpg?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
-        price: '0.01 ETH',
-        tradingVolume: '68 ETH',
-    },
-    {
-        imageUrl: 'https://i.seadn.io/gcs/files/b3f8881dc097cc7de7bc7250622118e5.png?auto=format&dpr=1&h=500&fr=1',
-        title: 'Mint Genesis NFT',
-        price: '0.01 ETH',
-        tradingVolume: '68 ETH',
-    },
 
-])
+const cartList = ref<Collection[]>([])
+
+
+// 监听 CartListCollection.collections 的变化
+// watch(
+//   () => CartListCollection.collections,
+//   (newCollections) => {
+//     // 将新的值赋给 cartList.value
+//     cartList.value = newCollections;
+//     isDeleteVisible = cartList.value.map(() => ref(false));
+//   }
+// );
+
+// 初始赋值
+cartList.value = CartListCollection.collections;
+
 
 // 定义一个变量用于控制是否展示购物车为空的情况
 let isCartNullVisible = false;
@@ -128,7 +118,7 @@ totalPrice = Number(totalPrice.toFixed(2));
 
 
 // 如果cartList为空则显示还没有任何商品,快去购物吧
-if (cartList.value.length == 0) {
+if (cartList.value.length === 0) {
     isCartNullVisible = true
 }
 
@@ -145,7 +135,15 @@ const clearAll = () => {
 }
 
 // 定义一个变量isDeleteVisible
-const isDeleteVisible = cartList.value.map(() => ref(false));
+let isDeleteVisible = cartList.value.map(() => ref(false));
+
+//当cartList改变时，isDeleteVisible也重新赋值
+watch(cartList.value, (newValue, oldValue) => {
+    isDeleteVisible = newValue.map(() => ref(false));
+    console.log('watch 已触发', oldValue)
+})
+
+
 // 实现showDelete方法
 const showDelete = (index: number) => {
     isDeleteVisible.forEach((item, i) => (item.value = i === index));
@@ -170,12 +168,14 @@ const deleteCart = (index: number) => {
         isCartNullVisible = true
     }
 }
+
+
 </script>
 
 <style lang="scss" scoped>
 .CartList {
     width: 375px;
-    height: 98%;
+    min-height: 100%;
 
     position: absolute;
     z-index: 99999;
@@ -205,14 +205,12 @@ const deleteCart = (index: number) => {
         margin-left: -20px;
         margin-right: -20px;
         margin-top: -20px;
-        padding-left: 30px;
-        padding-right: 30px;
+        padding: 20px;
 
 
     }
 
     .Content {
-        height: 90%;
 
         text-align: center;
 

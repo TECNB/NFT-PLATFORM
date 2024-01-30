@@ -73,3 +73,15 @@ export const PopularAnimalCollectionStore = defineStore('PopularAnimalCollection
         ],
     }),
 });
+export const CartListCollectionStore = defineStore('CartListCollectionStore', {
+    state: () => ({
+        collections: [
+            {
+                imageUrl: '',
+                title: '',
+                price: '',
+                tradingVolume: '',
+            }
+        ],
+    }),
+});
