@@ -25,7 +25,7 @@
                 <p style="flex: 2;text-align: end;">地板价</p>
                 <p style="flex: 2;text-align: end;">销售</p>
                 <!-- 下面的部分是用于放置图标做出的空缺 -->
-                <p style="flex: 1;text-align: end;"></p>
+                <p style="flex: 1;text-align: end;" v-if="TypeIndex.index == 2"></p>
             </div>
             <div class="StatisticsContentDetail" v-for="(item, index) in recommendedCollections" :key="index">
                 <div style="flex: 1;text-align: start;" v-if="TypeIndex.index !== 2">{{index+1}}</div>
@@ -44,7 +44,7 @@
                 <div style="flex: 2;text-align: end;">{{item.price}}</div>
                 <div style="flex: 2;text-align: end;">{{item.price}}</div>
                 <div style="flex: 2;text-align: end;">{{item.price}}</div>
-                <div style="flex: 1;" class="icon"><el-icon><Delete /></el-icon></div>
+                <div style="flex: 1;" class="icon" v-if="TypeIndex.index == 2"><el-icon><Delete /></el-icon></div>
             </div>
         </div>
 
@@ -58,9 +58,9 @@ import FilterSection from '../components/FilterSection.vue'
 import { Collection } from '../interfaces/Collection';
 
 
-import { SelectedTypeIndexStore } from '../stores/SelectedIndexStore'
+import { StatisticsTypeIndexStore } from '../stores/SelectedIndexStore'
 
-const TypeIndex = SelectedTypeIndexStore()
+const TypeIndex = StatisticsTypeIndexStore()
 
 
 const selectType = (index: number) => {

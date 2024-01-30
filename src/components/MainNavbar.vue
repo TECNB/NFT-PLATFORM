@@ -39,7 +39,7 @@
                         </el-icon>
                         <p>个人资料</p>
                     </div>
-                    <div class="MainNavbarUserMenuItem" style="border-bottom: 1px solid var(--accent-100);">
+                    <div class="MainNavbarUserMenuItem" style="border-bottom: 1px solid var(--accent-100);" @click="toStatisticsFollow">
                         <el-icon>
                             <View />
                         </el-icon>
@@ -124,6 +124,9 @@ import MaskLayer from '../components/MaskLayer.vue'
 import LoginBox from '../components/LoginBox.vue'
 // 引入CartList
 import CartList from '../components/CartList.vue'
+import { StatisticsTypeIndexStore } from '../stores/SelectedIndexStore'
+
+const TypeIndex = StatisticsTypeIndexStore()
 
 const router = useRouter()
 const value1 = ref(false)
@@ -147,6 +150,12 @@ const toStatistics = () => {
     router.push({
         name: 'StatisticsView',
     })
+}
+const toStatisticsFollow = () => {
+    router.push({
+        name: 'StatisticsView',
+    })
+    TypeIndex.index=2
 }
 
 const isUserMenuVisible = ref(false);
@@ -287,7 +296,7 @@ const showCartList = () => {
 
         .MainNavbarUserMenu {
             position: absolute;
-            z-index: 9999;
+            z-index: 99999;
             top: 70px;
             right: 210px;
 

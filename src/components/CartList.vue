@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch,ref } from "vue"
+import { watch, ref } from "vue"
 import { Collection } from '../interfaces/Collection';
 // 引入CartListCollectionStore
 import { CartListCollectionStore } from '../stores/CollectionStore'
@@ -141,6 +141,17 @@ let isDeleteVisible = cartList.value.map(() => ref(false));
 watch(cartList.value, (newValue, oldValue) => {
     isDeleteVisible = newValue.map(() => ref(false));
     console.log('watch 已触发', oldValue)
+    // 定义一个变量用于储存cartList数组的总数
+    cartListLength = cartList.value.length;
+    // 定义一个变量用于储存购物车的总价
+    totalPrice = 0;
+    // 通过cartList的price算出totalPrice，因为price是字符串类型，所以需要转换为数字类型
+    // 同时需要把price后面的ETH去掉
+    for (let i = 0; i < cartList.value.length; i++) {
+        totalPrice += Number(cartList.value[i].price.replace(' ETH', ''));
+    }
+    // 最后保留两位小数
+    totalPrice = Number(totalPrice.toFixed(2));
 })
 
 

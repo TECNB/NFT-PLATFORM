@@ -2,13 +2,11 @@
     <div class="FilterSection">
         <div class="FilterSectionType" style="flex: 2;">
             <!-- 应用selectType方法 -->
-            <div class="NotSelected" :class="{ 'Selected0': TypeIndex.index === 0 }">
+            <div :class="{ 'Selected0': TypeIndex.index === 0 ,'Selected1': TypeIndex.index === 1}">
 
             </div>
             <p @click="selectType(0)" style="position: absolute;left: 15%;z-index: 9999;">热门</p>
-            <div class="NotSelected" :class="{ 'Selected1': TypeIndex.index === 1 }">
 
-            </div>
             <p @click="selectType(1)" style="position: absolute;right: 15%;;z-index: 9999;">最佳</p>
 
 
@@ -51,6 +49,9 @@
 import { } from "vue"
 import { FilterSectionTypeIndexStore } from '../stores/SelectedIndexStore'
 import { FilterSectionTimeIndexStore } from '../stores/SelectedIndexStore'
+import { StatisticsTypeIndexStore } from '../stores/SelectedIndexStore'
+
+const StatisticsTypeIndex = StatisticsTypeIndexStore()
 
 const props = defineProps<{ from: string }>()
 
@@ -66,6 +67,7 @@ const toStatisticsView = () => {
     router.push({
         name: 'StatisticsView',
     })
+    StatisticsTypeIndex.index=0
 };
 
 let selectedIndex = 0
@@ -119,78 +121,56 @@ const selectTime = (index: number) => {
 
         background-color: var(--accent-100);
 
-        // 定义一个变量--selectedIndex-position，用于记录js中点击的selectedIndex
-        --selectedIndex-position: v-bind(selectedIndex);
-
-
-
         // 使用transform向点击位置移动
 
-        @keyframes slideLeft {
-            0% {
-                transform: translateX(-100%);
-            }
+        // @keyframes slideLeft {
+        //     0% {
+        //         transform: translateX(-100%);
+        //     }
 
-            100% {
-                // 使用v-bind使用js中的selectedIndex
-                transform: translateX(0);
-            }
-        }
+        //     100% {
+        //         // 使用v-bind使用js中的selectedIndex
+        //         transform: translateX(0);
+        //     }
+        // }
 
-        @keyframes slideRight {
-            0% {
-                transform: translateX(100%);
-            }
+        // @keyframes slideRight {
+        //     0% {
+        //         transform: translateX(100%);
+        //     }
 
-            100% {
-                // 使用v-bind使用js中的selectedIndex
-                transform: translateX(0);
-            }
-        }
-
-        .NotSelected {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            width: 47%;
-            height: 80%;
-
-            border-radius: 10px;
-
-
-
-        }
+        //     100% {
+        //         // 使用v-bind使用js中的selectedIndex
+        //         transform: translateX(0);
+        //     }
+        // }
 
         .Selected0 {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: absolute;
 
-            width: 47%;
+            width: 50%;
             height: 80%;
 
             border-radius: 10px;
             background-color: var(--bg-100);
 
-            // 使用transform向点击位置移动
-            animation: slideRight 0.5s;
+            transform: translateX(-45%);
+            transition: 0.25s ease-out;
 
         }
 
         .Selected1 {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: absolute;
 
-            width: 47%;
+            width: 50%;
             height: 80%;
 
             border-radius: 10px;
             background-color: var(--bg-100);
 
             // 使用transform向点击位置移动
-            animation: slideLeft 0.5s;
+            transform: translateX(45%);
+            transition: 0.25s ease-out;
 
         }
     }
