@@ -83,20 +83,8 @@ const props = defineProps(['ifShow']);
 const emit = defineEmits();
 
 // 定义一个数组用于储存购物车的内容,并且为响应式
-// TODO:记得cartList一定是要放在全局变量里面的，否则清除所有就是清除不了的
 
 const cartList = ref<Collection[]>([])
-
-
-// 监听 CartListCollection.collections 的变化
-// watch(
-//   () => CartListCollection.collections,
-//   (newCollections) => {
-//     // 将新的值赋给 cartList.value
-//     cartList.value = newCollections;
-//     isDeleteVisible = cartList.value.map(() => ref(false));
-//   }
-// );
 
 // 初始赋值
 cartList.value = CartListCollection.collections;

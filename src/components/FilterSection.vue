@@ -38,7 +38,7 @@
 
 
 
-        <!-- 如何props.from为IndexView，则显示查看全部，否则不显示 -->
+        <!-- 如果props.from为IndexView，则显示查看全部，否则不显示 -->
         <div class="FilterSectionToAll" style="flex: 2;" v-if="props.from == 'IndexView'" @click="toStatisticsView">
             <p>查看全部</p>
         </div>
