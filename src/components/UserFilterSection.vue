@@ -5,6 +5,38 @@
             <el-icon :size="16">
                 <ArrowDownBold />
             </el-icon>
+            <div class="TypeList">
+                <!-- 勾选框 -->
+                <div class="TypeListItem">
+                    <label>
+                        <input type="checkbox" name="type" value="all" checked>
+                        <span style="margin-left: 20px;">动画</span>
+                    </label>
+                </div>
+                <div class="TypeListItem">
+                    <label>
+                        <input type="checkbox" name="type" value="all" checked>
+                        <span style="margin-left: 20px;">现实</span>
+                    </label>
+                </div>
+                <div class="TypeListItem">
+                    <label>
+                        <input type="checkbox" name="type" value="all" checked>
+                        <span style="margin-left: 20px;">科技</span>
+                    </label>
+                </div>
+                <div class="TypeListItem">
+                    <label>
+                        <input type="checkbox" name="type" value="all" checked>
+                        <span style="margin-left: 20px;">动物</span>
+                    </label>
+                </div>
+
+
+
+
+
+            </div>
         </div>
         <div class="Search">
             <el-icon :size="16">
@@ -14,15 +46,44 @@
         </div>
         <div class="Condition">
             <p>最近收到</p>
-            <el-icon :size="16">
+            <!-- 根据isConditionListVisible决定class是rotate-0还是rotate-180 -->
+            <el-icon :size="16" @click="toggleConditionList" :class="isConditionListVisible ? 'rotate-180' : 'rotate-0'">
                 <ArrowDownBold />
             </el-icon>
+
+            <div class="ConditionList" v-if="isConditionListVisible">
+                <div class="ConditionListItem">
+                    <p>最近收到</p>
+                </div>
+                <div class="ConditionListItem">
+                    <p>价格从高到低</p>
+                </div>
+                <div class="ConditionListItem">
+                    <p>价格从低到高</p>
+                </div>
+                <div class="ConditionListItem">
+                    <p>最近创建的</p>
+                </div>
+                <div class="ConditionListItem">
+                    <p>最高销售价格</p>
+                </div>
+                <div class="ConditionListItem">
+                    <p>最早的</p>
+                </div>
+
+            </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { } from "vue"
+import { ref } from "vue"
+// 定义变量控制是否展示ConditionList
+let isConditionListVisible = ref(false);
+// 定义一个函数用于控制ConditionList的显示与隐藏
+const toggleConditionList = () => {
+    isConditionListVisible.value = !isConditionListVisible.value;
+};
 </script>
 
 <style lang="scss" scoped>
@@ -42,10 +103,12 @@ import { } from "vue"
 
     margin-top: 20px;
     margin-bottom: 20px;
+
     .Type {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        position: relative;
 
 
 
@@ -57,6 +120,51 @@ import { } from "vue"
         border: 0.5px solid var(--text-200);
 
         padding: 12px;
+
+        .TypeList {
+            display: flex;
+            justify-content: center;
+            align-items: start;
+            flex-direction: column;
+            gap: 10px;
+
+            position: absolute;
+            top: 60px;
+            left: 0px;
+
+            width: 150px;
+
+            background-color: #FFFFFF;
+            border-radius: 12px;
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+
+            padding: 10px;
+
+            .TypeListItem {
+                display: flex;
+                justify-content: start;
+                align-items: center;
+
+                width: 100%;
+                height: 100%;
+
+                border-radius: 12px;
+                padding: 15px;
+            }
+
+            .TypeListItem:hover {
+                cursor: pointer;
+                background-color: rgba(0, 0, 0, 0.1);
+            }
+
+            // 勾选框变大，勾选背景颜色为var(--bg-100)，勾选时颜色为var(--bg-200)
+            input[type="checkbox"] {
+                transform: scale(1.5);
+
+
+            }
+
+        }
     }
 
     .Search {
@@ -64,7 +172,7 @@ import { } from "vue"
         justify-content: start;
         align-items: center;
         flex: 1;
-        
+
 
         height: 50px;
 
@@ -84,11 +192,13 @@ import { } from "vue"
             font-weight: bold;
         }
     }
-    .Condition{
+
+    .Condition {
         display: flex;
         justify-content: space-between;
         align-items: center;
         gap: 10px;
+        position: relative;
 
 
         width: 250px;
@@ -99,6 +209,51 @@ import { } from "vue"
         border: 0.5px solid var(--text-200);
 
         padding: 12px;
+
+        .rotate-180 {
+            transform: rotate(180deg);
+            transition: 0.25s ease-out;
+        }
+
+        .rotate-0 {
+            transition: 0.25s ease-out;
+        }
+
+        .ConditionList {
+            display: flex;
+            justify-content: center;
+            align-items: start;
+            flex-direction: column;
+
+            position: absolute;
+            top: 60px;
+            right: 0px;
+
+            width: 250px;
+
+            background-color: #FFFFFF;
+            border-radius: 12px;
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+
+            padding: 10px;
+
+            .ConditionListItem {
+                display: flex;
+                justify-content: start;
+                align-items: center;
+
+                width: 100%;
+                height: 100%;
+
+                border-radius: 12px;
+                padding: 15px;
+            }
+
+            .ConditionListItem:hover {
+                cursor: pointer;
+                background-color: rgba(0, 0, 0, 0.1);
+            }
+        }
     }
 }
 </style>
