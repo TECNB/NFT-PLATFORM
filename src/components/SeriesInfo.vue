@@ -96,7 +96,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
         <MaskLayer :ifShow="isPayBoxVisible" />
         <PayBox :ifShow="isPayBoxVisible" @updateIfShow="updateIsPayBoxVisible" />
