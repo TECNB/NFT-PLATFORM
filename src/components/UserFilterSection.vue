@@ -2,10 +2,10 @@
     <div class="UserFilterSection">
         <div class="Type">
             <p>分类</p>
-            <el-icon :size="16">
+            <el-icon :size="16" @click="toggleTypeList" :class="isTypeListVisible ? 'rotate-180' : 'rotate-0'">
                 <ArrowDownBold />
             </el-icon>
-            <div class="TypeList">
+            <div class="TypeList" v-if="isTypeListVisible">
                 <!-- 勾选框 -->
                 <div class="TypeListItem">
                     <label>
@@ -84,6 +84,11 @@ let isConditionListVisible = ref(false);
 const toggleConditionList = () => {
     isConditionListVisible.value = !isConditionListVisible.value;
 };
+// 实现isTypeListVisible
+let isTypeListVisible = ref(false);
+const toggleTypeList = () => {
+    isTypeListVisible.value = !isTypeListVisible.value;
+};
 </script>
 
 <style lang="scss" scoped>
@@ -120,6 +125,14 @@ const toggleConditionList = () => {
         border: 0.5px solid var(--text-200);
 
         padding: 12px;
+        .rotate-180 {
+            transform: rotate(180deg);
+            transition: 0.25s ease-out;
+        }
+
+        .rotate-0 {
+            transition: 0.25s ease-out;
+        }
 
         .TypeList {
             display: flex;
