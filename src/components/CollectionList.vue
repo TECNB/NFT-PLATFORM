@@ -7,10 +7,10 @@
                     <ArrowLeftBold />
                 </el-icon>
             </div>
-            <!-- 使用translateX实现翻页效果 -->
-            <div class="CollectionListItems"  style="transform:translateX(280px)">
+            <!-- 使用translateX实现翻页效果 style="transform:translateX(280px)" -->
+            <div class="CollectionListItems" >
                 <div v-for="(item, index) in collectionItems" :key="index" class="CollectionListItem" @click="toNft">
-                    <div class="CollectionListItemImage" style="height: 150px; width: 280px;">
+                    <div class="CollectionListItemImage" style="height: 150px; width: 265px;">
                         <img style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;"
                             :src="item.imageUrl" alt="" />
                     </div>
@@ -114,6 +114,10 @@ console.log(RecommendedCollection)
     font-size: 20px;
     font-weight: bold;
     color: var(--text-100);
+    
+
+
+    padding-left:-40px;
 
     
 
@@ -121,6 +125,7 @@ console.log(RecommendedCollection)
         display: flex;
         justify-content: start;
         align-items: center;
+        width: 100%;
 
 
         .CollectionListItems {
@@ -129,16 +134,20 @@ console.log(RecommendedCollection)
             align-items: center;
             gap: 30px;
 
-
+            width: 90%;
             height: 90%;
+
+            overflow: hidden;
 
             
             padding: 20px;
+            margin-right: 20px;
 
 
             
 
             .CollectionListItem {
+                width: 280px;
                 height: 100%;
                 width: 280px;
                 background-color: #FFFFFF;
@@ -175,7 +184,7 @@ console.log(RecommendedCollection)
 
 
 
-            width: 60px;
+            width: 50px;
             height: 280px;
             background-color: #FFFFFF;
             border-radius: 10px;
