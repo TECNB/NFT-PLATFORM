@@ -275,7 +275,7 @@ const updateIsPayBoxVisible = (newIsPayBoxVisible: boolean) => {
 
             .NftViewBodyRightIcon {
                 display: flex;
-                justify-content: start;
+                justify-content: flex-start;
                 align-items: center;
                 gap: 30px;
 
@@ -298,7 +298,7 @@ const updateIsPayBoxVisible = (newIsPayBoxVisible: boolean) => {
 
                 .NftViewBodyRightPriceIcon {
                     display: flex;
-                    justify-content: start;
+                    justify-content: flex-start;
                     align-items: center;
                     gap: 30px;
 
@@ -398,7 +398,7 @@ const updateIsPayBoxVisible = (newIsPayBoxVisible: boolean) => {
 
     .NftViewBodyRightPriceIcon {
         display: flex;
-        justify-content: start;
+        justify-content: flex-start;
         align-items: center;
         gap: 30px;
 

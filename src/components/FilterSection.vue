@@ -177,7 +177,7 @@ const selectTime = (index: number) => {
 
     .FilterSectionTime {
         display: flex;
-        justify-content: end;
+        justify-content: flex-end;
         align-items: center;
         gap: 20px;
 

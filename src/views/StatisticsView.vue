@@ -122,7 +122,7 @@ const recommendedCollections: Collection[] = [
 .StatisticsView {
     .StatisticsNavbar {
         display: flex;
-        justify-content: start;
+        justify-content: flex-start;
         align-items: center;
         width: 100%;
 
@@ -164,7 +164,7 @@ const recommendedCollections: Collection[] = [
         margin-top: 30px;
         .StatisticsContentTitle {
             display: flex;
-            justify-content: start;
+            justify-content: flex-start;
             align-items: center;
             font-weight: bold;
 
@@ -180,7 +180,7 @@ const recommendedCollections: Collection[] = [
 
         .StatisticsContentDetail {
             display: flex;
-            justify-content: start;
+            justify-content: flex-start;
             align-items: center;
             
 
@@ -197,7 +197,7 @@ const recommendedCollections: Collection[] = [
 
             .icon {
                 display: flex;
-                justify-content: end;
+                justify-content: flex-end;
                 align-items: center;
                 
             }

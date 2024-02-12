@@ -162,7 +162,7 @@ console.log(RecommendedCollection.collections)
     .UserContentCollection {
         .UserContentLiked {
             display: flex;
-            justify-content: start;
+            justify-content: flex-start;
             align-items: center;
             flex-wrap: wrap;
             gap: 20px;
@@ -185,7 +185,7 @@ console.log(RecommendedCollection.collections)
                 /* 添加过渡效果 */
                 .CollectionListItemDetail {
                     display: flex;
-                    justify-content: start;
+                    justify-content: flex-start;
                     align-items: center;
                     gap: 20px;
 
@@ -205,7 +205,7 @@ console.log(RecommendedCollection.collections)
 
     .UserContentLiked {
         display: flex;
-        justify-content: start;
+        justify-content: flex-start;
         align-items: center;
         flex-wrap: wrap;
         gap: 20px;
@@ -228,7 +228,7 @@ console.log(RecommendedCollection.collections)
             /* 添加过渡效果 */
             .CollectionListItemDetail {
                 display: flex;
-                justify-content: start;
+                justify-content: flex-start;
                 align-items: center;
                 gap: 20px;
 

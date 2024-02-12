@@ -97,7 +97,7 @@ const toggleVisibility = () => {
     .payMethod {
         display: flex;
         justify-content: center;
-        align-items: start;
+        align-items: flex-start;
         flex-direction: column;
 
         font-size: 20px;

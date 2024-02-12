@@ -42,7 +42,7 @@ const selectType = (index: number) => {
 <style lang="scss" scoped>
 .UserNavbar {
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
 

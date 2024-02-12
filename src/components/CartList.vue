@@ -232,7 +232,7 @@ const deleteCart = (index: number) => {
 
             .DetailBelow {
                 display: flex;
-                justify-content: start;
+                justify-content: flex-start;
                 align-items: center;
 
 
@@ -258,7 +258,7 @@ const deleteCart = (index: number) => {
 
                 .icon {
                     display: flex;
-                    justify-content: end;
+                    justify-content: flex-end;
                     align-items: center;
 
                 }

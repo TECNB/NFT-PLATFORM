@@ -1,7 +1,7 @@
 <template>
     <div class="MainNavbar">
         <div class="MainNavbarItems">
-            <div class="MainNavbarItem" style="display: flex;justify-content: start;align-items: center;">
+            <div class="MainNavbarItem" style="display: flex;justify-content: flex-start;align-items: center;">
                 <img width="40px" src="https://opensea.io/static/images/logos/opensea-logo.svg" />
                 <p style="padding-left: 10px;" @click="toIndex">NFT Platform</p>
             </div>
@@ -257,7 +257,7 @@ const showCartList = () => {
     /* 输入框样式 */
     .MainNavbarInput {
         display: flex;
-        justify-content: start;
+        justify-content: flex-start;
         align-items: center;
         padding: 12px;
         flex: 0.2;
@@ -303,7 +303,7 @@ const showCartList = () => {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            align-items: start;
+            align-items: flex-start;
             gap: 25px;
 
 
@@ -322,7 +322,7 @@ const showCartList = () => {
 
             .MainNavbarUserMenuItem {
                 display: flex;
-                justify-content: start;
+                justify-content: flex-start;
                 align-items: center;
                 gap: 15px;
 

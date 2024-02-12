@@ -313,7 +313,7 @@ const hideDelete = () => {
     .SeriesInfoDescription {
         display: flex;
         justify-content: space-around;
-        align-items: start;
+        align-items: flex-start;
 
         text-align: start;
         font-size: 18px;
@@ -332,7 +332,7 @@ const hideDelete = () => {
 
             .descriptionInfo {
                 display: flex;
-                justify-content: start;
+                justify-content: flex-start;
                 align-items: center;
                 gap: 10px;
 
@@ -343,14 +343,14 @@ const hideDelete = () => {
         .Right {
             flex: 1;
             display: flex;
-            justify-content: end;
+            justify-content: flex-end;
             align-items: center;
         }
     }
 
     .TypeNavbar {
         display: flex;
-        justify-content: start;
+        justify-content: flex-start;
         align-items: center;
         width: 100%;
 
@@ -391,7 +391,7 @@ const hideDelete = () => {
 
     .UserContentLiked {
         display: flex;
-        justify-content: start;
+        justify-content: flex-start;
         align-items: center;
         flex-wrap: wrap;
         gap: 20px;
@@ -414,7 +414,7 @@ const hideDelete = () => {
             /* 添加过渡效果 */
             .CollectionListItemDetail {
                 display: flex;
-                justify-content: start;
+                justify-content: flex-start;
                 align-items: center;
                 gap: 20px;
 

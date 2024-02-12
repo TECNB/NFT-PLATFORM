@@ -137,7 +137,7 @@ const toggleTypeList = () => {
         .TypeList {
             display: flex;
             justify-content: center;
-            align-items: start;
+            align-items: flex-start;
             flex-direction: column;
             gap: 10px;
 
@@ -155,7 +155,7 @@ const toggleTypeList = () => {
 
             .TypeListItem {
                 display: flex;
-                justify-content: start;
+                justify-content: flex-start;
                 align-items: center;
 
                 width: 100%;
@@ -182,7 +182,7 @@ const toggleTypeList = () => {
 
     .Search {
         display: flex;
-        justify-content: start;
+        justify-content: flex-start;
         align-items: center;
         flex: 1;
 
@@ -235,7 +235,7 @@ const toggleTypeList = () => {
         .ConditionList {
             display: flex;
             justify-content: center;
-            align-items: start;
+            align-items: flex-start;
             flex-direction: column;
 
             position: absolute;
@@ -252,7 +252,7 @@ const toggleTypeList = () => {
 
             .ConditionListItem {
                 display: flex;
-                justify-content: start;
+                justify-content: flex-start;
                 align-items: center;
 
                 width: 100%;

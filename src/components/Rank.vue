@@ -127,7 +127,7 @@ const groupedCollections = computed(() => {
             .RankTitle {
 
                 display: flex;
-                justify-content: start;
+                justify-content: flex-start;
                 align-items: center;
                 font-weight: bold;
 
@@ -148,7 +148,7 @@ const groupedCollections = computed(() => {
                 .RankBodyItem {
                     margin-top: 20px;
                     display: flex;
-                    justify-content: start;
+                    justify-content: flex-start;
                     align-items: center;
 
                     p {
@@ -159,7 +159,7 @@ const groupedCollections = computed(() => {
 
                     .RankBodyItemContent {
                         display: flex;
-                        justify-content: start;
+                        justify-content: flex-start;
                         align-items: center;
                     }
                 }

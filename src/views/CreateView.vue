@@ -128,7 +128,7 @@ const toIndex = () => {
 
         .CreateViewBodyRightSeries {
             display: flex;
-            justify-content: start;
+            justify-content: flex-start;
             align-items: center;
 
             color: var(--text-100);
@@ -183,7 +183,7 @@ const toIndex = () => {
         .CreateViewBodyRightInput {
 
             display: flex;
-            justify-content: start;
+            justify-content: flex-start;
             align-items: center;
             padding: 12px;
 
