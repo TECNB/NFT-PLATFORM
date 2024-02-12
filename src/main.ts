@@ -9,6 +9,9 @@ import * as ElIcons from '@element-plus/icons-vue'
 
 import { createPinia } from 'pinia' // 导入 Pinia
 
+import "tailwindcss/tailwind.css"
+
+
 const app = createApp(App)
 for (const name in ElIcons){
 	app.component(name,(ElIcons as any)[name])

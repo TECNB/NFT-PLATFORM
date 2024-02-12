@@ -10,7 +10,7 @@
             <!-- 使用translateX实现翻页效果 style="transform:translateX(280px)" -->
             <div class="CollectionListItems" >
                 <div v-for="(item, index) in collectionItems" :key="index" class="CollectionListItem" @click="toNft">
-                    <div class="CollectionListItemImage" style="height: 150px; width: 265px;">
+                    <div class="CollectionListItemImage" style="height: 150px; width: 100%;">
                         <img style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;"
                             :src="item.imageUrl" alt="" />
                     </div>
@@ -147,9 +147,9 @@ console.log(RecommendedCollection)
             
 
             .CollectionListItem {
-                width: 280px;
+                min-width: 265px;
                 height: 100%;
-                width: 280px;
+
                 background-color: #FFFFFF;
                 border-radius: 20px;
                 box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
