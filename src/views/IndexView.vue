@@ -62,6 +62,7 @@ const recommendedCollections: Collection[] = [
         price: '0.01 ETH',
         tradingVolume: '68 ETH',
     },
+    
 ]
 
 // 使用 setState 方法赋值
@@ -150,6 +151,7 @@ PopularAnimalCollection.collections = recommendedCollections
 }
 
 .IndexView {
+    
 
     padding-top: 15px;
     overflow-x: hidden;
