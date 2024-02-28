@@ -35,7 +35,6 @@
                         appreciate and accumulate with the development of the Mint Blockchain ecosystem.</p>
                     <p @click="toggleExpand" v-if="!isExpanded"><a href="#"
                             style="min-width: 10vh;font-weight: bold;">展开</a></p>
-
                 </div>
                 <div class="descriptionDetail" v-else="!isExpanded">
                     <p>Mint Genesis NFT is a collection dedicated to early advocates of the Mint blockchain, collectively

@@ -2,12 +2,12 @@
     <div class="FilterSection">
         <div class="FilterSectionType" style="flex: 2;">
             <!-- 应用selectType方法 -->
-            <div :class="{ 'Selected0': TypeIndex.index === 0 ,'Selected1': TypeIndex.index === 1}">
+            <div :class="{ 'Selected0': TypeIndex.index === 0, 'Selected1': TypeIndex.index === 1 }">
 
             </div>
-            <p @click="selectType(0)" style="position: absolute;left: 15%;z-index: 9999;">热门</p>
+            <p @click="selectType(0)" class="absolute left-[15%] z-9999">热门</p>
 
-            <p @click="selectType(1)" style="position: absolute;right: 15%;;z-index: 9999;">最佳</p>
+            <p @click="selectType(1)" class="absolute right-[15%] z-9999" >最佳</p>
 
 
         </div>
@@ -19,7 +19,7 @@
         <div class="FilterSectionTime" style="flex: 6;">
             <!-- 应用selectTime方法，未选中则class为NotSelected -->
             <!-- 下面的四个relative定位的p标签平分FilterSectionTime区域 -->
-            
+
             <p @click="selectTime(0)" style="flex: 1;z-index: 9999;">1小时</p>
 
             <p @click="selectTime(1)" style="flex: 1;z-index: 9999;">6小时</p>
@@ -67,7 +67,7 @@ const toStatisticsView = () => {
     router.push({
         name: 'StatisticsView',
     })
-    StatisticsTypeIndex.index=0
+    StatisticsTypeIndex.index = 0
 };
 
 let selectedIndex = 0
@@ -145,34 +145,26 @@ const selectTime = (index: number) => {
         //     }
         // }
 
-        .Selected0 {
+        // 定义共同的样式
+        @mixin selected-style {
             position: absolute;
-
             width: 50%;
             height: 80%;
-
             border-radius: 10px;
             background-color: var(--bg-100);
-
-            transform: translateX(-45%);
             transition: 0.25s ease-out;
+        }
 
+        .Selected0 {
+            @include selected-style;
+            transform: translateX(-45%);
         }
 
         .Selected1 {
-            position: absolute;
-
-            width: 50%;
-            height: 80%;
-
-            border-radius: 10px;
-            background-color: var(--bg-100);
-
-            // 使用transform向点击位置移动
+            @include selected-style;
             transform: translateX(45%);
-            transition: 0.25s ease-out;
-
         }
+
     }
 
     .FilterSectionTime {
@@ -192,7 +184,7 @@ const selectTime = (index: number) => {
         background-color: var(--accent-100);
 
 
-        .Selected0 {
+        @mixin selected-style {
             position: absolute;
 
             width: 20%;
@@ -200,53 +192,35 @@ const selectTime = (index: number) => {
 
             border-radius: 10px;
             background-color: var(--bg-100);
-
-            transform: translateX(-395%);
             transition: 0.25s ease-out;
-
+        }
+        
+        .Selected0 {
+            @include selected-style;
+            // 使用transform向点击位置移动
+            transform: translateX(-395%);
         }
 
         .Selected1 {
-            position: absolute;
-
-            width: 20%;
-            height: 80%;
-
-            border-radius: 10px;
-            background-color: var(--bg-100);
-
+            @include selected-style;
             // 使用transform向点击位置移动
             transform: translateX(-265%);
-            transition: 0.25s ease-out;
         }
 
         .Selected2 {
-            position: absolute;
-
-            width: 20%;
-            height: 80%;
-
-            border-radius: 10px;
-            background-color: var(--bg-100);
-
+            @include selected-style;
             // 使用transform向点击位置移动
             transform: translateX(-135%);
-            transition: 0.25s ease-out;
+
         }
 
         .Selected3 {
-            position: absolute;
-
-            width: 20%;
-            height: 80%;
-
-            border-radius: 10px;
-            background-color: var(--bg-100);
-
+            @include selected-style;
             // 使用transform向点击位置移动
             transform: translateX(-5%);
-            transition: 0.25s ease-out;
+
         }
+        
 
         .NotSelected {
             display: flex;
@@ -275,4 +249,5 @@ const selectTime = (index: number) => {
 
         background-color: var(--accent-100);
     }
-}</style>
+}
+</style>

@@ -31,11 +31,6 @@
                         <span style="margin-left: 20px;">动物</span>
                     </label>
                 </div>
-
-
-
-
-
             </div>
         </div>
         <div class="Search">
