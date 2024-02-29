@@ -9,7 +9,7 @@
 
         <div class="UserInfoDetail">
             <div class="UserInfoDetailLine1">
-                <h1 style="text-align: start;">TEC</h1>
+                <h1 style="text-align: start;">{{ userInfo.user?.username }}</h1>
                 <div>
                     <el-icon size="24" style="margin-right: 30px;"><Share /></el-icon>
                     <el-icon size="24"><Setting /></el-icon>
@@ -20,8 +20,8 @@
 
             <div class="UserInfoDetailLine2">
                 <el-icon size="20"><User /></el-icon>
-                <p>3489044730</p>
-                <p style="margin-left: 10px;color: var(--text-200);">加入时间 January 2024</p>
+                <p>{{ userInfo.user?.objectId }}</p>
+                <p style="margin-left: 10px;color: var(--text-200);">加入时间 {{ userInfo.user?.createdAt }}</p>
             </div>
 
         </div>
@@ -32,6 +32,10 @@
 <script setup lang="ts">
 import { } from "vue"
 import UserNavbar from '../components/UserNavbar.vue'
+// 引入userInfoStore
+import { userInfoStore } from '../stores/UserInfoStore';
+//实例化userInfoStore
+const userInfo = userInfoStore();
 
 
 </script>

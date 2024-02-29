@@ -25,6 +25,11 @@ export const login = (params:any) => {
     // 返回的数据格式可以和服务端约定
     return axios.post<Login.LoginResData>('api/user/login', params);
 }
+// 用户注册
+export const signup = (params:any) => {
+    // 返回的数据格式可以和服务端约定
+    return axios.post<Login.LoginResData>('api/user/signup', params);
+}
 
 
 export const check = () => {

@@ -1,10 +1,10 @@
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
-import { ElMessage } from 'element-plus'
-// 数据返回的接口
+
+// 数据返回的接口(定义请求响应参数的接口)
 // 定义请求响应参数，不含data
 interface Result {
-    code: number;
-    msg: string
+    status: number;
+    error: string
 }
 
 // 请求响应参数，包含data
@@ -40,7 +40,7 @@ class RequestHttp {
          * token校验(JWT) : 接受服务器返回的token,存储到vuex/pinia/本地储存当中
          */
         this.service.interceptors.request.use(
-            (config:any) => {
+            (config: any) => {
                 const token = localStorage.getItem('token') || '';
                 return {
                     ...config,
@@ -62,6 +62,8 @@ class RequestHttp {
         this.service.interceptors.response.use(
             (response: AxiosResponse) => {
                 const { data, config } = response; // 解构
+                console.log("data:" + data.objectId);
+
                 if (data.code === RequestEnums.OVERDUE) {
                     // 登录信息失效，应跳转到登录页面，并清空本地的token
                     localStorage.setItem('token', '');
@@ -71,7 +73,8 @@ class RequestHttp {
                     return Promise.reject(data);
                 }
                 // 全局错误信息拦截（防止下载文件得时候返回数据流，没有code，直接报错）
-                if (data.code && data.code !== RequestEnums.SUCCESS) {
+                if (data.status && data.status !== RequestEnums.SUCCESS) {
+                    console.log("data.error:" + data.error);
                     ElMessage.error(data); // 此处也可以使用组件提示报错信息
                     return Promise.reject(data)
                 }
@@ -80,7 +83,8 @@ class RequestHttp {
             (error: AxiosError) => {
                 const { response } = error;
                 if (response) {
-                    this.handleCode(response.status)
+                    console.log("response:" + response.data.status);
+                    this.handleCode(response.data.status)
                 }
                 if (!window.navigator.onLine) {
                     ElMessage.error('网络连接失败');
@@ -92,10 +96,15 @@ class RequestHttp {
             }
         )
     }
+    // 全局错误处理
     handleCode(code: number): void {
         switch (code) {
-            case 401:
-                ElMessage.error('登录失败，请重新登录');
+            case 200:
+                // 弹出该用户已存在窗口
+                ElMessage.error('该用户已存在');
+                break;
+            case 201:
+                ElMessage.error('该用户已被注册过');
                 break;
             default:
                 ElMessage.error('请求失败');

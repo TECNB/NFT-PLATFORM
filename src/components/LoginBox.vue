@@ -12,11 +12,22 @@
             </div>
         </div>
         <div class="Title">
-            <p>登入NFT Platform</p>
+            <span v-if="!ifRegister">登入</span>
+            <span v-else>注册</span>
+
+            <span>NFT Platform</span>
         </div>
 
-        <!-- 下面为电子邮箱输入框 -->
+        <!-- 下面为用户名输入框 -->
         <el-input v-model="username" placeholder="用户名" class="mt-4">
+            <template #prefix>
+                <el-icon class="el-input__icon">
+                    <user />
+                </el-icon>
+            </template>
+        </el-input>
+        <!-- 下面为手机号输入框 -->
+        <el-input v-model="phone" placeholder="手机号" class="mt-4" v-if="ifRegister">
             <template #prefix>
                 <el-icon class="el-input__icon">
                     <user />
@@ -36,7 +47,7 @@
             <div class="Login" @click="Login">
                 <p>登录</p>
             </div>
-            <div class="Sign" @click="check1">
+            <div class="Sign" @click="sign">
                 <p>注册</p>
             </div>
         </div>
@@ -46,26 +57,36 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-
-// 引入requestHttp
-import requestHttp from '../api/index.ts'
+// 引入userInfoStore
+import { userInfoStore } from '../stores/UserInfoStore';
+import { ElMessage } from 'element-plus'
 
 const props = defineProps(['ifShow']);
 const emit = defineEmits();
 
+//实例化userInfoStore
+const userInfo = userInfoStore();
+
 const toggleVisibility = () => {
     emit('updateIfShow', false);
 };
-import { login,check } from '../api/login.ts'
+import { login, check, signup } from '../api/login.ts'
 // 定义username
 let username = ref('')
+// 定义phone
+let phone = ref('')
 // 定义password
 let password = ref('')
+//定义ifRegister
+let ifRegister = ref(false)
+
+
 
 
 
 
 let loginForm = new FormData();
+let signupForm = new FormData();
 
 // 将输入框的值绑定到loginForm
 // watch(() => username.value, (newVal) => {
@@ -78,43 +99,65 @@ let loginForm = new FormData();
 
 // 实现Login方法
 const Login = async () => {
+    // 清空loginForm
+    loginForm = new FormData();
+
 
     loginForm.append("username", username.value)
     loginForm.append("password", password.value)
 
-    
     const data = await login(loginForm)
+
+    // 将data转为JsonData
     const JsonData = JSON.stringify(data)
+    console.log("Login成功" + JsonData)
     // JsonData封装为对象
     const obj = JSON.parse(JsonData)
+
+    // 将用户信息存储到userInfoStore
+    userInfo.setUser(obj)
     localStorage.setItem('token', obj.token)
-    console.log("Login成功")
 
     
-}
-const check1 = async () => {
-    console.log("check");
 
-    // 通过登录等逻辑确保 token 已经存在于本地存储中
-    const token = localStorage.getItem('token') || '';
-    console.log("token:"+token)
+    toggleVisibility()
 
-    // 在发送请求前设置 Axios 请求头
-    requestHttp.service.defaults.headers.common['Token'] = token;
-
-    try {
-        // 调用 check 方法
-        const data = await check();
-
-        console.log("checkdata:" + data);
-    } catch (error) {
-        // 处理错误
-        console.error("Error during check:", error);
-    } finally {
-        // 可选的清理操作
-    }
 
 }
+
+const sign = async () => {
+    ifRegister.value = true
+
+    signupForm.append("username", username.value)
+    signupForm.append("password", password.value)
+    signupForm.append("phone", phone.value)
+
+    const data = await signup(signupForm)
+    console.log("Sign成功" + data)
+}
+
+// const check1 = async () => {
+//     console.log("check");
+
+//     // 通过登录等逻辑确保 token 已经存在于本地存储中
+//     const token = localStorage.getItem('token') || '';
+//     console.log("token:"+token)
+
+
+
+//     try {
+//         // 调用 check 方法
+//         const data = await check();
+
+//         console.log("checkdata:" + data);
+//     } catch (error) {
+//         // 处理错误
+//         console.error("Error during check:", error);
+//     } finally {
+//         // 可选的清理操作
+//     }
+
+// }
 
 
 
@@ -123,7 +166,7 @@ const check1 = async () => {
 <style lang="scss" scoped>
 .LoginBox {
     width: 30%;
-    height: 500px;
+
 
     position: absolute;
     z-index: 99999;
@@ -202,19 +245,20 @@ const check1 = async () => {
     .el-input {
         height: 50px;
         background-color: #FFFFFF;
-        
+
         border: 0.5px solid var(--text-200);
 
         font-size: 18px;
-            
-            border: 0px;
-            font-weight: bold;
+
+        border: 0px;
+        font-weight: bold;
 
         :deep(.el-input__wrapper) {
             border-radius: 12px;
-            
+
         }
-        :deep(.is-focus){
+
+        :deep(.is-focus) {
             box-shadow: 0 0 0 1px var(--accent-200)
         }
     }

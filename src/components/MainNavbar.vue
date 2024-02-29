@@ -18,11 +18,17 @@
             <input type="text" placeholder="搜索">
         </div>
         <div class="MainNavbarUser">
-            <div class="MainNavbarUserLogin" @click="showLogin">
+            <div class="MainNavbarUserLogin" @click="showLogin" v-if="userInfo.user?.token==null">
                 <el-icon :size="20">
                     <Message />
                 </el-icon>
                 <p style="padding-left: 10px;">登录</p>
+            </div>
+            <div class="MainNavbarUserLogin" @click="showLogin" v-else>
+                <el-icon :size="20">
+                    <Money />
+                </el-icon>
+                <p style="padding-left: 10px;">钱包</p>
             </div>
             <div class="MainNavbarUserInfo" @mouseover="showUserMenu" @mouseleave="hideUserMenu">
                 <el-icon :size="20">
@@ -116,7 +122,7 @@
 
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref,watch } from "vue"
 import { useRouter } from 'vue-router'
 // 引入MaskLayer
 import MaskLayer from '../components/MaskLayer.vue'
@@ -125,6 +131,15 @@ import LoginBox from '../components/LoginBox.vue'
 // 引入CartList
 import CartList from '../components/CartList.vue'
 import { StatisticsTypeIndexStore } from '../stores/SelectedIndexStore'
+
+// 引入userInfoStore
+import { userInfoStore } from '../stores/UserInfoStore';
+// 引入ElMessage
+import { ElMessage } from 'element-plus';
+
+//实例化userInfoStore
+const userInfo = userInfoStore();
+
 
 const TypeIndex = StatisticsTypeIndexStore()
 
@@ -150,6 +165,7 @@ const toStatistics = () => {
     router.push({
         name: 'StatisticsView',
     })
+    
 }
 const toStatisticsFollow = () => {
     router.push({
@@ -191,6 +207,17 @@ const updateIsCartListVisible = (value: boolean) => {
 const showCartList = () => {
     updateIsCartListVisible(true);
 }
+
+//使用watch观察localStorage的变化
+watch(() => localStorage.getItem('token'), (newVal) => {
+    console.log("token变化" + newVal)
+    // 弹出登录成功窗口
+    ElMessage({
+        message: '登录成功',
+        type: 'success',
+    })
+})
+
 
 </script>
 
