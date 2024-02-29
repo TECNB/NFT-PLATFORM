@@ -16,8 +16,24 @@ export default defineConfig({
     Components({
       resolvers: [ElementPlusResolver()],
     }),
-    
+
   ],
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    proxy: {
+      '/api': {
+        target: 'http://qexo.moefish.net:5409',	//实际请求地址
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+        // 显示请求代理后的真实地址
+        bypass(req, res, options) {
+          const proxyUrl = new URL(req.url || "", options.target)?.href || "";
+          res.setHeader("x-res-proxyUrl", proxyUrl);
+        },
+      },
+    }
+  },
   css: {
     postcss: {
       plugins: [tailwindcss, autoprefixer]

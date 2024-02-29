@@ -16,24 +16,27 @@
         </div>
 
         <!-- 下面为电子邮箱输入框 -->
-        <div class="Input">
-            <el-icon>
-                <Message />
-            </el-icon>
-            <input type="text" placeholder="电子邮件">
-        </div>
+        <el-input v-model="username" placeholder="用户名" class="mt-4">
+            <template #prefix>
+                <el-icon class="el-input__icon">
+                    <user />
+                </el-icon>
+            </template>
+        </el-input>
         <!-- 下面为密码输入框 -->
-        <div class="Input">
-            <el-icon>
-                <Lock />
-            </el-icon>
-            <input type="text" placeholder="密码">
-        </div>
+        <el-input v-model="password" placeholder="密码" class="mt-4">
+            <template #prefix>
+                <el-icon class="el-input__icon">
+                    <Lock />
+                </el-icon>
+            </template>
+        </el-input>
+
         <div class="Button">
-            <div class="Login">
+            <div class="Login" @click="Login">
                 <p>登录</p>
             </div>
-            <div class="Sign">
+            <div class="Sign" @click="check1">
                 <p>注册</p>
             </div>
         </div>
@@ -42,7 +45,10 @@
 </template>
 
 <script setup lang="ts">
-import {  } from 'vue';
+import { ref } from 'vue';
+
+// 引入requestHttp
+import requestHttp from '../api/index.ts'
 
 const props = defineProps(['ifShow']);
 const emit = defineEmits();
@@ -50,6 +56,67 @@ const emit = defineEmits();
 const toggleVisibility = () => {
     emit('updateIfShow', false);
 };
+import { login,check } from '../api/login.ts'
+// 定义username
+let username = ref('')
+// 定义password
+let password = ref('')
+
+
+
+
+let loginForm = new FormData();
+
+// 将输入框的值绑定到loginForm
+// watch(() => username.value, (newVal) => {
+//     loginForm.append("username", newVal)
+// })
+// watch(() => password.value, (newVal) => {
+//     loginForm.append("password", newVal)
+// })
+
+
+// 实现Login方法
+const Login = async () => {
+
+    loginForm.append("username", username.value)
+    loginForm.append("password", password.value)
+
+    
+    const data = await login(loginForm)
+    const JsonData = JSON.stringify(data)
+    // JsonData封装为对象
+    const obj = JSON.parse(JsonData)
+    localStorage.setItem('token', obj.token)
+    console.log("Login成功")
+
+    
+}
+const check1 = async () => {
+    console.log("check");
+
+    // 通过登录等逻辑确保 token 已经存在于本地存储中
+    const token = localStorage.getItem('token') || '';
+    console.log("token:"+token)
+
+    // 在发送请求前设置 Axios 请求头
+    requestHttp.service.defaults.headers.common['Token'] = token;
+
+    try {
+        // 调用 check 方法
+        const data = await check();
+
+        console.log("checkdata:" + data);
+    } catch (error) {
+        // 处理错误
+        console.error("Error during check:", error);
+    } finally {
+        // 可选的清理操作
+    }
+
+}
+
+
 
 </script>
 
@@ -131,6 +198,27 @@ const toggleVisibility = () => {
 
         margin-top: 50px;
     }
+
+    .el-input {
+        height: 50px;
+        background-color: #FFFFFF;
+        
+        border: 0.5px solid var(--text-200);
+
+        font-size: 18px;
+            
+            border: 0px;
+            font-weight: bold;
+
+        :deep(.el-input__wrapper) {
+            border-radius: 12px;
+            
+        }
+        :deep(.is-focus){
+            box-shadow: 0 0 0 1px var(--accent-200)
+        }
+    }
+
 
     .Input {
         display: flex;
