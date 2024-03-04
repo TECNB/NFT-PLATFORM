@@ -7,9 +7,17 @@ import ElementPlus from 'element-plus'
 import './assets/styles/global.css'
 import * as ElIcons from '@element-plus/icons-vue'
 
-import { createPinia } from 'pinia' // 导入 Pinia
+// ① 引入createPinia方法从pinia
+import { createPinia } from 'pinia'
+// ② 拿到pinia实例
+const pinia = createPinia()
 
 import "tailwindcss/tailwind.css"
+
+// 1 引入数据持久化插件
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+// 2 pinia使用数据持久化插件
+pinia.use(piniaPluginPersistedstate)
 
 
 const app = createApp(App)
@@ -20,7 +28,7 @@ for (const name in ElIcons){
 app
     .use(ElementPlus)
     .use(router)
-    .use(createPinia()) // 启用 Pinia
+    .use(pinia) // 启用 Pinia
 
     .mount('#app')
     

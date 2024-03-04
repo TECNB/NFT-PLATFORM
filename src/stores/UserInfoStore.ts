@@ -25,6 +25,8 @@ export const userInfoStore = defineStore({
             localStorage.removeItem('token');
         },
     },
+    //数据持久化配置 这里是当前所有变量都持久化
+    persist:true
 });
 
 // LoginResData接口

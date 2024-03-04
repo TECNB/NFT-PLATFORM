@@ -18,11 +18,18 @@
             <input type="text" placeholder="搜索">
         </div>
         <div class="MainNavbarUser">
-            <div class="MainNavbarUserLogin" @click="showLogin" v-if="userInfo.user?.token==null">
+            <!-- 通过localStorage中的token判断 -->
+            <div class="MainNavbarUserLogin" @click="showLogin" v-if="!hasToken">
                 <el-icon :size="20">
                     <Message />
                 </el-icon>
                 <p style="padding-left: 10px;">登录</p>
+            </div>
+            <div class="MainNavbarUserLogin" @click="showLogin" v-else>
+                <el-icon :size="20">
+                    <Money />
+                </el-icon>
+                <p style="padding-left: 10px;">钱包</p>
             </div>
             <div class="MainNavbarUserLogin" @click="showLogin" v-else>
                 <el-icon :size="20">
@@ -45,7 +52,8 @@
                         </el-icon>
                         <p>个人资料</p>
                     </div>
-                    <div class="MainNavbarUserMenuItem" style="border-bottom: 1px solid var(--accent-100);" @click="toStatisticsFollow">
+                    <div class="MainNavbarUserMenuItem" style="border-bottom: 1px solid var(--accent-100);"
+                        @click="toStatisticsFollow">
                         <el-icon>
                             <View />
                         </el-icon>
@@ -95,7 +103,7 @@
                             style="--el-switch-on-color: var(--accent-200); --el-switch-off-color: var(--accent-100);padding-left: 10px;" />
                     </div>
 
-                    <div class="MainNavbarUserMenuItem" style="padding-bottom: 0px;">
+                    <div class="MainNavbarUserMenuItem" style="padding-bottom: 0px;" @click="logout">
                         <el-icon>
                             <SwitchButton />
                         </el-icon>
@@ -115,15 +123,16 @@
 
         <MaskLayer :ifShow="isLoginBoxVisible" />
         <LoginBox :ifShow="isLoginBoxVisible" @updateIfShow="updateIsLoginBoxVisible" />
-        <CartList :ifShow="isCartListVisible" @updateIfShow="updateIsCartListVisible"/>
+        <CartList :ifShow="isCartListVisible" @updateIfShow="updateIsCartListVisible" />
         <MaskLayer :ifShow="isCartListVisible" />
     </div>
 </template>
 
 
 <script setup lang="ts">
-import { ref,watch } from "vue"
-import { useRouter } from 'vue-router'
+import { ref, watch, onMounted } from "vue"
+import { useRouter,useRoute } from 'vue-router'
+
 // 引入MaskLayer
 import MaskLayer from '../components/MaskLayer.vue'
 // 引入LoginBox
@@ -141,19 +150,97 @@ import { ElMessage } from 'element-plus';
 const userInfo = userInfoStore();
 
 
-const TypeIndex = StatisticsTypeIndexStore()
+// 引入userInfoStore
+import { userInfoStore } from '../stores/UserInfoStore';
+// 引入ElMessage
+import { ElMessage } from 'element-plus';
+
+//实例化userInfoStore
+const userInfo = userInfoStore();
+// 引入check
+import { check } from '../api/login.ts'
+import { AxiosError } from "axios"
+
 
 const router = useRouter()
+const route = useRoute()
+
+const TypeIndex = StatisticsTypeIndexStore()
+// hasToken设置默认为false
+const hasToken = ref(false);
+// 从userInfo.token获取到token
+
+
+// 使用watch监听localStorage中token的变化
+watch(() => userInfo.token, (newToken) => {
+    hasToken.value = newToken !== "";
+
+});
+
+onMounted(() => {
+    // 在组件挂载后检查 localStorage 中是否存在 token
+    hasToken.value = localStorage.getItem('token') !== "";
+    if (!hasToken.value && route.path === '/user') {
+        // 跳转到首页
+        router.replace({
+            path: '/'
+        });
+    }
+
+
+});
+
 const value1 = ref(false)
 const toCreate = () => {
     router.push({
         name: 'CreateView',
     })
 }
-const toUser = () => {
-    router.push({
-        name: 'UserView',
+const toUser = async () => {
+    console.log("check");
+
+    // 通过登录等逻辑确保 token 已经存在于本地存储中
+    const token = localStorage.getItem('token') || '';
+    console.log("token:" + token)
+
+    // 调用 check 方法
+    const data = await check().then(response => {
+        console.log("返回:" + response);
+        router.push({
+            name: 'UserView',
+        })
+        return response;
+    }).catch((error: AxiosError) => {
+        // 获取到 AxiosError 中的 error
+        // 处理错误的情况
+        console.log("错误:" + error);
+
+        // 这里可以根据你的需要，从 error 对象中获取更多信息
+        if (error.response) {
+            console.log("响应状态码:" + error.response.status);
+            console.log("响应数据:" + error.response.data.status);
+        } else if (error.request) {
+            console.log("请求未收到响应");
+        } else {
+            console.log("发生了错误：" + error.message);
+        }
+    });
+
+    console.log("checkdata:" + data);
+
+}
+// logout方法
+const logout = () => {
+    localStorage.removeItem('token')
+    userInfo.setToken("")
+    ElMessage({
+        message: '退出成功',
+        type: 'success',
     })
+    // 跳转到首页
+    router.replace({
+        path: '/'
+    });
 }
 
 const toIndex = () => {
@@ -165,13 +252,13 @@ const toStatistics = () => {
     router.push({
         name: 'StatisticsView',
     })
-    
+
 }
 const toStatisticsFollow = () => {
     router.push({
         name: 'StatisticsView',
     })
-    TypeIndex.index=2
+    TypeIndex.index = 2
 }
 
 const isUserMenuVisible = ref(false);
@@ -207,16 +294,6 @@ const updateIsCartListVisible = (value: boolean) => {
 const showCartList = () => {
     updateIsCartListVisible(true);
 }
-
-//使用watch观察localStorage的变化
-watch(() => localStorage.getItem('token'), (newVal) => {
-    console.log("token变化" + newVal)
-    // 弹出登录成功窗口
-    ElMessage({
-        message: '登录成功',
-        type: 'success',
-    })
-})
 
 
 </script>

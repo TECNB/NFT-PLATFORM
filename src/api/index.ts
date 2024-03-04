@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
+import router from '../router';
 
 // 数据返回的接口(定义请求响应参数的接口)
 // 定义请求响应参数，不含data
@@ -64,6 +65,8 @@ class RequestHttp {
                 const { data, config } = response; // 解构
                 console.log("data:" + data.objectId);
 
+                console.log("data:" + data.objectId);
+
                 if (data.code === RequestEnums.OVERDUE) {
                     // 登录信息失效，应跳转到登录页面，并清空本地的token
                     localStorage.setItem('token', '');
@@ -73,6 +76,8 @@ class RequestHttp {
                     return Promise.reject(data);
                 }
                 // 全局错误信息拦截（防止下载文件得时候返回数据流，没有code，直接报错）
+                if (data.status && data.status !== RequestEnums.SUCCESS) {
+                    console.log("data.error:" + data.error);
                 if (data.status && data.status !== RequestEnums.SUCCESS) {
                     console.log("data.error:" + data.error);
                     ElMessage.error(data); // 此处也可以使用组件提示报错信息
@@ -85,17 +90,19 @@ class RequestHttp {
                 if (response) {
                     console.log("response:" + response.data.status);
                     this.handleCode(response.data.status)
+                    console.log("response:" + response.data.status);
+                    this.handleCode(response.data.status)
                 }
                 if (!window.navigator.onLine) {
                     ElMessage.error('网络连接失败');
-                    // 可以跳转到错误页面，也可以不做操作
-                    // return router.replace({
-                    //   path: '/404'
-                    // });
+                    
                 }
+                // 处理错误的响应
+                return Promise.reject(error);
             }
         )
     }
+    // 全局错误处理
     // 全局错误处理
     handleCode(code: number): void {
         switch (code) {
@@ -105,6 +112,13 @@ class RequestHttp {
                 break;
             case 201:
                 ElMessage.error('该用户已被注册过');
+                break;
+            case 204:
+                ElMessage.error('您还未登录');
+                // 可以跳转到首页，也可以不做操作
+                // router.replace({
+                //     path: '/'
+                // });
                 break;
             default:
                 ElMessage.error('请求失败');
