@@ -149,14 +149,6 @@ import { ElMessage } from 'element-plus';
 //实例化userInfoStore
 const userInfo = userInfoStore();
 
-
-// 引入userInfoStore
-import { userInfoStore } from '../stores/UserInfoStore';
-// 引入ElMessage
-import { ElMessage } from 'element-plus';
-
-//实例化userInfoStore
-const userInfo = userInfoStore();
 // 引入check
 import { check } from '../api/login.ts'
 import { AxiosError } from "axios"

@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref,watch } from 'vue';
+import { ref, watch } from 'vue';
 // 引入userInfoStore
 import { userInfoStore } from '../stores/UserInfoStore';
 
@@ -73,8 +73,6 @@ const emit = defineEmits();
 //实例化userInfoStore
 const userInfo = userInfoStore();
 
-//实例化userInfoStore
-const userInfo = userInfoStore();
 
 const toggleVisibility = () => {
     emit('updateIfShow', false);
@@ -85,14 +83,9 @@ import { AxiosError } from 'axios';
 let username = ref('')
 // 定义phone
 let phone = ref('')
-// 定义phone
-let phone = ref('')
+
 // 定义password
 let password = ref('')
-//定义ifRegister
-let ifRegister = ref(false)
-
-
 //定义ifRegister
 let ifRegister = ref(false)
 
@@ -103,7 +96,7 @@ let ifRegister = ref(false)
 
 let loginForm = new FormData();
 let signupForm = new FormData();
-let signupForm = new FormData();
+
 
 // 将输入框的值绑定到loginForm
 // watch(() => username.value, (newVal) => {
@@ -130,7 +123,7 @@ const Login = async () => {
 
     const data = await login(loginForm).then(response => {
         console.log("返回:" + response);
-        
+
 
 
         // 将data转为JsonData
@@ -151,7 +144,7 @@ const Login = async () => {
         // 获取到 AxiosError 中的 error
         // 处理错误的情况
         console.log("错误:" + error);
-        
+
         // 这里可以根据你的需要，从 error 对象中获取更多信息
         if (error.response) {
             console.log("响应状态码:" + error.response.status);
@@ -292,89 +285,89 @@ const sign = async () => {
 
         :deep(.is-focus) {
 
-        :deep(.is-focus) {
-            box-shadow: 0 0 0 1px var(--accent-200)
+            :deep(.is-focus) {
+                box-shadow: 0 0 0 1px var(--accent-200)
+            }
         }
-    }
 
 
-    .Input {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        flex: 1;
-
-
-        height: 50px;
-
-        background-color: #FFFFFF;
-
-        border-radius: 12px;
-        border: 0.5px solid var(--text-200);
-
-        padding: 12px;
-        margin-top: 20px;
-
-        input {
-            outline: none;
-            padding-left: 10px;
-            font-size: 18px;
-            width: 200px;
-            border: 0px;
-            font-weight: bold;
-        }
-    }
-
-    .Button {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 20px;
-
-        .Login {
+        .Input {
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             flex: 1;
 
 
             height: 50px;
 
-            background-color: var(--bg-200);
-            color: var(--accent-200);
+            background-color: #FFFFFF;
 
             border-radius: 12px;
             border: 0.5px solid var(--text-200);
-            font-weight: bold;
-
 
             padding: 12px;
             margin-top: 20px;
 
+            input {
+                outline: none;
+                padding-left: 10px;
+                font-size: 18px;
+                width: 200px;
+                border: 0px;
+                font-weight: bold;
+            }
         }
 
-        .Sign {
+        .Button {
             display: flex;
             justify-content: center;
             align-items: center;
-            flex: 1;
+            gap: 20px;
+
+            .Login {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex: 1;
 
 
-            height: 50px;
+                height: 50px;
 
-            background-color: var(--bg-100);
-            color: var(--text-200);
+                background-color: var(--bg-200);
+                color: var(--accent-200);
 
-            border-radius: 12px;
-            border: 0.5px solid var(--text-200);
-            font-weight: bold;
+                border-radius: 12px;
+                border: 0.5px solid var(--text-200);
+                font-weight: bold;
 
 
-            padding: 12px;
-            margin-top: 20px;
+                padding: 12px;
+                margin-top: 20px;
+
+            }
+
+            .Sign {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex: 1;
+
+
+                height: 50px;
+
+                background-color: var(--bg-100);
+                color: var(--text-200);
+
+                border-radius: 12px;
+                border: 0.5px solid var(--text-200);
+                font-weight: bold;
+
+
+                padding: 12px;
+                margin-top: 20px;
+            }
         }
     }
 
 }
-
 </style>
