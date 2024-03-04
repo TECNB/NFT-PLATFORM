@@ -12,7 +12,7 @@
                 <h1 style="text-align: start;">{{ userInfo.user?.username }}</h1>
                 <div>
                     <el-icon size="24" style="margin-right: 30px;"><Share /></el-icon>
-                    <el-icon size="24"><Setting /></el-icon>
+                    <el-icon class="cursor-pointer" size="24" @click="toSetting"><Setting /></el-icon>
                 </div>
                 
 
@@ -34,6 +34,13 @@ import { } from "vue"
 import UserNavbar from '../components/UserNavbar.vue'
 // 引入userInfoStore
 import { userInfoStore } from '../stores/UserInfoStore';
+// 引入useRouter
+import { useRouter } from 'vue-router'
+// 实例化useRouter
+const router = useRouter();
+const toSetting = () => {
+    router.push('/setting')
+}
 //实例化userInfoStore
 const userInfo = userInfoStore();
 

@@ -12,19 +12,18 @@
             </div>
         </div>
         <div class="Title">
-            <span v-if="!ifRegister">登入</span>
-            <span v-else>注册</span>
+            <span v-if="!ifRegister&&!ifresetPassword">登入</span>
+            <span v-if="ifRegister&&!ifresetPassword">注册</span>
+            <span v-if="!ifresetPassword&&!ifresetPassword">NFT Platform</span>
 
-            <span>NFT Platform</span>
-            <span v-if="!ifRegister">登入</span>
-            <span v-else>注册</span>
+            <span v-if="ifresetPassword">重设密码</span>
+            
 
-            <span>NFT Platform</span>
+            
         </div>
 
         <!-- 下面为用户名输入框 -->
-        <!-- 下面为用户名输入框 -->
-        <el-input v-model="username" placeholder="用户名" class="mt-4">
+        <el-input v-model="username" placeholder="用户名或手机号" class="mt-4">
             <template #prefix>
                 <el-icon class="el-input__icon">
                     <user />
@@ -49,16 +48,25 @@
                 </el-icon>
             </template>
         </el-input>
+        <div class="flex justify-between items-center gap-2">
+            <p v-if="!ifRegister" @click="ifRegister=true,ifresetPassword=false" class="text-right text-accent-100 mt-3 hover:text-primary-100">没有账号?</p>
+            <p v-if="ifRegister" @click="ifRegister=false,ifresetPassword=false" class="text-right text-accent-100 mt-3 hover:text-primary-100">已有账号?</p>
+            <p v-if="!ifresetPassword" @click="ifresetPassword=true" class="text-right text-accent-100 mt-3 hover:text-primary-100">忘记密码?</p>
+        </div>
+        
+
 
         <div class="Button">
-            <div class="Login" @click="Login">
+            <div class="Login" @click="handleLogin" v-if="!ifRegister&& !ifresetPassword">
                 <p>登录</p>
             </div>
-            <div class="Sign" @click="sign">
+            <div class="Sign" @click="handleSignup" v-if="ifRegister&& !ifresetPassword">
                 <p>注册</p>
             </div>
+            <div class="Login" @click="handleLogin" v-if="ifresetPassword">
+                <p>确定</p>
+            </div>
         </div>
-
     </div>
 </template>
 
@@ -88,6 +96,8 @@ let phone = ref('')
 let password = ref('')
 //定义ifRegister
 let ifRegister = ref(false)
+//定义ifresetPassword
+let ifresetPassword = ref(false)
 
 
 
@@ -109,20 +119,21 @@ let signupForm = new FormData();
 
 
 // 实现Login方法
-const Login = async () => {
+const handleLogin = async () => {
     // 清空loginForm
     loginForm = new FormData();
 
-    // 清空loginForm
-    loginForm = new FormData();
-
-
-    loginForm.append("username", username.value)
+    if (isValidPhone(username.value)) {
+        loginForm.append("phone", username.value);
+    } else {
+        loginForm.append("username", username.value);
+    }
     loginForm.append("password", password.value)
 
 
-    const data = await login(loginForm).then(response => {
-        console.log("返回:" + response);
+    // const data = await login(loginForm).then(response => {
+    await login(loginForm).then(response => {
+        console.log("登录返回:" + response);
 
 
 
@@ -140,6 +151,7 @@ const Login = async () => {
 
 
         toggleVisibility()
+        ElMessage.success('登录成功')
     }).catch((error: AxiosError) => {
         // 获取到 AxiosError 中的 error
         // 处理错误的情况
@@ -156,24 +168,47 @@ const Login = async () => {
         }
     });
 }
+// 完成检验中国大陆手机号的isValidPhone函数
+function isValidPhone(phone: string) {
+    return /^1[3-9]\d{9}$/.test(phone);
+}
 
 
 
 
-
-
-
-
-
-const sign = async () => {
-    ifRegister.value = true
+const handleSignup = async () => {
+    
+    // 清空loginForm
+    loginForm = new FormData();
 
     signupForm.append("username", username.value)
     signupForm.append("password", password.value)
     signupForm.append("phone", phone.value)
 
-    const data = await signup(signupForm)
-    console.log("Sign成功" + data)
+    await signup(signupForm).then(response =>{
+        console.log("注册返回:" + response);
+
+        // 回到登录状态
+        ifRegister.value = false
+
+        ElMessage.success('注册成功,请登录')
+
+    }).catch((error: AxiosError) => {
+        // 获取到 AxiosError 中的 error
+        // 处理错误的情况
+        console.log("错误:" + error);
+
+        // 这里可以根据你的需要，从 error 对象中获取更多信息
+        if (error.response) {
+            console.log("响应状态码:" + error.response.status);
+            console.log("响应数据:" + error.response.data.status);
+        } else if (error.request) {
+            console.log("请求未收到响应");
+        } else {
+            console.log("发生了错误：" + error.message);
+        }
+    });
+
 }
 
 
@@ -274,9 +309,6 @@ const sign = async () => {
         border: 0px;
         font-weight: bold;
 
-        border: 0px;
-        font-weight: bold;
-
         :deep(.el-input__wrapper) {
             border-radius: 12px;
 
@@ -285,9 +317,7 @@ const sign = async () => {
 
         :deep(.is-focus) {
 
-            :deep(.is-focus) {
-                box-shadow: 0 0 0 1px var(--accent-200)
-            }
+            box-shadow: 0 0 0 1px var(--accent-200)
         }
 
 
@@ -318,54 +348,56 @@ const sign = async () => {
             }
         }
 
-        .Button {
+
+    }
+
+    .Button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+
+        .Login {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px;
-
-            .Login {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex: 1;
+            flex: 1;
 
 
-                height: 50px;
+            height: 50px;
 
-                background-color: var(--bg-200);
-                color: var(--accent-200);
+            background-color: var(--bg-200);
+            color: var(--accent-200);
 
-                border-radius: 12px;
-                border: 0.5px solid var(--text-200);
-                font-weight: bold;
-
-
-                padding: 12px;
-                margin-top: 20px;
-
-            }
-
-            .Sign {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex: 1;
+            border-radius: 12px;
+            border: 0.5px solid var(--text-200);
+            font-weight: bold;
 
 
-                height: 50px;
+            padding: 12px;
+            margin-top: 20px;
 
-                background-color: var(--bg-100);
-                color: var(--text-200);
+        }
 
-                border-radius: 12px;
-                border: 0.5px solid var(--text-200);
-                font-weight: bold;
+        .Sign {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
 
 
-                padding: 12px;
-                margin-top: 20px;
-            }
+            height: 50px;
+
+            background-color: var(--bg-100);
+            color: var(--text-200);
+
+            border-radius: 12px;
+            border: 0.5px solid var(--text-200);
+            font-weight: bold;
+
+
+            padding: 12px;
+            margin-top: 20px;
         }
     }
 

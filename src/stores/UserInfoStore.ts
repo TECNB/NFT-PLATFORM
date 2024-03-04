@@ -32,7 +32,7 @@ export const userInfoStore = defineStore({
 // LoginResData接口
 export interface LoginResData {
     objectId: string;
-    blockchainId: string;
+    hash: string;
     username: string;
     userType: string;
     phone: string;

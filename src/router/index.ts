@@ -32,6 +32,17 @@ const routes: Array<RouteRecordRaw> = [
         name:"SeriesView",
         component: () => import("../views/SeriesView.vue"),
     },
+    {
+        path: "/setting",
+        name:"SettingView",
+        component: () => import("../views/SettingView.vue"),
+        children: [
+            {
+                path: "/setting",
+                component: () => import("../components/SettingUserInfo.vue"),
+            },
+        ],
+    },
     
 ];
 // 1.返回一个 router 实列，为函数，里面有配置项（对象） history

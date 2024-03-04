@@ -143,8 +143,6 @@ import { StatisticsTypeIndexStore } from '../stores/SelectedIndexStore'
 
 // 引入userInfoStore
 import { userInfoStore } from '../stores/UserInfoStore';
-// 引入ElMessage
-import { ElMessage } from 'element-plus';
 
 //实例化userInfoStore
 const userInfo = userInfoStore();
