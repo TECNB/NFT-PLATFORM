@@ -12,11 +12,34 @@
 
         </div>
         <div class="MainNavbarInput">
-            <el-icon :size="16">
-                <Search />
-            </el-icon>
-            <input type="text" placeholder="搜索">
+            <!-- 下面为藏品名称搜索框 -->
+            <el-input v-model="name" placeholder="搜索" class="mt-4" @change="search">
+                <template #prefix>
+                    <el-icon color="var(--text-100)" class="el-input__icon">
+                        <Search />
+                    </el-icon>
+                </template>
+            </el-input>
+
+            <div v-if="hasSearchInput" class="absolute top-20 left-0 w-full bg-bg-300 rounded-2xl p-2 z-10">
+                <p class="text-left text-xs font-medium px-4 py-2">系列</p>
+                <div v-for="(collection, index) in searchCollectionsArray" :key="index"
+                    class="flex justify-start items-center hover:bg-zinc-100 rounded-xl cursor-pointer mt-2">
+                    <img class="w-9 h-9 rounded-xl object-cover aspect-square mx-3 my-2 z" :src="collection.cover"
+                        alt="Collection Image">
+                    <div>
+                        <p class="text-left font-semibold text-lg">{{ collection.name }}</p>
+                        <p class="w-64 text-left font-normal text-xs text-ellipsis whitespace-nowrap overflow-hidden">
+                            {{ collection.shortIntro }}
+                        </p>
+                    </div>
+                </div>
+
+
+            </div>
+
         </div>
+
         <div class="MainNavbarUser">
             <!-- 通过localStorage中的token判断 -->
             <div class="MainNavbarUserLogin" @click="showLogin" v-if="!hasToken">
@@ -131,7 +154,9 @@
 
 <script setup lang="ts">
 import { ref, watch, onMounted } from "vue"
-import { useRouter,useRoute } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+// 引入Collection接口
+import { Collection } from '../interfaces/Collection';
 
 // 引入MaskLayer
 import MaskLayer from '../components/MaskLayer.vue'
@@ -151,6 +176,17 @@ const userInfo = userInfoStore();
 import { check } from '../api/login.ts'
 import { AxiosError } from "axios"
 
+// 引入ErrorResult接口
+import { ErrorResult } from '../interfaces/ErrorResult';
+// 引入searchCollections
+import { searchCollections } from '../api/collections'
+
+// 定义hasSearchInput
+const hasSearchInput = ref(false)
+// 定义name
+let name = ref('')
+
+
 
 const router = useRouter()
 const route = useRoute()
@@ -158,7 +194,28 @@ const route = useRoute()
 const TypeIndex = StatisticsTypeIndexStore()
 // hasToken设置默认为false
 const hasToken = ref(false);
-// 从userInfo.token获取到token
+
+// 定义search方法返回的数组
+let searchCollectionsArray = []
+
+//定义loading
+// const loading = ref(true)
+
+// search方法
+const search = async () => {
+    // 清空search表单
+    const searchForm = new FormData();
+    searchForm.append('name', name.value);
+
+    searchCollections(searchForm).then(res => {
+        hasSearchInput.value = true
+        searchCollectionsArray = res
+        console.log(searchCollectionsArray);
+    }).catch(err => {
+        console.log(err);
+    })
+    // loading.value = false
+}
 
 
 // 使用watch监听localStorage中token的变化
@@ -208,7 +265,7 @@ const toUser = async () => {
         // 这里可以根据你的需要，从 error 对象中获取更多信息
         if (error.response) {
             console.log("响应状态码:" + error.response.status);
-            console.log("响应数据:" + error.response.data.status);
+            console.log("响应数据:" + (error.response.data as ErrorResult).status);
         } else if (error.request) {
             console.log("请求未收到响应");
         } else {
@@ -353,11 +410,16 @@ const showCartList = () => {
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        padding: 12px;
-        flex: 0.2;
-        background-color: var(--bg-200);
-        border-radius: 12px;
+        flex: 0.3;
+
+        position: relative;
+
+
         max-width: 500px;
+
+
+        border-radius: 12px;
+
 
         input {
             outline: none;
@@ -504,5 +566,29 @@ const showCartList = () => {
 
     }
 
+}
+
+.el-input {
+    height: 50px;
+
+    border-radius: 12px;
+    border: 0.5px solid var(--text-200);
+    border: 0;
+    background-color: var(--bg-200);
+
+    font-size: 18px;
+    font-weight: bold;
+
+
+    :deep(.el-input__wrapper) {
+        border-radius: 12px;
+        background-color: var(--bg-200);
+
+    }
+
+
+    :deep(.is-focus) {
+        box-shadow: 0 0 0 1px var(--accent-200)
+    }
 }
 </style>

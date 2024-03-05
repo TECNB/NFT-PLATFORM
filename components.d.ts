@@ -40,4 +40,7 @@ declare module 'vue' {
     UserInfo: typeof import('./src/components/UserInfo.vue')['default']
     UserNavbar: typeof import('./src/components/UserNavbar.vue')['default']
   }
+  export interface ComponentCustomProperties {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
+  }
 }

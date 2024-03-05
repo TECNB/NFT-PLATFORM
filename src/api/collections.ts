@@ -2,7 +2,22 @@ import axios from './';
 // 引入Collection接口
 import { Collection } from '../interfaces/Collection';
 
-// Recommended Collections
+// 获取推荐藏品
 export const getRecommendedCollections = () => {
     return axios.get<Collection[]>('api/collections/recommended');
 };
+// 获取最受欢迎的10个藏品
+export const getPopularCollections = () => {
+    return axios.get<Collection[]>('api/collections/popular');
+};
+
+
+// 搜索藏品
+export const searchCollections = (params:any) => {
+    return axios.post<Collection[]>('api/collections/search', params);
+};
+
+// 根据 objectld 获取藏品
+
+
+// 根据分类获取藏品

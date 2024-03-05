@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 // 引入userInfoStore
 import { userInfoStore } from '../stores/UserInfoStore';
 // 引入ErrorResult接口
@@ -87,7 +87,7 @@ const userInfo = userInfoStore();
 const toggleVisibility = () => {
     emit('updateIfShow', false);
 };
-import { login, check, signup } from '../api/login.ts'
+import { login, signup } from '../api/login.ts'
 import { AxiosError } from 'axios';
 // 定义username
 let username = ref('')
