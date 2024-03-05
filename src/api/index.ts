@@ -9,7 +9,7 @@ import  {ErrorResult}  from '../interfaces/ErrorResult';
 interface ResultData<T = any> extends ErrorResult {
     data?: T;
 }
-const URL: string = ''
+const URL: string = 'http://localhost:5173'
 enum RequestEnums {
     TIMEOUT = 20000,
     OVERDUE = 600, // 登录失效

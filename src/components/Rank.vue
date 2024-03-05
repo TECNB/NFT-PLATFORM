@@ -13,12 +13,12 @@
                         <p style="flex: 1;">{{ collection.rank }}</p>
                         <div style="flex: 7;" class="RankBodyItemContent">
                             <div style="flex: 0.3;">
-                                <img :src="collection.imageUrl" alt=""
+                                <img :src="collection.cover" alt=""
                                     style="height: 100%; width: 100%; border-radius: 20px; object-fit: cover; aspect-ratio: 1/1;">
                             </div>
                             <div style="padding-left: 20px;">
-                                <p>{{ collection.title }}</p>
-                                <p style="color: var(--text-200); padding-top: 10px;">地板价:{{ collection.price }}</p>
+                                <p>{{ collection.name }}</p>
+                                <p style="color: var(--text-200); padding-top: 10px;">地板价:{{ collection.price }} ETH</p>
                             </div>
                         </div>
                         <p style="flex: 4; text-align: end;">{{ collection.tradingVolume }}</p>
@@ -30,68 +30,70 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import FilterSection from '../components/FilterSection.vue'
+// 引入getPopularCollections
+import { getPopularCollections } from '../api/collections';
 
 const recommendedCollections = ref([
     // Your collection data here
     {
-        imageUrl: 'https://i.seadn.io/s/raw/files/6662e4fbea8ad15eb84990bc68351d57.png?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/s/raw/files/6662e4fbea8ad15eb84990bc68351d57.png?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
+        cover: 'https://i.seadn.io/s/raw/files/6662e4fbea8ad15eb84990bc68351d57.png?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/s/raw/files/6662e4fbea8ad15eb84990bc68351d57.png?auto=format&dpr=1&h=500&fr=1 2x',
+        name: 'Mint Genesis NFT',
         price: '0.01 ETH',
         tradingVolume: '68 ETH',
     },
     {
-        imageUrl: 'https://i.seadn.io/gae/WRcl2YH8E3_7884mcJ0DRN7STGqA8xZQKd-0MFmPftlxUR6i1xB9todMXRW2M6SIpXKAZ842UqKDm1UrkKG8nr7l9NjCkIw-GLQSFQ?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gae/WRcl2YH8E3_7884mcJ0DRN7STGqA8xZQKd-0MFmPftlxUR6i1xB9todMXRW2M6SIpXKAZ842UqKDm1UrkKG8nr7l9NjCkIw-GLQSFQ?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
+        cover: 'https://i.seadn.io/gae/WRcl2YH8E3_7884mcJ0DRN7STGqA8xZQKd-0MFmPftlxUR6i1xB9todMXRW2M6SIpXKAZ842UqKDm1UrkKG8nr7l9NjCkIw-GLQSFQ?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gae/WRcl2YH8E3_7884mcJ0DRN7STGqA8xZQKd-0MFmPftlxUR6i1xB9todMXRW2M6SIpXKAZ842UqKDm1UrkKG8nr7l9NjCkIw-GLQSFQ?auto=format&dpr=1&h=500&fr=1 2x',
+        name: 'Mint Genesis NFT',
         price: '0.01 ETH',
         tradingVolume: '68 ETH',
     },
     {
-        imageUrl: 'https://i.seadn.io/s/raw/files/c2343055844908c788fb0fac667d9063.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/s/raw/files/c2343055844908c788fb0fac667d9063.jpg?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
+        cover: 'https://i.seadn.io/s/raw/files/c2343055844908c788fb0fac667d9063.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/s/raw/files/c2343055844908c788fb0fac667d9063.jpg?auto=format&dpr=1&h=500&fr=1 2x',
+        name: 'Mint Genesis NFT',
         price: '0.01 ETH',
         tradingVolume: '68 ETH',
     },
     {
-        imageUrl: 'https://i.seadn.io/gcs/files/cd3e28d133070f314c751ccb1291a532.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gcs/files/cd3e28d133070f314c751ccb1291a532.jpg?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
+        cover: 'https://i.seadn.io/gcs/files/cd3e28d133070f314c751ccb1291a532.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gcs/files/cd3e28d133070f314c751ccb1291a532.jpg?auto=format&dpr=1&h=500&fr=1 2x',
+        name: 'Mint Genesis NFT',
         price: '0.01 ETH',
         tradingVolume: '68 ETH',
     },
     {
-        imageUrl: 'https://i.seadn.io/gcs/files/b3f8881dc097cc7de7bc7250622118e5.png?auto=format&dpr=1&h=500&fr=1',
-        title: 'Mint Genesis NFT',
+        cover: 'https://i.seadn.io/gcs/files/b3f8881dc097cc7de7bc7250622118e5.png?auto=format&dpr=1&h=500&fr=1',
+        name: 'Mint Genesis NFT',
         price: '0.01 ETH',
         tradingVolume: '68 ETH',
     },
     {
-        imageUrl: 'https://i.seadn.io/gcs/files/25059d629ad50cad3009a1f553a44401.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gcs/files/25059d629ad50cad3009a1f553a44401.jpg?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
+        cover: 'https://i.seadn.io/gcs/files/25059d629ad50cad3009a1f553a44401.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gcs/files/25059d629ad50cad3009a1f553a44401.jpg?auto=format&dpr=1&h=500&fr=1 2x',
+        name: 'Mint Genesis NFT',
         price: '0.01 ETH',
         tradingVolume: '68 ETH',
     },
     {
-        imageUrl: 'https://i.seadn.io/gae/WRcl2YH8E3_7884mcJ0DRN7STGqA8xZQKd-0MFmPftlxUR6i1xB9todMXRW2M6SIpXKAZ842UqKDm1UrkKG8nr7l9NjCkIw-GLQSFQ?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gae/WRcl2YH8E3_7884mcJ0DRN7STGqA8xZQKd-0MFmPftlxUR6i1xB9todMXRW2M6SIpXKAZ842UqKDm1UrkKG8nr7l9NjCkIw-GLQSFQ?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
+        cover: 'https://i.seadn.io/gae/WRcl2YH8E3_7884mcJ0DRN7STGqA8xZQKd-0MFmPftlxUR6i1xB9todMXRW2M6SIpXKAZ842UqKDm1UrkKG8nr7l9NjCkIw-GLQSFQ?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gae/WRcl2YH8E3_7884mcJ0DRN7STGqA8xZQKd-0MFmPftlxUR6i1xB9todMXRW2M6SIpXKAZ842UqKDm1UrkKG8nr7l9NjCkIw-GLQSFQ?auto=format&dpr=1&h=500&fr=1 2x',
+        name: 'Mint Genesis NFT',
         price: '0.01 ETH',
         tradingVolume: '68 ETH',
     },
     {
-        imageUrl: 'https://i.seadn.io/s/raw/files/c2343055844908c788fb0fac667d9063.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/s/raw/files/c2343055844908c788fb0fac667d9063.jpg?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
+        cover: 'https://i.seadn.io/s/raw/files/c2343055844908c788fb0fac667d9063.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/s/raw/files/c2343055844908c788fb0fac667d9063.jpg?auto=format&dpr=1&h=500&fr=1 2x',
+        name: 'Mint Genesis NFT',
         price: '0.01 ETH',
         tradingVolume: '68 ETH',
     },
     {
-        imageUrl: 'https://i.seadn.io/gcs/files/cd3e28d133070f314c751ccb1291a532.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gcs/files/cd3e28d133070f314c751ccb1291a532.jpg?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
+        cover: 'https://i.seadn.io/gcs/files/cd3e28d133070f314c751ccb1291a532.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gcs/files/cd3e28d133070f314c751ccb1291a532.jpg?auto=format&dpr=1&h=500&fr=1 2x',
+        name: 'Mint Genesis NFT',
         price: '0.01 ETH',
         tradingVolume: '68 ETH',
     },
     {
-        imageUrl: 'https://i.seadn.io/gcs/files/b3f8881dc097cc7de7bc7250622118e5.png?auto=format&dpr=1&h=500&fr=1',
-        title: 'Mint Genesis NFT',
+        cover: 'https://i.seadn.io/gcs/files/b3f8881dc097cc7de7bc7250622118e5.png?auto=format&dpr=1&h=500&fr=1',
+        name: 'Mint Genesis NFT',
         price: '0.01 ETH',
         tradingVolume: '68 ETH',
     },
@@ -103,6 +105,18 @@ const groupedCollections = computed(() => {
         grouped.push(recommendedCollections.value.slice(i, i + 5).map((collection, index) => ({ ...collection, rank: i + index + 1 })));
     }
     return grouped;
+});
+// 定义数组接受数据
+
+// 获取数据
+onMounted(async() => {
+    getPopularCollections().then((res) => {
+        //TODO:目前数据不足，下面的内容暂时注释
+        // recommendedCollections.value = res;
+        console.log(recommendedCollections);
+    }).catch((err) => {
+        console.log(err);
+    });
 });
 </script>
 

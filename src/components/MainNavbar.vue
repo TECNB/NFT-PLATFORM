@@ -196,7 +196,7 @@ const TypeIndex = StatisticsTypeIndexStore()
 const hasToken = ref(false);
 
 // 定义search方法返回的数组
-let searchCollectionsArray = []
+let searchCollectionsArray = ref([])
 
 //定义loading
 // const loading = ref(true)

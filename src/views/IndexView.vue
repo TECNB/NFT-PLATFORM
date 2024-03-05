@@ -9,7 +9,7 @@ import { RecommendedCollectionStore, CollectionRankingStore, PopularAnimationCol
 import { SelectedTypeIndexStore } from '../stores/SelectedIndexStore'
 import { Collection } from '../interfaces/Collection';
 // 引入api中的Collections
-import { getRecommendedCollections,searchCollections } from '../api/collections'
+import { getRecommendedCollections,getCollectionsByCategory } from '../api/collections'
 
 
 
@@ -188,9 +188,18 @@ PopularAnimalCollection.collections = recommendedCollections
 
 onMounted(() => {
     console.log("IndexView onMounted")
+    // 获取推荐的藏品
     getRecommendedCollections().then(res => {
         console.log(res)
         RecommendedCollection.collections = res ?? []
+        console.log(res)
+    }).catch(err => {
+        console.log(err)
+    })
+    // 根据不同分类获取藏品
+    getCollectionsByCategory("25jvslre4yobdt7w99kkn3rh").then(res => {
+        console.log(res)
+        PopularAnimationCollection.collections = res ?? []
         console.log(res)
     }).catch(err => {
         console.log(err)

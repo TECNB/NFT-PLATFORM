@@ -13,11 +13,17 @@ export const getPopularCollections = () => {
 
 
 // 搜索藏品
-export const searchCollections = (params:any) => {
+export const searchCollections = (params: any) => {
     return axios.post<Collection[]>('api/collections/search', params);
 };
 
 // 根据 objectld 获取藏品
+export const getCollectionById = (objectId: string) => {
+    return axios.get<Collection>('api/collections/objects/' + objectId);
+}
 
 
 // 根据分类获取藏品
+export const getCollectionsByCategory = (categoryId: string) => {
+    return axios.get<Collection[]>('api/collections/category/' + categoryId);
+}

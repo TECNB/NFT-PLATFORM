@@ -9,7 +9,7 @@
             </div>
             <!-- 使用translateX实现翻页效果 style="transform:translateX(-280px)" -->
             <div class="CollectionListItems ">
-                <div v-for="(item, index) in displayedItems" :key="index" class="CollectionListItem" @click="toNft">
+                <div v-for="(item, index) in displayedItems" :key="index" class="CollectionListItem" @click="toNft(item.objectId)">
                     <div class="CollectionListItemImage" style="height: 150px; width: 100%;">
                         <img style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;"
                             :src="item.cover" alt="" />
@@ -49,9 +49,10 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const toNft = () => {
+const toNft = (objectId: string) => {
     router.push({
         name: 'NftView',
+        params: { id: objectId }, // 传递动态路由参数
     })
 }
 

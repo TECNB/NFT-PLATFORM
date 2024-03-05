@@ -1,5 +1,5 @@
 <template>
-    <div class="NftView">
+    <div class="NftView" v-if="!loading">
         <MainNavbar />
         <div class="NftViewBody">
             <div class="NftViewBodyLeft">
@@ -21,8 +21,7 @@
                 <div class="NftImage">
 
                     <div class="NftImageImg">
-                        <img :src="collectionItem.cover"
-                            alt=""
+                        <img :src="collectionItem.cover" alt=""
                             style="height: 100%; width: 100%;border-radius: 0 0 20px 20px; object-fit: cover; aspect-ratio: 1/1;">
                     </div>
                 </div>
@@ -31,17 +30,16 @@
                         <el-icon size="20">
                             <Operation />
                         </el-icon>
-                        <p style="font-size: 20px;">描述 </p>
+                        <p style="font-size: 20px;">描述</p>
 
                     </div>
                     <div class="NftViewBodyRightPriceButton" style="text-align: start;">
                         <p
                             style="color: var(--text-200);font-size: 20px;font-weight: bold;display: inline-block;margin-top: 10px;">
                             创作者</p>
-                        <p style="color: var(--accent-200);font-size: 20px;display: inline;margin-left: 10px;"><router-link
-                                to="/user">TEC</router-link>
-                        <p style="color: #000;font-size: 16px;">A collection 8888 Cute Chubby Pudgy Penquins sliding around
-                            on the freezing ETH blockchain.</p>
+                        <p style="color: var(--accent-200);font-size: 20px;display: inline;margin-left: 10px;">
+                            <router-link to="/user">TEC</router-link>
+                        <p style="color: #000;font-size: 16px;">{{ collectionItem.intro }}</p>
                         </p>
                     </div>
 
@@ -61,7 +59,7 @@
                         <el-icon>
                             <View />
                         </el-icon>
-                        <p>972 查看</p>
+                        <p>{{ collectionItem.visitCount }} 查看</p>
                     </div>
                     <div class="NftViewBodyRightIconItem">
                         <el-icon>
@@ -130,7 +128,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, onMounted,Ref } from "vue"
+// 引入useRoute
+import { useRoute } from 'vue-router'
+// 引入getCollectionById
+import { getCollectionById } from '../api/collections'
 import MainNavbar from '../components/MainNavbar.vue'
 // 引入Collection
 import { Collection } from '../interfaces/Collection';
@@ -152,7 +154,8 @@ import { CartListCollectionStore } from '../stores/CollectionStore'
 // 实例化CartListCollectionStore
 let CartListCollection = CartListCollectionStore()
 // 建立一个变量，该变量内有商品的信息，类型为Collection
-let collectionItem: Collection = {
+let collectionItem:Ref<Collection>= ref(
+    {
         "objectId": "144995hv7ic8gt8d1e9ita3h",
         "hash": "56334e4f7107dc2fdc0f29060e0eda7d0c1ef2f66808f19d61e30428101346e6",
         "name": "东大寺",
@@ -170,8 +173,9 @@ let collectionItem: Collection = {
         "recommend": true,
         "albumId": null
     }
+)
 const cartList = ref<Collection[]>([
-{
+    {
         "objectId": "144995hv7ic8gt8d1e9ita3h",
         "hash": "56334e4f7107dc2fdc0f29060e0eda7d0c1ef2f66808f19d61e30428101346e6",
         "name": "东大寺",
@@ -249,7 +253,7 @@ const cartList = ref<Collection[]>([
 CartListCollection.collections = cartList.value;
 // 点击ShoppingCart图标后将该商品collectionItem添加进CartListCollection的方法
 const addCart = () => {
-    CartListCollection.collections.push(collectionItem)
+    CartListCollection.collections.push(collectionItem.value)
     console.log(CartListCollection.collections)
 }
 // 定义变量isPayBoxVisible
@@ -258,6 +262,24 @@ let isPayBoxVisible = ref(false);
 const updateIsPayBoxVisible = (newIsPayBoxVisible: boolean) => {
     isPayBoxVisible.value = newIsPayBoxVisible;
 };
+let objectId = ref('');
+const loading = ref(true);
+
+onMounted(async () => {
+    // 定义加载中
+    
+    // 获取路由参数
+    const route = useRoute();
+    objectId.value = route.params.id as string;
+    console.log("objectId:" + objectId.value);
+    //使用getCollectionById方法获取collectionItem
+    getCollectionById(objectId.value).then((res) => {
+        collectionItem.value = res;
+        loading.value = false;
+    }).catch((err) => {
+        console.log(err);
+    });
+});
 </script>
 
 <style lang="scss" scoped>

@@ -23,7 +23,7 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/StatisticsView.vue"),
     },
     {
-        path: "/nft",
+        path: '/nft/:id', // 使用动态路由参数 :id
         name:"NftView",
         component: () => import("../views/NftView.vue"),
     },
