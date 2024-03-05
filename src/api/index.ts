@@ -1,15 +1,12 @@
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import router from '../router';
+// 引入ErrorResult接口
+import  {ErrorResult}  from '../interfaces/ErrorResult';
 
-// 数据返回的接口(定义请求响应参数的接口)
-// 定义请求响应参数，不含data
-interface Result {
-    status: number;
-    error: string
-}
+
 
 // 请求响应参数，包含data
-interface ResultData<T = any> extends Result {
+interface ResultData<T = any> extends ErrorResult {
     data?: T;
 }
 const URL: string = ''
@@ -84,8 +81,8 @@ class RequestHttp {
             (error: AxiosError) => {
                 const { response } = error;
                 if (response) {
-                    console.log("response:" + response.data.status);
-                    this.handleCode(response.data.status)
+                    console.log("response:" + (response.data as ErrorResult).status);
+                    this.handleCode((response.data as ErrorResult).status)
                 }
                 if (!window.navigator.onLine) {
                     ElMessage.error('网络连接失败');
@@ -109,16 +106,16 @@ class RequestHttp {
     }
 
     // 常用方法封装
-    get<T>(url: string, params?: object): Promise<ResultData<T>> {
+    get<T>(url: string, params?: object): Promise<T> {
         return this.service.get(url, { params });
     }
-    post<T>(url: string, params?: object): Promise<ResultData<T>> {
+    post<T>(url: string, params?: object): Promise<T> {
         return this.service.post(url, params);
     }
-    put<T>(url: string, params?: object): Promise<ResultData<T>> {
+    put<T>(url: string, params?: object): Promise<T> {
         return this.service.put(url, params);
     }
-    delete<T>(url: string, params?: object): Promise<ResultData<T>> {
+    delete<T>(url: string, params?: object): Promise<T> {
         return this.service.delete(url, { params });
     }
 }

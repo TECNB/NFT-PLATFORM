@@ -74,6 +74,8 @@
 import { ref, watch } from 'vue';
 // 引入userInfoStore
 import { userInfoStore } from '../stores/UserInfoStore';
+// 引入ErrorResult接口
+import  {ErrorResult}  from '../interfaces/ErrorResult';
 
 const props = defineProps(['ifShow']);
 const emit = defineEmits();
@@ -160,7 +162,7 @@ const handleLogin = async () => {
         // 这里可以根据你的需要，从 error 对象中获取更多信息
         if (error.response) {
             console.log("响应状态码:" + error.response.status);
-            console.log("响应数据:" + error.response.data.status);
+            console.log("响应数据:" + (error.response.data as ErrorResult).status);
         } else if (error.request) {
             console.log("请求未收到响应");
         } else {
@@ -201,7 +203,7 @@ const handleSignup = async () => {
         // 这里可以根据你的需要，从 error 对象中获取更多信息
         if (error.response) {
             console.log("响应状态码:" + error.response.status);
-            console.log("响应数据:" + error.response.data.status);
+            console.log("响应数据:" + (error.response.data as ErrorResult).status);
         } else if (error.request) {
             console.log("请求未收到响应");
         } else {

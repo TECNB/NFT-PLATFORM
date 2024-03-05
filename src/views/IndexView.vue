@@ -4,10 +4,13 @@ import MainNavbar from '../components/MainNavbar.vue'
 import TypeNavbar from '../components/TypeNavbar.vue'
 import CollectionList from '../components/CollectionList.vue'
 import Rank from '../components/Rank.vue'
-import { } from "vue"
+import { onMounted } from "vue"
 import { RecommendedCollectionStore, CollectionRankingStore, PopularAnimationCollectionStore, PopularRealityCollectionStore, PopularTechnologyCollectionStore, PopularAnimalCollectionStore } from '../stores/CollectionStore'
 import { SelectedTypeIndexStore } from '../stores/SelectedIndexStore'
 import { Collection } from '../interfaces/Collection';
+// 引入api中的Collections
+import { getRecommendedCollections } from '../api/collections'
+
 
 
 
@@ -27,52 +30,101 @@ console.log("SelectedIndex:" + TypeIndex.index)
 // 初始值
 const recommendedCollections: Collection[] = [
     {
-        imageUrl: 'https://i.seadn.io/s/raw/files/6662e4fbea8ad15eb84990bc68351d57.png?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/s/raw/files/6662e4fbea8ad15eb84990bc68351d57.png?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
-        price: '0.01 ETH',
-        tradingVolume: '68 ETH',
+        "objectId": "144995hv7ic8gt8d1e9ita3h",
+        "hash": "56334e4f7107dc2fdc0f29060e0eda7d0c1ef2f66808f19d61e30428101346e6",
+        "name": "东大寺",
+        "shortIntro": "东大寺是日本最著名、最重要的寺庙之一，也是奈良的地标。",
+        "intro": "东大寺位于日本奈良市，是一座佛教寺庙建筑群，曾是强大的七大寺之一。虽然东大寺始建于公元 738 年，但直到公元 752 年才正式开放。",
+        "cover": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/1a844b00167657df0f6a412ac8b523c3.png",
+        "file": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/1a844b00167657df0f6a412ac8b523c3.png",
+        "authorId": "509yww08r272412vzf0bv04n",
+        "categoryId": "25jvslre4yobdt7w99kkn3rh",
+        "type": "图片",
+        "price": 18,
+        "visitCount": 0,
+        "issueNumber": 120,
+        "soldNumber": 0,
+        "recommend": true,
+        "albumId": null
     },
     {
-        imageUrl: 'https://i.seadn.io/gae/WRcl2YH8E3_7884mcJ0DRN7STGqA8xZQKd-0MFmPftlxUR6i1xB9todMXRW2M6SIpXKAZ842UqKDm1UrkKG8nr7l9NjCkIw-GLQSFQ?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gae/WRcl2YH8E3_7884mcJ0DRN7STGqA8xZQKd-0MFmPftlxUR6i1xB9todMXRW2M6SIpXKAZ842UqKDm1UrkKG8nr7l9NjCkIw-GLQSFQ?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
-        price: '0.01 ETH',
-        tradingVolume: '68 ETH',
+        "objectId": "8qjjbg4l2a7wi8yhcgyj7luu",
+        "hash": "fa23fb8e29eb2176999e49582838f635c8a8bcb39c6b6922cc90fda70f763426",
+        "name": "大阪城",
+        "shortIntro": "大阪城是一座日本城堡，位于日本大阪市中区。这座城堡是日本最著名的地标之一。",
+        "intro": "大阪是一座日本城堡，位于日本大阪市中区。这座城堡是日本最著名的地标之一，在 16 世纪安土桃山时代统一日本的过程中发挥了重要作用。",
+        "cover": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/d716bbcaea6c7c8d877e7c5c12b758bd.png",
+        "file": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/d716bbcaea6c7c8d877e7c5c12b758bd.png",
+        "authorId": "pg4pmu0gqq0bgg4btfiz085u",
+        "categoryId": "6gaq1nnv52k7ul0o53kfer36",
+        "type": "图片",
+        "price": 10,
+        "visitCount": 0,
+        "issueNumber": 100,
+        "soldNumber": 0,
+        "recommend": true,
+        "albumId": null
     },
     {
-        imageUrl: 'https://i.seadn.io/s/raw/files/c2343055844908c788fb0fac667d9063.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/s/raw/files/c2343055844908c788fb0fac667d9063.jpg?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
-        price: '0.01 ETH',
-        tradingVolume: '68 ETH',
+        "objectId": "144995hv7ic8gt8d1e9ita3h",
+        "hash": "56334e4f7107dc2fdc0f29060e0eda7d0c1ef2f66808f19d61e30428101346e6",
+        "name": "东大寺",
+        "shortIntro": "东大寺是日本最著名、最重要的寺庙之一，也是奈良的地标。",
+        "intro": "东大寺位于日本奈良市，是一座佛教寺庙建筑群，曾是强大的七大寺之一。虽然东大寺始建于公元 738 年，但直到公元 752 年才正式开放。",
+        "cover": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/1a844b00167657df0f6a412ac8b523c3.png",
+        "file": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/1a844b00167657df0f6a412ac8b523c3.png",
+        "authorId": "509yww08r272412vzf0bv04n",
+        "categoryId": "25jvslre4yobdt7w99kkn3rh",
+        "type": "图片",
+        "price": 18,
+        "visitCount": 0,
+        "issueNumber": 120,
+        "soldNumber": 0,
+        "recommend": true,
+        "albumId": null
     },
     {
-        imageUrl: 'https://i.seadn.io/gcs/files/cd3e28d133070f314c751ccb1291a532.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gcs/files/cd3e28d133070f314c751ccb1291a532.jpg?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
-        price: '0.01 ETH',
-        tradingVolume: '68 ETH',
-    },
-    {
-        imageUrl: 'https://i.seadn.io/gcs/files/b3f8881dc097cc7de7bc7250622118e5.png?auto=format&dpr=1&h=500&fr=1',
-        title: 'Mint Genesis NFT',
-        price: '0.01 ETH',
-        tradingVolume: '68 ETH',
-    },
-    {
-        imageUrl: 'https://i.seadn.io/gcs/files/25059d629ad50cad3009a1f553a44401.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gcs/files/25059d629ad50cad3009a1f553a44401.jpg?auto=format&dpr=1&h=500&fr=1 2x',
-        title: 'Mint Genesis NFT',
-        price: '0.01 ETH',
-        tradingVolume: '68 ETH',
-    },
-    
+        "objectId": "8qjjbg4l2a7wi8yhcgyj7luu",
+        "hash": "fa23fb8e29eb2176999e49582838f635c8a8bcb39c6b6922cc90fda70f763426",
+        "name": "大阪城",
+        "shortIntro": "大阪城是一座日本城堡，位于日本大阪市中区。这座城堡是日本最著名的地标之一。",
+        "intro": "大阪是一座日本城堡，位于日本大阪市中区。这座城堡是日本最著名的地标之一，在 16 世纪安土桃山时代统一日本的过程中发挥了重要作用。",
+        "cover": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/d716bbcaea6c7c8d877e7c5c12b758bd.png",
+        "file": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/d716bbcaea6c7c8d877e7c5c12b758bd.png",
+        "authorId": "pg4pmu0gqq0bgg4btfiz085u",
+        "categoryId": "6gaq1nnv52k7ul0o53kfer36",
+        "type": "图片",
+        "price": 10,
+        "visitCount": 0,
+        "issueNumber": 100,
+        "soldNumber": 0,
+        "recommend": true,
+        "albumId": null
+    }
+
 ]
 
 // 使用 setState 方法赋值
-RecommendedCollection.collections = recommendedCollections
+
 CollectionRanking.collections = recommendedCollections
 
 PopularAnimationCollection.collections = recommendedCollections
 PopularRealityCollection.collections = recommendedCollections
 PopularTechnologyCollection.collections = recommendedCollections
 PopularAnimalCollection.collections = recommendedCollections
+
+onMounted(() => {
+    console.log("IndexView onMounted")
+    getRecommendedCollections().then(res => {
+        console.log(res)
+        RecommendedCollection.collections = res ?? []
+        console.log(res)
+    }).catch(err => {
+        console.log(err)
+    })
+})
+
+
 
 
 </script>
@@ -82,15 +134,15 @@ PopularAnimalCollection.collections = recommendedCollections
 
         <MainNavbar />
         <TypeNavbar />
-        <el-carousel :interval="4000" type="card" height="300px" >
-            <el-carousel-item v-for="(item, index) in recommendedCollections" :key="index" style="border-radius: 20px 20px 0px 0px;">
-                <img :src="item.imageUrl" alt="NFT Image" style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;">
-                <h3 text="2xl" justify="center">{{ item.title }}</h3>
-                <p>{{ item.price }}</p>
-                <p>{{ item.tradingVolume }}</p>
+        <el-carousel :interval="4000" type="card" height="300px">
+            <el-carousel-item v-for="(item, index) in recommendedCollections" :key="index"
+                style="border-radius: 20px 20px 0px 0px;">
+                <img :src="item.cover" alt="NFT Image"
+                    style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;">
+                <h3 text="2xl" justify="center">{{ item.name }}</h3>
             </el-carousel-item>
         </el-carousel>
-        <Rank/>
+        <Rank />
         <CollectionList msg="推荐数字藏品" />
         <CollectionList msg="今日数字藏品排行榜" />
         <CollectionList msg="热门动画数字藏品" />
@@ -101,12 +153,12 @@ PopularAnimalCollection.collections = recommendedCollections
     <div class="IndexView" v-if="TypeIndex.index == 1">
         <MainNavbar />
         <TypeNavbar />
-        <el-carousel :interval="4000" type="card" height="300px" >
-            <el-carousel-item v-for="(item, index) in recommendedCollections" :key="index" style="border-radius: 20px 20px 0px 0px;">
-                <img :src="item.imageUrl" alt="NFT Image" style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;">
-                <h3 text="2xl" justify="center">{{ item.title }}</h3>
-                <p>{{ item.price }}</p>
-                <p>{{ item.tradingVolume }}</p>
+        <el-carousel :interval="4000" type="card" height="300px">
+            <el-carousel-item v-for="(item, index) in recommendedCollections" :key="index"
+                style="border-radius: 20px 20px 0px 0px;">
+                <img :src="item.cover" alt="NFT Image"
+                    style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;">
+                <h3 text="2xl" justify="center">{{ item.name }}</h3>
             </el-carousel-item>
         </el-carousel>
 
@@ -151,7 +203,7 @@ PopularAnimalCollection.collections = recommendedCollections
 }
 
 .IndexView {
-    
+
 
     padding-top: 15px;
     overflow-x: hidden;

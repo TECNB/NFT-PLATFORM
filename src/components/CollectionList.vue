@@ -12,18 +12,18 @@
                 <div v-for="(item, index) in displayedItems" :key="index" class="CollectionListItem" @click="toNft">
                     <div class="CollectionListItemImage" style="height: 150px; width: 100%;">
                         <img style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;"
-                            :src="item.imageUrl" alt="" />
+                            :src="item.cover" alt="" />
                     </div>
 
-                    <p style="text-align: left; padding: 10px 20px;">{{ item.title }}</p>
+                    <p style="text-align: left; padding: 10px 20px;">{{ item.name }}</p>
                     <div class="CollectionListItemDetail">
                         <div>
                             <p class="text-base font-normal">交易价格</p>
-                            <p>{{ item.price }}</p>
+                            <p>{{ item.price }} ETH</p>
                         </div>
                         <div>
                             <p class="text-base font-normal">24小时交易量</p>
-                            <p>{{ item.tradingVolume }}</p>
+                            <p>{{ item.price }}  ETH</p>
                         </div>
                     </div>
                 </div>

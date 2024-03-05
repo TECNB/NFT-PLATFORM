@@ -21,12 +21,12 @@
                     @mouseleave="hideDelete()">
                     <div class="DetailBelowName" style="flex: 10;">
                         <div class="Image" style="flex: 3;">
-                            <img :src="item.imageUrl" alt=""
+                            <img :src="item.cover" alt=""
                                 style="height: 100%; width: 100%; border-radius: 20px; object-fit: cover; aspect-ratio: 1/1;">
                         </div>
                         <div style="flex: 11;">
-                            <p style="text-align: start;padding-left: 25px;font-weight: bold;">{{ item.title }}</p>
-                            <p style="text-align: start;padding-left: 25px;">{{ item.title }}</p>
+                            <p style="text-align: start;padding-left: 25px;font-weight: bold;">{{ item.name }}</p>
+                            <p style="text-align: start;padding-left: 25px;">{{ item.name }}</p>
                         </div>
 
                     </div>
@@ -99,7 +99,7 @@ let totalPrice = 0;
 // 通过cartList的price算出totalPrice，因为price是字符串类型，所以需要转换为数字类型
 // 同时需要把price后面的ETH去掉
 for (let i = 0; i < cartList.value.length; i++) {
-    totalPrice += Number(cartList.value[i].price.replace(' ETH', ''));
+    totalPrice += Number(cartList.value[i].price);
 }
 // 最后保留两位小数
 totalPrice = Number(totalPrice.toFixed(2));
@@ -136,7 +136,7 @@ watch(cartList.value, (newValue, oldValue) => {
     // 通过cartList的price算出totalPrice，因为price是字符串类型，所以需要转换为数字类型
     // 同时需要把price后面的ETH去掉
     for (let i = 0; i < cartList.value.length; i++) {
-        totalPrice += Number(cartList.value[i].price.replace(' ETH', ''));
+        totalPrice += Number(cartList.value[i].price);
     }
     // 最后保留两位小数
     totalPrice = Number(totalPrice.toFixed(2));
@@ -159,7 +159,7 @@ const deleteCart = (index: number) => {
     // 通过cartList的price算出totalPrice，因为price是字符串类型，所以需要转换为数字类型
     // 同时需要把price后面的ETH去掉
     for (let i = 0; i < cartList.value.length; i++) {
-        totalPrice += Number(cartList.value[i].price.replace(' ETH', ''));
+        totalPrice += Number(cartList.value[i].price);
     }
     // 最后保留两位小数
     totalPrice = Number(totalPrice.toFixed(2));
