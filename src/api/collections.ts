@@ -27,3 +27,8 @@ export const getCollectionById = (objectId: string) => {
 export const getCollectionsByCategory = (categoryId: string) => {
     return axios.get<Collection[]>('api/collections/category/' + categoryId);
 }
+
+// 增加藏品浏览次数
+export const addCollectionViews = (objectId: string) => {
+    return axios.post('api/collections/objects/' + objectId + '/visit');
+}

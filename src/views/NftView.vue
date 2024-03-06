@@ -132,7 +132,7 @@ import { ref, onMounted,Ref } from "vue"
 // 引入useRoute
 import { useRoute } from 'vue-router'
 // 引入getCollectionById
-import { getCollectionById } from '../api/collections'
+import { getCollectionById,addCollectionViews } from '../api/collections'
 import MainNavbar from '../components/MainNavbar.vue'
 // 引入Collection
 import { Collection } from '../interfaces/Collection';
@@ -274,6 +274,7 @@ onMounted(async () => {
     console.log("objectId:" + objectId.value);
     //使用getCollectionById方法获取collectionItem
     getCollectionById(objectId.value).then((res) => {
+        addCollectionViews(objectId.value);
         collectionItem.value = res;
         loading.value = false;
     }).catch((err) => {

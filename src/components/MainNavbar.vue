@@ -153,7 +153,7 @@
 
 
 <script setup lang="ts">
-import { ref, watch, onMounted } from "vue"
+import { ref, watch, onMounted,Ref } from "vue"
 import { useRouter, useRoute } from 'vue-router'
 // 引入Collection接口
 import { Collection } from '../interfaces/Collection';
@@ -196,7 +196,7 @@ const TypeIndex = StatisticsTypeIndexStore()
 const hasToken = ref(false);
 
 // 定义search方法返回的数组
-let searchCollectionsArray = ref([])
+let searchCollectionsArray: Ref<Collection[]> = ref([]);
 
 //定义loading
 // const loading = ref(true)
@@ -209,7 +209,7 @@ const search = async () => {
 
     searchCollections(searchForm).then(res => {
         hasSearchInput.value = true
-        searchCollectionsArray = res
+        searchCollectionsArray.value = res
         console.log(searchCollectionsArray);
     }).catch(err => {
         console.log(err);
