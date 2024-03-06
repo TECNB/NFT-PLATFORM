@@ -4,19 +4,30 @@ import MainNavbar from '../components/MainNavbar.vue'
 import TypeNavbar from '../components/TypeNavbar.vue'
 import CollectionList from '../components/CollectionList.vue'
 import Rank from '../components/Rank.vue'
-import { onMounted } from "vue"
+import { onMounted, Ref, ref } from "vue"
 import { RecommendedCollectionStore, CollectionRankingStore, PopularAnimationCollectionStore, PopularRealityCollectionStore, PopularTechnologyCollectionStore, PopularAnimalCollectionStore } from '../stores/CollectionStore'
 import { SelectedTypeIndexStore } from '../stores/SelectedIndexStore'
 import { Collection } from '../interfaces/Collection';
 // 引入api中的Collections
-import { getRecommendedCollections,getCollectionsByCategory } from '../api/collections'
+import { getRecommendedCollections, getCollectionsByCategory,getPopularCollections } from '../api/collections'
 // 引入api中的check
 import { check } from '../api/user'
 
 // 引入userInfoStore
 import { userInfoStore } from '../stores/UserInfoStore';
+// 引入typeStore
+import { TypeStore } from '../stores/TypeStore'
+// 引入Type接口
+import { Type } from '../interfaces/Type'
+
 // 实例化
-const userInfo = userInfoStore();	
+const userInfo = userInfoStore();
+
+// 实例化
+const typeStore = TypeStore()
+
+const typeList: Ref<Type[]> = ref([])
+typeList.value = typeStore.typeInfo
 
 
 
@@ -36,7 +47,7 @@ console.log("SelectedIndex:" + TypeIndex.index)
 
 // 初始值
 const recommendedCollections: Collection[] = [
-{
+	{
 		"objectId": "144995hv7ic8gt8d1e9ita3h",
 		"hash": "56334e4f7107dc2fdc0f29060e0eda7d0c1ef2f66808f19d61e30428101346e6",
 		"name": "东大寺",
@@ -108,7 +119,7 @@ const recommendedCollections: Collection[] = [
 		"recommend": false,
 		"albumId": null
 	},
-    {
+	{
 		"objectId": "euwgw441zsne0ig509fnno1g",
 		"hash": "23d4093fda27dfe0a39c78ecc295e70b0db7a928ec95fc73bf484f641fcbf243",
 		"name": "严岛神社岛",
@@ -144,7 +155,7 @@ const recommendedCollections: Collection[] = [
 		"recommend": false,
 		"albumId": null
 	},
-    {
+	{
 		"objectId": "144995hv7ic8gt8d1e9ita3h",
 		"hash": "56334e4f7107dc2fdc0f29060e0eda7d0c1ef2f66808f19d61e30428101346e6",
 		"name": "东大寺",
@@ -180,7 +191,7 @@ const recommendedCollections: Collection[] = [
 		"recommend": true,
 		"albumId": null
 	},
-	
+
 
 ]
 
@@ -193,30 +204,29 @@ PopularRealityCollection.collections = recommendedCollections
 PopularTechnologyCollection.collections = recommendedCollections
 PopularAnimalCollection.collections = recommendedCollections
 
-onMounted(async() => {
-    console.log("IndexView onMounted")
-    // 获取推荐的藏品
-    getRecommendedCollections().then(res => {
-        console.log(res)
-        RecommendedCollection.collections = res ?? []
-        console.log(res)
-    }).catch(err => {
-        console.log(err)
-    })
-    // 根据不同分类获取藏品
-    getCollectionsByCategory("25jvslre4yobdt7w99kkn3rh").then(res => {
-        console.log(res)
-        PopularAnimationCollection.collections = res ?? []
-        console.log(res)
-    }).catch(err => {
-        console.log(err)
-    })
+onMounted(async () => {
+	console.log("IndexView onMounted")
+	// 获取推荐的藏品
+	await getRecommendedCollections().then(res => {
+		console.log(res)
+		RecommendedCollection.collections = res ?? []
+		console.log(res)
+	}).catch(err => {
+		console.log(err)
+	})
+	// getPopularCollections
+	await getPopularCollections().then(res => {
+		CollectionRanking.collections = res ?? []
+		console.log(res)
+	}).catch(err => {
+		console.log(err)
+	})
 	// 使用check方法更新userInfo
-    await check().then((res) => {
-        userInfo.user = res;
-    }).catch((err) => {
-        console.log(err);
-    });
+	await check().then((res) => {
+		userInfo.user = res;
+	}).catch((err) => {
+		console.log(err);
+	});
 })
 
 
@@ -225,82 +235,57 @@ onMounted(async() => {
 </script>
 
 <template>
-    <div class="IndexView" v-if="TypeIndex.index == 0">
+	<div class="IndexView" v-if="TypeIndex.index == '0'">
 
-        <MainNavbar />
-        <TypeNavbar />
-        <el-carousel :interval="4000" type="card" height="300px">
-            <el-carousel-item v-for="(item, index) in recommendedCollections" :key="index"
-                style="border-radius: 20px 20px 0px 0px;">
-                <img :src="item.cover" alt="NFT Image"
-                    style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;">
-                <h3 text="2xl" justify="center">{{ item.name }}</h3>
-            </el-carousel-item>
-        </el-carousel>
-        <Rank />
-        <CollectionList msg="推荐数字藏品" />
-        <CollectionList msg="今日数字藏品排行榜" />
-        <CollectionList msg="热门动画数字藏品" />
-        <CollectionList msg="热门现实数字藏品" />
-        <CollectionList msg="热门科技数字藏品" />
-        <CollectionList msg="热门动物数字藏品" />
-    </div>
-    <div class="IndexView" v-if="TypeIndex.index == 1">
-        <MainNavbar />
-        <TypeNavbar />
-        <el-carousel :interval="4000" type="card" height="300px">
-            <el-carousel-item v-for="(item, index) in recommendedCollections" :key="index"
-                style="border-radius: 20px 20px 0px 0px;">
-                <img :src="item.cover" alt="NFT Image"
-                    style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;">
-                <h3 text="2xl" justify="center">{{ item.name }}</h3>
-            </el-carousel-item>
-        </el-carousel>
+		<MainNavbar />
+		<TypeNavbar />
+		<el-carousel :interval="4000" type="card" height="300px">
+			<el-carousel-item v-for="(item, index) in recommendedCollections" :key="index"
+				style="border-radius: 20px 20px 0px 0px;">
+				<img :src="item.cover" alt="NFT Image"
+					style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;">
+				<h3 text="2xl" justify="center">{{ item.name }}</h3>
+			</el-carousel-item>
+		</el-carousel>
+		<Rank />
+		<CollectionList :source="RecommendedCollection.collections" title="推荐数字藏品" :ifType="false" />
+		<CollectionList :source="CollectionRanking.collections" title="今日数字藏品排行榜" :ifType="false"/>
 
-        <CollectionList msg="热门动画数字藏品" />
+		<div v-for="(type, index) in typeStore.typeInfo" :key="index" class="IndexView">
+			<CollectionList :source="type" :title="`热门${type.name}`" :ifType="true"/>
+		</div>
 
-    </div>
-    <div class="IndexView" v-if="TypeIndex.index == 2">
-        <MainNavbar />
-        <TypeNavbar />
-        <CollectionList msg="热门现实数字藏品" />
-    </div>
-    <div class="IndexView" v-if="TypeIndex.index == 3">
-        <MainNavbar />
-        <TypeNavbar />
 
-        <CollectionList msg="热门科技数字藏品" />
-
-    </div>
-    <div class="IndexView" v-if="TypeIndex.index == 4">
-        <MainNavbar />
-        <TypeNavbar />
-
-        <CollectionList msg="热门动物数字藏品" />
-    </div>
+	</div>
+	<div v-for="(type, index) in typeStore.typeInfo" :key="index" class="IndexView"
+		v-show="TypeIndex.index == type.objectId">
+		<MainNavbar />
+		<TypeNavbar />
+		<CollectionList :source="type" :title="`热门${type.name}`" :ifType="true"/>
+	</div>
 </template>
 
 <style scoped>
 .el-carousel__item h3 {
-    color: #475669;
-    opacity: 0.75;
-    line-height: 200px;
-    margin: 0;
-    text-align: center;
+	color: #475669;
+	opacity: 0.75;
+	line-height: 200px;
+	margin: 0;
+	text-align: center;
 }
 
 .el-carousel__item:nth-child(2n) {
-    background-color: #99a9bf;
+	background-color: #99a9bf;
 }
 
 .el-carousel__item:nth-child(2n + 1) {
-    background-color: #d3dce6;
+	background-color: #d3dce6;
 }
 
 .IndexView {
 
 
-    padding-top: 15px;
-    overflow-x: hidden;
+	padding-top: 15px;
+	overflow-x: hidden;
 }
 </style>

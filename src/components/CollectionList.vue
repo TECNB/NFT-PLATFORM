@@ -1,6 +1,6 @@
 <template>
     <div class="CollectionList">
-        <p style="text-align: left;margin-bottom: 20px;height: 10%;">{{ props.msg }}</p>
+        <p style="text-align: left;margin-bottom: 20px;height: 10%;">{{ title }}</p>
         <div class="CollectionListAll">
             <div class="PageBefore" @click="goToPreviousPage">
                 <el-icon>
@@ -41,11 +41,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from "vue"
+import { ref, onMounted, onBeforeUnmount,Ref } from "vue"
 
-import { RecommendedCollectionStore, CollectionRankingStore, PopularAnimationCollectionStore, PopularRealityCollectionStore, PopularTechnologyCollectionStore, PopularAnimalCollectionStore } from '../stores/CollectionStore'
+import { RecommendedCollectionStore, CollectionRankingStore, PopularAnimationCollectionStore, PopularRealityCollectionStore, PopularTechnologyCollectionStore, PopularAnimalCollectionStore,TypeCollectionStore } from '../stores/CollectionStore'
 import { Collection } from '../interfaces/Collection';
 import { useRouter } from 'vue-router'
+// 引入getCollectionsByCategory
+import { getCollectionsByCategory } from '../api/collections'
+// 引入Type
+import { Type } from '../interfaces/Type'
 
 const router = useRouter()
 
@@ -58,49 +62,40 @@ const toNft = (objectId: string) => {
 
 
 
-const props = defineProps<{ msg: string }>()
+const props = defineProps<{ source: Type | Collection[] ,ifType:boolean, title:String}>()
 
 
 // 像 useRouter 那样定义一个变量拿到实例
 const RecommendedCollection = RecommendedCollectionStore()
-const CollectionRanking = CollectionRankingStore()
-const PopularAnimationCollection = PopularAnimationCollectionStore()
-const PopularRealityCollection = PopularRealityCollectionStore()
-const PopularTechnologyCollection = PopularTechnologyCollectionStore()
-const PopularAnimalCollection = PopularAnimalCollectionStore()
+// const CollectionRanking = CollectionRankingStore()
+// const PopularAnimationCollection = PopularAnimationCollectionStore()
+// const PopularRealityCollection = PopularRealityCollectionStore()
+// const PopularTechnologyCollection = PopularTechnologyCollectionStore()
+// const PopularAnimalCollection = PopularAnimalCollectionStore()
+// const TypeCollection = TypeCollectionStore()
 
-let collectionItems: Collection[];
+const collectionItems: Ref<Collection[]> = ref([]);
 
 
-switch (props.msg) {
-    case "推荐数字藏品":
-        collectionItems = RecommendedCollection.collections;
-        break;
-    case "今日数字藏品排行榜":
-        collectionItems = CollectionRanking.collections;
-        break;
-    case "热门动画数字藏品":
-        collectionItems = PopularAnimationCollection.collections;
-        break;
-    case "热门现实数字藏品":
-        collectionItems = PopularRealityCollection.collections;
-        break;
-    case "热门科技数字藏品":
-        collectionItems = PopularTechnologyCollection.collections;
-        break;
-    case "热门动物数字藏品":
-        collectionItems = PopularAnimalCollection.collections;
-        break;
-    default:
-        console.log("未知消息");
-}
 const currentPage = ref(0);
-const displayedItems = ref<Collection[]>([]);
+const displayedItems: Ref<Collection[]> = ref([]);
 
-const updateDisplayedItems = () => {
+const updateDisplayedItems = async() => {
     const itemsPerPage = calculateItemsPerPage();
+
+    if(props.ifType){
+        await getCollectionsByCategory((props.source as Type).objectId).then(res => {
+            collectionItems.value = res
+            console.log(res)
+
+        }).catch(err => {
+            console.log(err)
+        })
+    }else{
+        collectionItems.value = props.source as Collection[]
+    }
     const startIndex = currentPage.value * itemsPerPage;
-    displayedItems.value = collectionItems.slice(startIndex, startIndex + itemsPerPage);
+    displayedItems.value = collectionItems.value.slice(startIndex, startIndex + itemsPerPage);
 };
 
 const calculateItemsPerPage = () => {
@@ -127,16 +122,17 @@ const goToPreviousPage = () => {
 };
 
 const goToNextPage = () => {
-    const totalPages = Math.ceil(collectionItems.length / calculateItemsPerPage());
+    const totalPages = Math.ceil(collectionItems.value.length / calculateItemsPerPage());
     if (currentPage.value < totalPages - 1) {
         currentPage.value++;
         updateDisplayedItems();
     }
 };
 
-onMounted(() => {
+onMounted(async() => {
     updateDisplayedItems();
     window.addEventListener('resize', updateDisplayedItems);
+    
 });
 
 onBeforeUnmount(() => {

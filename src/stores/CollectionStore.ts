@@ -40,3 +40,10 @@ export const CartListCollectionStore = defineStore('CartListCollectionStore', {
         collections: [] as Collection[],
     }),
 });
+export const TypeCollectionStore = defineStore('TypeCollectionStore', {
+    state: () => ({
+        collections: [] as Collection[],
+    }),
+    //数据持久化配置 这里是当前所有变量都持久化
+    persist:true
+});

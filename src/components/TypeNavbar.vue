@@ -1,39 +1,46 @@
 <template>
     <div class="TypeNavbar">
-        <div class="TypeNavbarItem" @click="selectType(0)" :class="{ 'selected': TypeIndex.index === 0 }">
-            <p>全部</p>
-        </div>
-        <div class="TypeNavbarItem" @click="selectType(1)" :class="{ 'selected': TypeIndex.index === 1 }">
-            <p>动画</p>
-        </div>
-        <div class="TypeNavbarItem" @click="selectType(2)" :class="{ 'selected': TypeIndex.index === 2 }">
-            <p>现实</p>
-        </div>
-        <div class="TypeNavbarItem" @click="selectType(3)" :class="{ 'selected': TypeIndex.index === 3 }">
-            <p>科技</p>
-        </div>
-        <div class="TypeNavbarItem" @click="selectType(4)" :class="{ 'selected': TypeIndex.index === 4 }">
-            <p>动物</p>
+        <div v-for="(type, index) in typeList" :key="index" class="TypeNavbarItem" @click="selectType(type.objectId)" :class="{ 'selected': TypeIndex.index === type.objectId }">
+            <p>{{ type.name }}</p>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import {  } from "vue";
-
+import { ref, onMounted,Ref } from "vue";
+import { getAllTypes } from '../api/type'
+import { TypeStore } from '../stores/TypeStore'
 import { SelectedTypeIndexStore } from '../stores/SelectedIndexStore'
 
+// TypeCollectionStore
+import { TypeCollectionStore } from '../stores/CollectionStore'
+
+// 引入Type接口
+import { Type } from '../interfaces/Type'
+
+// 引入getCollectionsByCategory
+import { getCollectionsByCategory } from '../api/collections'
+
 const TypeIndex = SelectedTypeIndexStore()
+const typeStore = TypeStore()
+const typeList:Ref<Type[]> = ref([])
 
+// 实例化TypeCollectionStore
+const TypeCollection = TypeCollectionStore()
 
-const selectType = (index: number) => {
+onMounted(async () => {
+    // 先使用缓存数据展示
+    typeList.value = [{ objectId: "0", cover: "", name: '全部' }, ...typeStore.typeInfo]
+    const res = await getAllTypes()
+    typeStore.typeInfo = res
+    typeList.value = [{ objectId: "0", cover:"",name: '全部' },...res] // 将"全部"类型添加到列表中
+});
 
+const selectType = async(index: string) => {
     TypeIndex.index = index;
 };
-
-
-
 </script>
+
 
 <style lang="scss" scoped>
 .TypeNavbar {
