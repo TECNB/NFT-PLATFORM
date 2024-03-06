@@ -87,7 +87,7 @@ const userInfo = userInfoStore();
 const toggleVisibility = () => {
     emit('updateIfShow', false);
 };
-import { login, signup } from '../api/login.ts'
+import { login, signup } from '../api/user.ts'
 import { AxiosError } from 'axios';
 // 定义username
 let username = ref('')
@@ -405,3 +405,4 @@ const handleSignup = async () => {
 
 }
 </style>
+../api/user.ts

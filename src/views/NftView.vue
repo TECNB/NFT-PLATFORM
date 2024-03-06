@@ -12,8 +12,11 @@
                             <Share />
                         </el-icon>
                         <p>26</p>
-                        <el-icon>
+                        <el-icon v-if="!isFavorite" @click="handleAddFavoriteCollection">
                             <Star />
+                        </el-icon>
+                        <el-icon v-else @click="handleAddFavoriteCollection">
+                            <StarFilled />
                         </el-icon>
                     </div>
 
@@ -133,6 +136,9 @@ import { ref, onMounted,Ref } from "vue"
 import { useRoute } from 'vue-router'
 // 引入getCollectionById
 import { getCollectionById,addCollectionViews } from '../api/collections'
+// 引入addFavoriteCollection以及removeFavoriteCollection
+import { addFavoriteCollection, removeFavoriteCollection, check} from '../api/user'
+
 import MainNavbar from '../components/MainNavbar.vue'
 // 引入Collection
 import { Collection } from '../interfaces/Collection';
@@ -140,6 +146,9 @@ import { Collection } from '../interfaces/Collection';
 import MaskLayer from '../components/MaskLayer.vue'
 // 引入PayBox
 import PayBox from '../components/PayBox.vue'
+// 引入UserInfoStore
+import { userInfoStore } from '../stores/UserInfoStore'
+
 // import { useRouter } from 'vue-router'
 
 // const router = useRouter()
@@ -153,6 +162,9 @@ import PayBox from '../components/PayBox.vue'
 import { CartListCollectionStore } from '../stores/CollectionStore'
 // 实例化CartListCollectionStore
 let CartListCollection = CartListCollectionStore()
+// 实例化userInfoStore
+const userInfo = userInfoStore();
+
 // 建立一个变量，该变量内有商品的信息，类型为Collection
 let collectionItem:Ref<Collection>= ref(
     {
@@ -265,22 +277,73 @@ const updateIsPayBoxVisible = (newIsPayBoxVisible: boolean) => {
 let objectId = ref('');
 const loading = ref(true);
 
+// 定义一个变量，用于判断目前的藏品是否被收藏过
+let isFavorite = ref(false);
+
+
 onMounted(async () => {
-    // 定义加载中
+    
     
     // 获取路由参数
     const route = useRoute();
     objectId.value = route.params.id as string;
-    console.log("objectId:" + objectId.value);
+    console.log("objectIdbefore:" + objectId.value);
+
     //使用getCollectionById方法获取collectionItem
-    getCollectionById(objectId.value).then((res) => {
+    await getCollectionById(objectId.value).then((res) => {
         addCollectionViews(objectId.value);
         collectionItem.value = res;
         loading.value = false;
     }).catch((err) => {
         console.log(err);
     });
+    
+
+    // 根据userInfo中的favoriteCollection数组中的objectId是否包含当前collectionItem的objectId来判断是否被收藏过
+    if (userInfo.user?.favoriteCollection.includes(collectionItem.value.objectId)) {
+        isFavorite.value = true;
+    }
+    
+    console.log("favoriteCollection:"+userInfo.user?.favoriteCollection);
+    console.log("收藏情况:" + isFavorite.value)
 });
+
+// 实现handleAddFavoriteCollection方法
+const handleAddFavoriteCollection = () => {
+    // 定义一个表单用于放收藏collectionId
+    let favoriteCollectionForm = new FormData();
+
+    favoriteCollectionForm.append('collectionId', collectionItem.value.objectId);
+    console.log("表单内的id:" + collectionItem.value.objectId)
+
+
+    // 如果collectionItem.isFavorite为true，则执行removeFavoriteCollection方法
+    if (isFavorite.value) {
+        removeFavoriteCollection(favoriteCollectionForm).then((res) => {
+            console.log("取消收藏中的favoriteCollectionForm:"+favoriteCollectionForm)
+            isFavorite.value = false;
+            ElMessage.success('取消收藏成功');
+            // 同时修改userInfo中的favoriteCollection数组
+            userInfo.user?.favoriteCollection.splice(userInfo.user?.favoriteCollection.indexOf(collectionItem.value.objectId), 1);
+        }).catch((err) => {
+            console.log("取消收藏中的favoriteCollectionForm:"+favoriteCollectionForm)
+            ElMessage.error('取消收藏失败');
+            // 同时修改userInfo中的favoriteCollection数组
+            userInfo.user?.favoriteCollection.splice(userInfo.user?.favoriteCollection.indexOf(collectionItem.value.objectId), 1);
+            console.log(err);
+        });
+    } else {
+        // 如果collectionItem.isFavorite为false，则执行addFavoriteCollection方法
+        addFavoriteCollection(favoriteCollectionForm).then((res) => {
+            console.log("收藏中的favoriteCollectionForm:"+favoriteCollectionForm)
+            isFavorite.value = true;
+            ElMessage.success('收藏成功');
+        }).catch((err) => {
+            ElMessage.error('收藏失败');
+            console.log(err);
+        });
+    }
+};
 </script>
 
 <style lang="scss" scoped>

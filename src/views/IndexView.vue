@@ -10,6 +10,13 @@ import { SelectedTypeIndexStore } from '../stores/SelectedIndexStore'
 import { Collection } from '../interfaces/Collection';
 // 引入api中的Collections
 import { getRecommendedCollections,getCollectionsByCategory } from '../api/collections'
+// 引入api中的check
+import { check } from '../api/user'
+
+// 引入userInfoStore
+import { userInfoStore } from '../stores/UserInfoStore';
+// 实例化
+const userInfo = userInfoStore();	
 
 
 
@@ -186,7 +193,7 @@ PopularRealityCollection.collections = recommendedCollections
 PopularTechnologyCollection.collections = recommendedCollections
 PopularAnimalCollection.collections = recommendedCollections
 
-onMounted(() => {
+onMounted(async() => {
     console.log("IndexView onMounted")
     // 获取推荐的藏品
     getRecommendedCollections().then(res => {
@@ -204,6 +211,12 @@ onMounted(() => {
     }).catch(err => {
         console.log(err)
     })
+	// 使用check方法更新userInfo
+    await check().then((res) => {
+        userInfo.user = res;
+    }).catch((err) => {
+        console.log(err);
+    });
 })
 
 

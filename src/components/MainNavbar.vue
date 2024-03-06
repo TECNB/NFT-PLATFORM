@@ -173,7 +173,7 @@ import { userInfoStore } from '../stores/UserInfoStore';
 const userInfo = userInfoStore();
 
 // 引入check
-import { check } from '../api/login.ts'
+import { check } from '../api/user.ts'
 import { AxiosError } from "axios"
 
 // 引入ErrorResult接口
@@ -591,4 +591,4 @@ const showCartList = () => {
         box-shadow: 0 0 0 1px var(--accent-200)
     }
 }
-</style>
+</style>../api/user.ts

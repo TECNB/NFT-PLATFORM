@@ -47,7 +47,7 @@ import { userInfoStore } from '../stores/UserInfoStore';
 //实例化userInfoStore
 const userInfo = userInfoStore();
 
-import { updatePassword } from '../api/login.ts'
+import { updatePassword } from '../api/user.ts'
 
 // 实现handleUpdatePassword方法
 const handleUpdatePassword = async () => {
@@ -128,3 +128,4 @@ let password = ref('')
 
 }
 </style>
+../api/user.ts

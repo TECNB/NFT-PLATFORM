@@ -22,7 +22,7 @@ const config = {
     // 设置超时时间
     timeout: RequestEnums.TIMEOUT as number,
     // 跨域时候允许携带凭证
-    withCredentials: true
+    withCredentials: true,
 }
 
 class RequestHttp {
@@ -115,9 +115,11 @@ class RequestHttp {
     put<T>(url: string, params?: object): Promise<T> {
         return this.service.put(url, params);
     }
-    delete<T>(url: string, params?: object): Promise<T> {
-        return this.service.delete(url, { params });
+    // 修改delete方法，允许传递FormData格式的数据
+    delete<T>(url: string, data?: FormData): Promise<T> {
+        return this.service.delete(url, { data });
     }
+
 }
 
 // 导出一个实例对象
