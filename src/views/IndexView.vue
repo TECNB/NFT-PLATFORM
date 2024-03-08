@@ -89,6 +89,7 @@ onMounted(async () => {
 	await check().then((res) => {
 		userInfo.user = res;
 	}).catch((err) => {
+		userInfo.token = "";
 		console.log(err);
 	});
 })

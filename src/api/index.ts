@@ -1,14 +1,8 @@
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
-import router from '../router';
+
 // 引入ErrorResult接口
 import  {ErrorResult}  from '../interfaces/ErrorResult';
 
-
-
-// 请求响应参数，包含data
-interface ResultData<T = any> extends ErrorResult {
-    data?: T;
-}
 const URL: string = 'http://localhost:5173'
 enum RequestEnums {
     TIMEOUT = 20000,
@@ -96,8 +90,14 @@ class RequestHttp {
     // 全局错误处理
     handleCode(code: number): void {
         switch (code) {
-            case 401:
-                ElMessage.error('登录失败，请重新登录');
+            case 200:
+                ElMessage.error('不存在该用户');
+                break;
+            case 201:
+                ElMessage.error('用户名已存在');
+                break;
+            case 204:
+                ElMessage.error('登录已失效，请重新登录');
                 break;
             default:
                 ElMessage.error('请求失败');
