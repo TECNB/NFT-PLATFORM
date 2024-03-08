@@ -31,20 +31,23 @@
 
 <script setup lang="ts">
 import { } from "vue"
-import UserNavbar from '../components/UserNavbar.vue'
-// 引入userInfoStore
-import { userInfoStore } from '../stores/UserInfoStore';
 // 引入useRouter
 import { useRouter } from 'vue-router'
+
+import UserNavbar from '../components/UserNavbar.vue'
+
+// 引入userInfoStore
+import { userInfoStore } from '../stores/UserInfoStore';
+
 // 实例化useRouter
 const router = useRouter();
-const toSetting = () => {
-    router.push('/setting')
-}
+
 //实例化userInfoStore
 const userInfo = userInfoStore();
 
-
+const toSetting = () => {
+    router.push('/setting')
+}
 </script>
 
 <style lang="scss" scoped>

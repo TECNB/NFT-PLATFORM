@@ -47,21 +47,28 @@
 
 <script setup lang="ts">
 import { } from "vue"
+// 引入router
+import { useRouter } from 'vue-router'
+
+
 import { FilterSectionTypeIndexStore } from '../stores/SelectedIndexStore'
 import { FilterSectionTimeIndexStore } from '../stores/SelectedIndexStore'
 import { StatisticsTypeIndexStore } from '../stores/SelectedIndexStore'
 
-const StatisticsTypeIndex = StatisticsTypeIndexStore()
+
 
 const props = defineProps<{ from: string }>()
+const router = useRouter()
 
 
 // 实例化
+const StatisticsTypeIndex = StatisticsTypeIndexStore()
 const TypeIndex = FilterSectionTypeIndexStore()
 const TimeIndex = FilterSectionTimeIndexStore()
-// 引入router
-import { useRouter } from 'vue-router'
-const router = useRouter()
+
+let selectedIndex = 0
+
+
 // 跳转到StatisticsView
 const toStatisticsView = () => {
     router.push({
@@ -70,7 +77,7 @@ const toStatisticsView = () => {
     StatisticsTypeIndex.index = 0
 };
 
-let selectedIndex = 0
+
 // 选中类型
 const selectType = (index: number) => {
     TypeIndex.index = index;

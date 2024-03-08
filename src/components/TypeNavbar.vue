@@ -5,41 +5,51 @@
         </div>
     </div>
 </template>
-
 <script setup lang="ts">
-import { ref, onMounted,Ref } from "vue";
-import { getAllTypes } from '../api/type'
-import { TypeStore } from '../stores/TypeStore'
-import { SelectedTypeIndexStore } from '../stores/SelectedIndexStore'
+// 引入vue各项模块
+import { ref, onMounted, Ref } from "vue";
 
-// TypeCollectionStore
-import { TypeCollectionStore } from '../stores/CollectionStore'
+// 引入接口
+import { Type } from '../interfaces/Type';
 
-// 引入Type接口
-import { Type } from '../interfaces/Type'
+// 引入store
+import { TypeStore } from '../stores/TypeStore';
+import { SelectedTypeIndexStore } from '../stores/SelectedIndexStore';
 
-// 引入getCollectionsByCategory
-import { getCollectionsByCategory } from '../api/collections'
+// 引入API
+import { getAllTypes } from '../api/type';
 
-const TypeIndex = SelectedTypeIndexStore()
-const typeStore = TypeStore()
-const typeList:Ref<Type[]> = ref([])
 
-// 实例化TypeCollectionStore
-const TypeCollection = TypeCollectionStore()
 
+
+
+// 实例化各种 Store
+const TypeIndex = SelectedTypeIndexStore();
+const typeStore = TypeStore();
+const typeList: Ref<Type[]> = ref([]);
+
+
+// 定义生命周期钩子
 onMounted(async () => {
     // 先使用缓存数据展示
-    typeList.value = [{ objectId: "0", cover: "", name: '全部' }, ...typeStore.typeInfo]
-    const res = await getAllTypes()
-    typeStore.typeInfo = res
-    typeList.value = [{ objectId: "0", cover:"",name: '全部' },...res] // 将"全部"类型添加到列表中
+    typeList.value = [{ objectId: "0", cover: "", name: '全部' }, ...typeStore.typeInfo];
+    
+    // 获取所有类型数据
+    const res = await getAllTypes();
+    
+    // 更新 TypeStore 中的数据
+    typeStore.typeInfo = res;
+
+    // 更新 typeList
+    typeList.value = [{ objectId: "0", cover: "", name: '全部' }, ...res];
 });
 
-const selectType = async(index: string) => {
+// 定义选择类型的方法
+const selectType = async (index: string) => {
     TypeIndex.index = index;
 };
 </script>
+
 
 
 <style lang="scss" scoped>

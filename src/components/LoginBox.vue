@@ -72,10 +72,20 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-// 引入userInfoStore
-import { userInfoStore } from '../stores/UserInfoStore';
+import { AxiosError } from 'axios';
+
+
 // 引入ErrorResult接口
 import  {ErrorResult}  from '../interfaces/ErrorResult';
+
+
+// 引入userInfoStore
+import { userInfoStore } from '../stores/UserInfoStore';
+
+
+import { login, signup } from '../api/user.ts'
+
+
 
 const props = defineProps(['ifShow']);
 const emit = defineEmits();
@@ -84,40 +94,20 @@ const emit = defineEmits();
 const userInfo = userInfoStore();
 
 
-const toggleVisibility = () => {
-    emit('updateIfShow', false);
-};
-import { login, signup } from '../api/user.ts'
-import { AxiosError } from 'axios';
+let loginForm = new FormData();
+let signupForm = new FormData();
+
+
 // 定义username
 let username = ref('')
 // 定义phone
 let phone = ref('')
-
 // 定义password
 let password = ref('')
 //定义ifRegister
 let ifRegister = ref(false)
 //定义ifresetPassword
 let ifresetPassword = ref(false)
-
-
-
-
-
-
-let loginForm = new FormData();
-let signupForm = new FormData();
-
-
-// 将输入框的值绑定到loginForm
-// watch(() => username.value, (newVal) => {
-//     loginForm.append("username", newVal)
-// })
-// watch(() => password.value, (newVal) => {
-//     loginForm.append("password", newVal)
-// })
-
 
 
 // 实现Login方法
@@ -170,16 +160,11 @@ const handleLogin = async () => {
         }
     });
 }
-// 完成检验中国大陆手机号的isValidPhone函数
-function isValidPhone(phone: string) {
-    return /^1[3-9]\d{9}$/.test(phone);
-}
 
 
 
 
 const handleSignup = async () => {
-    
     // 清空loginForm
     loginForm = new FormData();
 
@@ -213,6 +198,14 @@ const handleSignup = async () => {
 
 }
 
+
+const toggleVisibility = () => {
+    emit('updateIfShow', false);
+};
+// 完成检验中国大陆手机号的isValidPhone函数
+function isValidPhone(phone: string) {
+    return /^1[3-9]\d{9}$/.test(phone);
+}
 
 
 

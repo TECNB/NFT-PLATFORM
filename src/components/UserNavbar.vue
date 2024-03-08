@@ -33,7 +33,6 @@ const UserIndex = SelectedUserIndexStore()
 
 
 const selectType = (index: number) => {
-
     UserIndex.index = index;
 };
 </script>

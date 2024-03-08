@@ -134,36 +134,36 @@
 import { ref, onMounted,Ref } from "vue"
 // 引入useRoute
 import { useRoute } from 'vue-router'
-// 引入getCollectionById
-import { getCollectionById,addCollectionViews } from '../api/collections'
-// 引入addFavoriteCollection以及removeFavoriteCollection
-import { addFavoriteCollection, removeFavoriteCollection, check} from '../api/user'
 
-import MainNavbar from '../components/MainNavbar.vue'
+
 // 引入Collection
 import { Collection } from '../interfaces/Collection';
+
+
+import MainNavbar from '../components/MainNavbar.vue'
 // 引入MaskLayer
 import MaskLayer from '../components/MaskLayer.vue'
 // 引入PayBox
 import PayBox from '../components/PayBox.vue'
+
+
 // 引入UserInfoStore
 import { userInfoStore } from '../stores/UserInfoStore'
-
-// import { useRouter } from 'vue-router'
-
-// const router = useRouter()
-
-// const toUser = () => {
-//     router.push({
-//         name: 'UserView',
-//     })
-// }
 // 引入CartListCollectionStore
 import { CartListCollectionStore } from '../stores/CollectionStore'
+
+
+// 引入getCollectionById
+import { getCollectionById,addCollectionViews } from '../api/collections'
+// 引入addFavoriteCollection以及removeFavoriteCollection
+import { addFavoriteCollection, removeFavoriteCollection} from '../api/user'
+
+
 // 实例化CartListCollectionStore
 let CartListCollection = CartListCollectionStore()
 // 实例化userInfoStore
 const userInfo = userInfoStore();
+
 
 // 建立一个变量，该变量内有商品的信息，类型为Collection
 let collectionItem:Ref<Collection>= ref(
@@ -261,28 +261,19 @@ const cartList = ref<Collection[]>([
     }
 
 ])
-// cartList赋值给CartListCollection
-CartListCollection.collections = cartList.value;
-// 点击ShoppingCart图标后将该商品collectionItem添加进CartListCollection的方法
-const addCart = () => {
-    CartListCollection.collections.push(collectionItem.value)
-    console.log(CartListCollection.collections)
-}
 // 定义变量isPayBoxVisible
 let isPayBoxVisible = ref(false);
-// 实现updateIsPayBoxVisible方法
-const updateIsPayBoxVisible = (newIsPayBoxVisible: boolean) => {
-    isPayBoxVisible.value = newIsPayBoxVisible;
-};
 let objectId = ref('');
 const loading = ref(true);
-
 // 定义一个变量，用于判断目前的藏品是否被收藏过
 let isFavorite = ref(false);
 
 
+// cartList赋值给CartListCollection
+CartListCollection.collections = cartList.value;
+
+
 onMounted(async () => {
-    
     
     // 获取路由参数
     const route = useRoute();
@@ -307,6 +298,17 @@ onMounted(async () => {
     console.log("favoriteCollection:"+userInfo.user?.favoriteCollection);
     console.log("收藏情况:" + isFavorite.value)
 });
+
+// 点击ShoppingCart图标后将该商品collectionItem添加进CartListCollection的方法
+const addCart = () => {
+    CartListCollection.collections.push(collectionItem.value)
+    console.log(CartListCollection.collections)
+}
+
+// 实现updateIsPayBoxVisible方法
+const updateIsPayBoxVisible = (newIsPayBoxVisible: boolean) => {
+    isPayBoxVisible.value = newIsPayBoxVisible;
+};
 
 // 实现handleAddFavoriteCollection方法
 const handleAddFavoriteCollection = () => {

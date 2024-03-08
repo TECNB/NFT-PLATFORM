@@ -81,21 +81,20 @@
 
 <script setup lang="ts">
 import { } from "vue"
-import { SelectedUserIndexStore } from '../stores/SelectedIndexStore'
-// 引入UserFilterSection
-import UserFilterSection from '../components/UserFilterSection.vue'
 
-const UserIndex = SelectedUserIndexStore()
-import { } from "vue"
-
-import { RecommendedCollectionStore } from '../stores/CollectionStore'
 import { Collection } from '../interfaces/Collection';
 
 
+import { RecommendedCollectionStore } from '../stores/CollectionStore'
+import { SelectedUserIndexStore } from '../stores/SelectedIndexStore'
+import UserFilterSection from '../components/UserFilterSection.vue'
 
 
-// 像 useRouter 那样定义一个变量拿到实例
+
+const UserIndex = SelectedUserIndexStore()
 const RecommendedCollection = RecommendedCollectionStore()
+
+
 RecommendedCollection.collections = [
 {
 		"objectId": "144995hv7ic8gt8d1e9ita3h",
@@ -241,8 +240,6 @@ RecommendedCollection.collections = [
 		"recommend": true,
 		"albumId": null
 	},
-	
-
 ]
 
 let collectionItems: Collection[];

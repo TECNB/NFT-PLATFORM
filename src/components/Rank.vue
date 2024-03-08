@@ -31,7 +31,11 @@
 </template>
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
+
+
 import FilterSection from '../components/FilterSection.vue'
+
+
 // 引入getPopularCollections
 import { getPopularCollections } from '../api/collections';
 
@@ -106,7 +110,7 @@ const groupedCollections = computed(() => {
     }
     return grouped;
 });
-// 定义数组接受数据
+
 
 // 获取数据
 onMounted(async() => {

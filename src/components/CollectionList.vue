@@ -42,16 +42,40 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount,Ref } from "vue"
-
-import { RecommendedCollectionStore, CollectionRankingStore, PopularAnimationCollectionStore, PopularRealityCollectionStore, PopularTechnologyCollectionStore, PopularAnimalCollectionStore,TypeCollectionStore } from '../stores/CollectionStore'
-import { Collection } from '../interfaces/Collection';
 import { useRouter } from 'vue-router'
-// 引入getCollectionsByCategory
-import { getCollectionsByCategory } from '../api/collections'
-// 引入Type
+
+
+import { Collection } from '../interfaces/Collection';
 import { Type } from '../interfaces/Type'
 
+
+import { RecommendedCollectionStore, CollectionRankingStore, PopularAnimationCollectionStore, PopularRealityCollectionStore, PopularTechnologyCollectionStore, PopularAnimalCollectionStore,TypeCollectionStore } from '../stores/CollectionStore'
+
+
+// 引入getCollectionsByCategory
+import { getCollectionsByCategory } from '../api/collections'
+
+
+const props = defineProps<{ source: Type | Collection[] ,ifType:boolean, title:String}>()
 const router = useRouter()
+
+const RecommendedCollection = RecommendedCollectionStore()
+
+
+const collectionItems: Ref<Collection[]> = ref([]);
+const currentPage = ref(0);
+const displayedItems: Ref<Collection[]> = ref([]);
+
+
+onMounted(async() => {
+    updateDisplayedItems();
+    window.addEventListener('resize', updateDisplayedItems);
+    
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener('resize', updateDisplayedItems);
+});
 
 const toNft = (objectId: string) => {
     router.push({
@@ -60,25 +84,20 @@ const toNft = (objectId: string) => {
     })
 }
 
+const goToPreviousPage = () => {
+    if (currentPage.value > 0) {
+        currentPage.value--;
+        updateDisplayedItems();
+    }
+};
 
-
-const props = defineProps<{ source: Type | Collection[] ,ifType:boolean, title:String}>()
-
-
-// 像 useRouter 那样定义一个变量拿到实例
-const RecommendedCollection = RecommendedCollectionStore()
-// const CollectionRanking = CollectionRankingStore()
-// const PopularAnimationCollection = PopularAnimationCollectionStore()
-// const PopularRealityCollection = PopularRealityCollectionStore()
-// const PopularTechnologyCollection = PopularTechnologyCollectionStore()
-// const PopularAnimalCollection = PopularAnimalCollectionStore()
-// const TypeCollection = TypeCollectionStore()
-
-const collectionItems: Ref<Collection[]> = ref([]);
-
-
-const currentPage = ref(0);
-const displayedItems: Ref<Collection[]> = ref([]);
+const goToNextPage = () => {
+    const totalPages = Math.ceil(collectionItems.value.length / calculateItemsPerPage());
+    if (currentPage.value < totalPages - 1) {
+        currentPage.value++;
+        updateDisplayedItems();
+    }
+};
 
 const updateDisplayedItems = async() => {
     const itemsPerPage = calculateItemsPerPage();
@@ -113,31 +132,6 @@ const calculateItemsPerPage = () => {
         return 6;
     }
 };
-
-const goToPreviousPage = () => {
-    if (currentPage.value > 0) {
-        currentPage.value--;
-        updateDisplayedItems();
-    }
-};
-
-const goToNextPage = () => {
-    const totalPages = Math.ceil(collectionItems.value.length / calculateItemsPerPage());
-    if (currentPage.value < totalPages - 1) {
-        currentPage.value++;
-        updateDisplayedItems();
-    }
-};
-
-onMounted(async() => {
-    updateDisplayedItems();
-    window.addEventListener('resize', updateDisplayedItems);
-    
-});
-
-onBeforeUnmount(() => {
-    window.removeEventListener('resize', updateDisplayedItems);
-});
 
 
 

@@ -44,22 +44,18 @@
 </template>
 
 <script setup lang="ts">
-// const handleOpen = (key: string, keyPath: string[]) => {
-//     console.log(key, keyPath)
-// }
-// const handleClose = (key: string, keyPath: string[]) => {
-//     console.log(key, keyPath)
-// }
-
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 // 实例化router
 const router = useRouter();
 
+// 定义ref数据
 const selectedMenu = ref<number | null>(null);
 const selectedSubMenu = ref<number | null>(null);
-// ifShowSubMenu
 const ifShowSubMenu = ref<boolean>(false);
+
+// 保证第一个选择的是首页
+selectedMenu.value = 0;
 
 const menus = [
     { label: '个人资料', icon: 'User', path: '/' },
@@ -78,8 +74,7 @@ const menus = [
     { label: '净利', icon: 'Money', path: '/data' },
     { label: '帮助', icon: 'Help', path: '/setting' },
 ];
-// 保证第一个选择的是首页
-selectedMenu.value = 0;
+
 
 
 const toggleSubMenu = () => {

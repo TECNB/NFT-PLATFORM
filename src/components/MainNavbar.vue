@@ -155,8 +155,8 @@
 <script setup lang="ts">
 import { ref, watch, onMounted,Ref } from "vue"
 import { useRouter, useRoute } from 'vue-router'
-// 引入Collection接口
-import { Collection } from '../interfaces/Collection';
+import { AxiosError } from "axios"
+
 
 // 引入MaskLayer
 import MaskLayer from '../components/MaskLayer.vue'
@@ -164,42 +164,60 @@ import MaskLayer from '../components/MaskLayer.vue'
 import LoginBox from '../components/LoginBox.vue'
 // 引入CartList
 import CartList from '../components/CartList.vue'
-import { StatisticsTypeIndexStore } from '../stores/SelectedIndexStore'
 
-// 引入userInfoStore
+
+// 引入Collection接口
+import { Collection } from '../interfaces/Collection';
+// 引入ErrorResult接口
+import { ErrorResult } from '../interfaces/ErrorResult';
+
+
+import { StatisticsTypeIndexStore } from '../stores/SelectedIndexStore'
 import { userInfoStore } from '../stores/UserInfoStore';
 
-//实例化userInfoStore
-const userInfo = userInfoStore();
 
 // 引入check
 import { check } from '../api/user.ts'
-import { AxiosError } from "axios"
-
-// 引入ErrorResult接口
-import { ErrorResult } from '../interfaces/ErrorResult';
 // 引入searchCollections
 import { searchCollections } from '../api/collections'
-
-// 定义hasSearchInput
-const hasSearchInput = ref(false)
-// 定义name
-let name = ref('')
 
 
 
 const router = useRouter()
 const route = useRoute()
 
+
+//实例化userInfoStore
+const userInfo = userInfoStore();
 const TypeIndex = StatisticsTypeIndexStore()
+
+
+// 定义hasSearchInput
+const hasSearchInput = ref(false)
+// 定义name
+let name = ref('')
 // hasToken设置默认为false
 const hasToken = ref(false);
-
 // 定义search方法返回的数组
 let searchCollectionsArray: Ref<Collection[]> = ref([]);
 
-//定义loading
-// const loading = ref(true)
+
+onMounted(() => {
+    // 在组件挂载后检查 localStorage 中是否存在 token
+    hasToken.value = localStorage.getItem('token') !== "";
+    if (!hasToken.value && route.path === '/user') {
+        // 跳转到首页
+        router.replace({
+            path: '/'
+        });
+    }
+});
+// 使用watch监听localStorage中token的变化
+watch(() => userInfo.token, (newToken) => {
+    hasToken.value = newToken !== "";
+
+});
+
 
 // search方法
 const search = async () => {
@@ -217,25 +235,6 @@ const search = async () => {
     // loading.value = false
 }
 
-
-// 使用watch监听localStorage中token的变化
-watch(() => userInfo.token, (newToken) => {
-    hasToken.value = newToken !== "";
-
-});
-
-onMounted(() => {
-    // 在组件挂载后检查 localStorage 中是否存在 token
-    hasToken.value = localStorage.getItem('token') !== "";
-    if (!hasToken.value && route.path === '/user') {
-        // 跳转到首页
-        router.replace({
-            path: '/'
-        });
-    }
-
-
-});
 
 const value1 = ref(false)
 const toCreate = () => {

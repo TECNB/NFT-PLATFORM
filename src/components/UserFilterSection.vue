@@ -73,14 +73,17 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
+
 // 定义变量控制是否展示ConditionList
 let isConditionListVisible = ref(false);
+// 定义变量控制是否展示TypeList
+let isTypeListVisible = ref(false);
+
 // 定义一个函数用于控制ConditionList的显示与隐藏
 const toggleConditionList = () => {
     isConditionListVisible.value = !isConditionListVisible.value;
 };
-// 实现isTypeListVisible
-let isTypeListVisible = ref(false);
+// 控制是否展示TypeList
 const toggleTypeList = () => {
     isTypeListVisible.value = !isTypeListVisible.value;
 };

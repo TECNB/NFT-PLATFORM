@@ -109,32 +109,21 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
-// 引入UserFilterSection
-import UserFilterSection from '../components/UserFilterSection.vue'
-
-import { Collection } from '../interfaces/Collection';
 // 引入PayBox
 import PayBox from '../components/PayBox.vue'
 
-
-const isExpanded = ref(false)
-
-function toggleExpand() {
-    isExpanded.value = !isExpanded.value
-}
+import { Collection } from '../interfaces/Collection';
 
 
+import UserFilterSection from '../components/UserFilterSection.vue'
+import { CartListCollectionStore } from '../stores/CollectionStore'
 import { SelectedTypeIndexStore } from '../stores/SelectedIndexStore'
 
+
+
+// 实例化CartListCollectionStore
+let CartListCollection = CartListCollectionStore()
 const TypeIndex = SelectedTypeIndexStore()
-
-
-const selectType = (index: number) => {
-
-    TypeIndex.index = index;
-};
-
-
 
 
 let collectionItems: Collection[] = [
@@ -284,10 +273,7 @@ let collectionItems: Collection[] = [
     },
 ]
 
-// 引入CartListCollectionStore
-import { CartListCollectionStore } from '../stores/CollectionStore'
-// 实例化CartListCollectionStore
-let CartListCollection = CartListCollectionStore()
+
 // 建立一个变量，该变量内有商品的信息，类型为Collection
 let collectionItem: Collection = {
     "objectId": "8qjjbg4l2a7wi8yhcgyj7luu",
@@ -452,38 +438,48 @@ const cartList = ref<Collection[]>([
         "recommend": true,
         "albumId": null
     },
-
-
 ])
+
+
+const isExpanded = ref(false)
+// 定义变量isPayBoxVisible
+let isPayBoxVisible = ref(false);
+let isBuyVisible = collectionItems.map(() => ref(false));
+
+
 // cartList赋值给CartListCollection
 CartListCollection.collections = cartList.value;
+
+
+const toggleExpand = () => {
+    isExpanded.value = !isExpanded.value
+}
+
+const selectType = (index: number) => {
+    TypeIndex.index = index;
+};
+
 // 点击ShoppingCart图标后将该商品collectionItem添加进CartListCollection的方法
 const addCart = () => {
     CartListCollection.collections.push(collectionItem)
     console.log(CartListCollection.collections)
 }
-// 定义变量isPayBoxVisible
-let isPayBoxVisible = ref(false);
+
 // 实现updateIsPayBoxVisible方法
 const updateIsPayBoxVisible = (newIsPayBoxVisible: boolean) => {
     isPayBoxVisible.value = newIsPayBoxVisible;
 };
-// 实现 updateIsBuyVisible
-
-
-// 定义一个变量isBuyVisible
-let isBuyVisible = collectionItems.map(() => ref(false));
-
-
 
 // 实现showDelete方法
 const showDelete = (index: number) => {
     isBuyVisible.forEach((item, i) => (item.value = i === index));
 };
+
 // 实现hideDelete方法
 const hideDelete = () => {
     isBuyVisible.forEach((item) => (item.value = false));
 };
+
 </script>
 
 <style lang="scss" scoped>

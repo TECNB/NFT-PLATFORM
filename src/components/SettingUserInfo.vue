@@ -41,35 +41,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
-// 引入userInfoStore
+import { ref } from "vue";
 import { userInfoStore } from '../stores/UserInfoStore';
-//实例化userInfoStore
+import { updatePassword } from '../api/user.ts';
+
+// 实例化 userInfoStore
 const userInfo = userInfoStore();
 
-import { updatePassword } from '../api/user.ts'
+// 定义响应式数据
+let username = ref('');
+let phone = ref('');
+let password = ref('');
 
-// 实现handleUpdatePassword方法
+// 实现 handleUpdatePassword 方法
 const handleUpdatePassword = async () => {
     const updatePasswordForm = new FormData();
     updatePasswordForm.append('newPwd', password.value);
-    await updatePassword(updatePasswordForm).then(res => {
-        console.log(res);
-    }).catch(err => {
-        console.log(err);
-    })
-}
 
-
-// 定义username
-let username = ref('')
-// 定义phone
-let phone = ref('')
-
-// 定义password
-let password = ref('')
-
+    try {
+        const response = await updatePassword(updatePasswordForm);
+        console.log(response);
+    } catch (error) {
+        console.error(error);
+    }
+};
 </script>
+
 
 <style lang="scss" scoped>
 .el-input {

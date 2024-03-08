@@ -1,49 +1,75 @@
+<template>
+	<div class="IndexView" v-if="TypeIndex.index == '0'">
+
+		<MainNavbar />
+		<TypeNavbar />
+		<el-carousel :interval="4000" type="card" height="300px">
+			<el-carousel-item v-for="(item, index) in recommendedCollections" :key="index"
+				style="border-radius: 20px 20px 0px 0px;">
+				<img :src="item.cover" alt="NFT Image"
+					style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;">
+				<h3 text="2xl" justify="center">{{ item.name }}</h3>
+			</el-carousel-item>
+		</el-carousel>
+		<Rank />
+		<CollectionList :source="RecommendedCollection.collections" title="推荐数字藏品" :ifType="false" />
+		<CollectionList :source="CollectionRanking.collections" title="今日数字藏品排行榜" :ifType="false"/>
+
+		<div v-for="(type, index) in typeStore.typeInfo" :key="index" class="IndexView">
+			<CollectionList :source="type" :title="`热门${type.name}`" :ifType="true"/>
+		</div>
+
+
+	</div>
+	<div v-for="(type, index) in typeStore.typeInfo" :key="index" class="IndexView"
+		v-show="TypeIndex.index == type.objectId">
+		<MainNavbar />
+		<TypeNavbar />
+		<CollectionList :source="type" :title="`热门${type.name}`" :ifType="true"/>
+	</div>
+</template>
+
 <script setup lang="ts">
+import { onMounted, Ref, ref } from "vue"
+
+
+import { Collection } from '../interfaces/Collection';
+import { Type } from '../interfaces/Type'
+
 
 import MainNavbar from '../components/MainNavbar.vue'
 import TypeNavbar from '../components/TypeNavbar.vue'
 import CollectionList from '../components/CollectionList.vue'
 import Rank from '../components/Rank.vue'
-import { onMounted, Ref, ref } from "vue"
+
+
 import { RecommendedCollectionStore, CollectionRankingStore, PopularAnimationCollectionStore, PopularRealityCollectionStore, PopularTechnologyCollectionStore, PopularAnimalCollectionStore } from '../stores/CollectionStore'
 import { SelectedTypeIndexStore } from '../stores/SelectedIndexStore'
-import { Collection } from '../interfaces/Collection';
+import { userInfoStore } from '../stores/UserInfoStore';
+import { TypeStore } from '../stores/TypeStore';
+
+
 // 引入api中的Collections
 import { getRecommendedCollections, getCollectionsByCategory,getPopularCollections } from '../api/collections'
 // 引入api中的check
 import { check } from '../api/user'
 
-// 引入userInfoStore
-import { userInfoStore } from '../stores/UserInfoStore';
-// 引入typeStore
-import { TypeStore } from '../stores/TypeStore'
-// 引入Type接口
-import { Type } from '../interfaces/Type'
 
-// 实例化
 const userInfo = userInfoStore();
-
-// 实例化
 const typeStore = TypeStore()
-
-const typeList: Ref<Type[]> = ref([])
-typeList.value = typeStore.typeInfo
-
-
-
-
-
-// 像 useRouter 那样定义一个变量拿到实例
 const RecommendedCollection = RecommendedCollectionStore()
 const CollectionRanking = CollectionRankingStore()
 const PopularAnimationCollection = PopularAnimationCollectionStore()
 const PopularRealityCollection = PopularRealityCollectionStore()
 const PopularTechnologyCollection = PopularTechnologyCollectionStore()
 const PopularAnimalCollection = PopularAnimalCollectionStore()
-
 const TypeIndex = SelectedTypeIndexStore()
 
-console.log("SelectedIndex:" + TypeIndex.index)
+
+
+const typeList: Ref<Type[]> = ref([])
+typeList.value = typeStore.typeInfo
+
 
 // 初始值
 const recommendedCollections: Collection[] = [
@@ -195,10 +221,8 @@ const recommendedCollections: Collection[] = [
 
 ]
 
-// 使用 setState 方法赋值
 
 CollectionRanking.collections = recommendedCollections
-
 PopularAnimationCollection.collections = recommendedCollections
 PopularRealityCollection.collections = recommendedCollections
 PopularTechnologyCollection.collections = recommendedCollections
@@ -228,42 +252,7 @@ onMounted(async () => {
 		console.log(err);
 	});
 })
-
-
-
-
 </script>
-
-<template>
-	<div class="IndexView" v-if="TypeIndex.index == '0'">
-
-		<MainNavbar />
-		<TypeNavbar />
-		<el-carousel :interval="4000" type="card" height="300px">
-			<el-carousel-item v-for="(item, index) in recommendedCollections" :key="index"
-				style="border-radius: 20px 20px 0px 0px;">
-				<img :src="item.cover" alt="NFT Image"
-					style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;">
-				<h3 text="2xl" justify="center">{{ item.name }}</h3>
-			</el-carousel-item>
-		</el-carousel>
-		<Rank />
-		<CollectionList :source="RecommendedCollection.collections" title="推荐数字藏品" :ifType="false" />
-		<CollectionList :source="CollectionRanking.collections" title="今日数字藏品排行榜" :ifType="false"/>
-
-		<div v-for="(type, index) in typeStore.typeInfo" :key="index" class="IndexView">
-			<CollectionList :source="type" :title="`热门${type.name}`" :ifType="true"/>
-		</div>
-
-
-	</div>
-	<div v-for="(type, index) in typeStore.typeInfo" :key="index" class="IndexView"
-		v-show="TypeIndex.index == type.objectId">
-		<MainNavbar />
-		<TypeNavbar />
-		<CollectionList :source="type" :title="`热门${type.name}`" :ifType="true"/>
-	</div>
-</template>
 
 <style scoped>
 .el-carousel__item h3 {
