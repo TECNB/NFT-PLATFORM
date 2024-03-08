@@ -49,7 +49,7 @@ import { Collection } from '../interfaces/Collection';
 import { Type } from '../interfaces/Type'
 
 
-import { RecommendedCollectionStore, CollectionRankingStore, PopularAnimationCollectionStore, PopularRealityCollectionStore, PopularTechnologyCollectionStore, PopularAnimalCollectionStore,TypeCollectionStore } from '../stores/CollectionStore'
+import { RecommendedCollectionStore } from '../stores/CollectionStore'
 
 
 // 引入getCollectionsByCategory

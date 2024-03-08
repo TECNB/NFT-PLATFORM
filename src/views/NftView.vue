@@ -166,26 +166,7 @@ const userInfo = userInfoStore();
 
 
 // 建立一个变量，该变量内有商品的信息，类型为Collection
-let collectionItem:Ref<Collection>= ref(
-    {
-        "objectId": "144995hv7ic8gt8d1e9ita3h",
-        "hash": "56334e4f7107dc2fdc0f29060e0eda7d0c1ef2f66808f19d61e30428101346e6",
-        "name": "东大寺",
-        "shortIntro": "东大寺是日本最著名、最重要的寺庙之一，也是奈良的地标。",
-        "intro": "东大寺位于日本奈良市，是一座佛教寺庙建筑群，曾是强大的七大寺之一。虽然东大寺始建于公元 738 年，但直到公元 752 年才正式开放。",
-        "cover": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/1a844b00167657df0f6a412ac8b523c3.png",
-        "file": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/1a844b00167657df0f6a412ac8b523c3.png",
-        "authorId": "509yww08r272412vzf0bv04n",
-        "categoryId": "25jvslre4yobdt7w99kkn3rh",
-        "type": "图片",
-        "price": 18,
-        "visitCount": 0,
-        "issueNumber": 120,
-        "soldNumber": 0,
-        "recommend": true,
-        "albumId": null
-    }
-)
+let collectionItem:Ref<Collection>= ref() as Ref<Collection>
 const cartList = ref<Collection[]>([
     {
         "objectId": "144995hv7ic8gt8d1e9ita3h",
@@ -204,62 +185,7 @@ const cartList = ref<Collection[]>([
         "soldNumber": 0,
         "recommend": true,
         "albumId": null
-    },
-    {
-        "objectId": "8qjjbg4l2a7wi8yhcgyj7luu",
-        "hash": "fa23fb8e29eb2176999e49582838f635c8a8bcb39c6b6922cc90fda70f763426",
-        "name": "大阪城",
-        "shortIntro": "大阪城是一座日本城堡，位于日本大阪市中区。这座城堡是日本最著名的地标之一。",
-        "intro": "大阪是一座日本城堡，位于日本大阪市中区。这座城堡是日本最著名的地标之一，在 16 世纪安土桃山时代统一日本的过程中发挥了重要作用。",
-        "cover": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/d716bbcaea6c7c8d877e7c5c12b758bd.png",
-        "file": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/d716bbcaea6c7c8d877e7c5c12b758bd.png",
-        "authorId": "pg4pmu0gqq0bgg4btfiz085u",
-        "categoryId": "6gaq1nnv52k7ul0o53kfer36",
-        "type": "图片",
-        "price": 10,
-        "visitCount": 0,
-        "issueNumber": 100,
-        "soldNumber": 0,
-        "recommend": true,
-        "albumId": null
-    },
-    {
-        "objectId": "144995hv7ic8gt8d1e9ita3h",
-        "hash": "56334e4f7107dc2fdc0f29060e0eda7d0c1ef2f66808f19d61e30428101346e6",
-        "name": "东大寺",
-        "shortIntro": "东大寺是日本最著名、最重要的寺庙之一，也是奈良的地标。",
-        "intro": "东大寺位于日本奈良市，是一座佛教寺庙建筑群，曾是强大的七大寺之一。虽然东大寺始建于公元 738 年，但直到公元 752 年才正式开放。",
-        "cover": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/1a844b00167657df0f6a412ac8b523c3.png",
-        "file": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/1a844b00167657df0f6a412ac8b523c3.png",
-        "authorId": "509yww08r272412vzf0bv04n",
-        "categoryId": "25jvslre4yobdt7w99kkn3rh",
-        "type": "图片",
-        "price": 18,
-        "visitCount": 0,
-        "issueNumber": 120,
-        "soldNumber": 0,
-        "recommend": true,
-        "albumId": null
-    },
-    {
-        "objectId": "8qjjbg4l2a7wi8yhcgyj7luu",
-        "hash": "fa23fb8e29eb2176999e49582838f635c8a8bcb39c6b6922cc90fda70f763426",
-        "name": "大阪城",
-        "shortIntro": "大阪城是一座日本城堡，位于日本大阪市中区。这座城堡是日本最著名的地标之一。",
-        "intro": "大阪是一座日本城堡，位于日本大阪市中区。这座城堡是日本最著名的地标之一，在 16 世纪安土桃山时代统一日本的过程中发挥了重要作用。",
-        "cover": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/d716bbcaea6c7c8d877e7c5c12b758bd.png",
-        "file": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/d716bbcaea6c7c8d877e7c5c12b758bd.png",
-        "authorId": "pg4pmu0gqq0bgg4btfiz085u",
-        "categoryId": "6gaq1nnv52k7ul0o53kfer36",
-        "type": "图片",
-        "price": 10,
-        "visitCount": 0,
-        "issueNumber": 100,
-        "soldNumber": 0,
-        "recommend": true,
-        "albumId": null
     }
-
 ])
 // 定义变量isPayBoxVisible
 let isPayBoxVisible = ref(false);
@@ -321,7 +247,7 @@ const handleAddFavoriteCollection = () => {
 
     // 如果collectionItem.isFavorite为true，则执行removeFavoriteCollection方法
     if (isFavorite.value) {
-        removeFavoriteCollection(favoriteCollectionForm).then((res) => {
+        removeFavoriteCollection(favoriteCollectionForm).then(() => {
             console.log("取消收藏中的favoriteCollectionForm:"+favoriteCollectionForm)
             isFavorite.value = false;
             ElMessage.success('取消收藏成功');
@@ -336,7 +262,7 @@ const handleAddFavoriteCollection = () => {
         });
     } else {
         // 如果collectionItem.isFavorite为false，则执行addFavoriteCollection方法
-        addFavoriteCollection(favoriteCollectionForm).then((res) => {
+        addFavoriteCollection(favoriteCollectionForm).then(() => {
             console.log("收藏中的favoriteCollectionForm:"+favoriteCollectionForm)
             isFavorite.value = true;
             ElMessage.success('收藏成功');
