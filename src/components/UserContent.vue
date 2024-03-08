@@ -82,8 +82,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue"
 
-import { Collection } from '../interfaces/Collection';
-
 
 import { FavoriteCollectionStore,OwnedCollectionStore } from '../stores/CollectionStore'
 import { SelectedUserIndexStore } from '../stores/SelectedIndexStore'
@@ -95,15 +93,12 @@ import { getCollectionById } from '../api/collections'
 import { userInfoStore } from "../stores/UserInfoStore";
 
 
-
-
 const UserIndex = SelectedUserIndexStore()
 const FavoriteCollection = FavoriteCollectionStore()
 const OwnedCollection = OwnedCollectionStore()
 const userInfo = userInfoStore()
 
 let isCollectionNullVisible = ref(false);
-
 
 
 onMounted(async () => {

@@ -71,8 +71,10 @@
 </template>
 
 <script setup lang="ts">
-import { watch, ref } from "vue"
+import { watch, ref, onMounted } from "vue"
 import { Collection } from '../interfaces/Collection';
+
+
 // 引入CartListCollectionStore
 import { CartListCollectionStore } from '../stores/CollectionStore'
 
@@ -83,11 +85,9 @@ const props = defineProps(['ifShow']);
 const emit = defineEmits();
 
 // 定义一个数组用于储存购物车的内容,并且为响应式
-
-const cartList = ref<Collection[]>([])
-
-// 初始赋值
-cartList.value = CartListCollection.collections;
+let cartList = ref<Collection[]>([])
+// 定义一个变量isDeleteVisible
+let isDeleteVisible = cartList.value.map(() => ref(false));
 
 
 // 定义一个变量用于控制是否展示购物车为空的情况
@@ -96,24 +96,36 @@ let isCartNullVisible = false;
 let cartListLength = cartList.value.length;
 // 定义一个变量用于储存购物车的总价
 let totalPrice = 0;
-// 通过cartList的price算出totalPrice，因为price是字符串类型，所以需要转换为数字类型
-// 同时需要把price后面的ETH去掉
-for (let i = 0; i < cartList.value.length; i++) {
-    totalPrice += Number(cartList.value[i].price);
-}
-// 最后保留两位小数
-totalPrice = Number(totalPrice.toFixed(2));
 
+onMounted(() => {
+    // 调用更新购物车数据的函数
+    updateCartData()
+})
 
-// 如果cartList为空则显示还没有任何商品,快去购物吧
-if (cartList.value.length === 0) {
-    isCartNullVisible = true
-}
+//当cartList改变时，isDeleteVisible也重新赋值
+watch(cartList.value, (newValue) => {
+    isDeleteVisible = newValue.map(() => ref(false));
+
+    cartListLength = newValue.length;
+    totalPrice = calculateTotalPrice(newValue);
+})
+//当cartList改变时，isDeleteVisible也重新赋值
+watch(CartListCollection.collections, (newValue) => {
+    cartList.value = newValue;
+    isDeleteVisible = newValue.map(() => ref(false));
+
+    // 如果cartList为空则显示还没有任何商品,快去购物吧
+    if (cartList.value.length === 0) {
+        isCartNullVisible = true
+    } else {
+        isCartNullVisible = false
+    }
+    totalPrice = calculateTotalPrice(cartList.value);
+})
 
 const toggleVisibility = () => {
     emit('updateIfShow', false);
 };
-
 // 实现clearAll方法将cartList清空
 const clearAll = () => {
     cartList.value.splice(0, cartList.value.length);
@@ -121,28 +133,6 @@ const clearAll = () => {
     totalPrice = 0;
     isCartNullVisible = true;
 }
-
-// 定义一个变量isDeleteVisible
-let isDeleteVisible = cartList.value.map(() => ref(false));
-
-//当cartList改变时，isDeleteVisible也重新赋值
-watch(cartList.value, (newValue, oldValue) => {
-    isDeleteVisible = newValue.map(() => ref(false));
-    console.log('watch 已触发', oldValue)
-    // 定义一个变量用于储存cartList数组的总数
-    cartListLength = cartList.value.length;
-    // 定义一个变量用于储存购物车的总价
-    totalPrice = 0;
-    // 通过cartList的price算出totalPrice，因为price是字符串类型，所以需要转换为数字类型
-    // 同时需要把price后面的ETH去掉
-    for (let i = 0; i < cartList.value.length; i++) {
-        totalPrice += Number(cartList.value[i].price);
-    }
-    // 最后保留两位小数
-    totalPrice = Number(totalPrice.toFixed(2));
-})
-
-
 // 实现showDelete方法
 const showDelete = (index: number) => {
     isDeleteVisible.forEach((item, i) => (item.value = i === index));
@@ -167,6 +157,28 @@ const deleteCart = (index: number) => {
         isCartNullVisible = true
     }
 }
+
+const calculateTotalPrice = (list: any[]) => {
+    let totalPrice = 0;
+    for (let i = 0; i < list.length; i++) {
+        totalPrice += Number(list[i].price);
+    }
+    return Number(totalPrice.toFixed(2));
+};
+const updateCartData = () => {
+    cartList.value = CartListCollection.collections;
+    cartListLength = cartList.value.length;
+
+    if (cartList.value.length === 0) {
+        isCartNullVisible = true;
+    }
+
+    isDeleteVisible = cartList.value.map(() => ref(false));
+    cartListLength = cartList.value.length;
+
+    totalPrice = calculateTotalPrice(cartList.value);
+};
+
 
 
 </script>

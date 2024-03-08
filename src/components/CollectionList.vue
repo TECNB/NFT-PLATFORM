@@ -49,17 +49,12 @@ import { Collection } from '../interfaces/Collection';
 import { Type } from '../interfaces/Type'
 
 
-import { RecommendedCollectionStore } from '../stores/CollectionStore'
-
-
 // 引入getCollectionsByCategory
 import { getCollectionsByCategory } from '../api/collections'
 
 
 const props = defineProps<{ source: Type | Collection[] ,ifType:boolean, title:String}>()
 const router = useRouter()
-
-const RecommendedCollection = RecommendedCollectionStore()
 
 
 const collectionItems: Ref<Collection[]> = ref([]);
@@ -105,8 +100,6 @@ const updateDisplayedItems = async() => {
     if(props.ifType){
         await getCollectionsByCategory((props.source as Type).objectId).then(res => {
             collectionItems.value = res
-            console.log(res)
-
         }).catch(err => {
             console.log(err)
         })
@@ -132,13 +125,6 @@ const calculateItemsPerPage = () => {
         return 6;
     }
 };
-
-
-
-
-
-// 直接通过实例来获取数据
-console.log(RecommendedCollection)
 </script>
 
 <style lang="scss" scoped>

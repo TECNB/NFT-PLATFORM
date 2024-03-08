@@ -117,7 +117,7 @@ onMounted(async() => {
     getPopularCollections().then((res) => {
         //TODO:目前数据不足，下面的内容暂时注释
         // recommendedCollections.value = res;
-        console.log(recommendedCollections);
+
     }).catch((err) => {
         console.log(err);
     });

@@ -68,20 +68,15 @@ typeList.value = typeStore.typeInfo
 
 
 onMounted(async () => {
-	console.log("IndexView onMounted")
 	// 获取推荐的藏品
 	await getRecommendedCollections().then(res => {
-		console.log(res)
 		RecommendedCollection.collections = res ?? []
-		
-		console.log(res)
 	}).catch(err => {
 		console.log(err)
 	})
 	// getPopularCollections
 	await getPopularCollections().then(res => {
 		CollectionRanking.collections = res ?? []
-		console.log(res)
 	}).catch(err => {
 		console.log(err)
 	})

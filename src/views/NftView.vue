@@ -167,36 +167,13 @@ const userInfo = userInfoStore();
 
 // 建立一个变量，该变量内有商品的信息，类型为Collection
 let collectionItem:Ref<Collection>= ref() as Ref<Collection>
-const cartList = ref<Collection[]>([
-    {
-        "objectId": "144995hv7ic8gt8d1e9ita3h",
-        "hash": "56334e4f7107dc2fdc0f29060e0eda7d0c1ef2f66808f19d61e30428101346e6",
-        "name": "东大寺",
-        "shortIntro": "东大寺是日本最著名、最重要的寺庙之一，也是奈良的地标。",
-        "intro": "东大寺位于日本奈良市，是一座佛教寺庙建筑群，曾是强大的七大寺之一。虽然东大寺始建于公元 738 年，但直到公元 752 年才正式开放。",
-        "cover": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/1a844b00167657df0f6a412ac8b523c3.png",
-        "file": "http://files.moefish.net/files/zia4cytq0qlu6h0ki8fluwu5/1a844b00167657df0f6a412ac8b523c3.png",
-        "authorId": "509yww08r272412vzf0bv04n",
-        "categoryId": "25jvslre4yobdt7w99kkn3rh",
-        "type": "图片",
-        "price": 18,
-        "visitCount": 0,
-        "issueNumber": 120,
-        "soldNumber": 0,
-        "recommend": true,
-        "albumId": null
-    }
-])
+
 // 定义变量isPayBoxVisible
 let isPayBoxVisible = ref(false);
 let objectId = ref('');
 const loading = ref(true);
 // 定义一个变量，用于判断目前的藏品是否被收藏过
 let isFavorite = ref(false);
-
-
-// cartList赋值给CartListCollection
-CartListCollection.collections = cartList.value;
 
 
 onMounted(async () => {
@@ -228,7 +205,7 @@ onMounted(async () => {
 // 点击ShoppingCart图标后将该商品collectionItem添加进CartListCollection的方法
 const addCart = () => {
     CartListCollection.collections.push(collectionItem.value)
-    console.log(CartListCollection.collections)
+    ElMessage.success('添加购物车成功');
 }
 
 // 实现updateIsPayBoxVisible方法
