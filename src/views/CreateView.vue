@@ -6,28 +6,33 @@
                     <Back />
                 </el-icon>
             </div>
-            <div class="CreateViewHeadUser">
-                <el-icon :size="20">
-                    <User />
+            <div class="flex justify-start items-center gap-2 bg-accent-100 text-black border rounded-2xl cursor-pointer p-2"
+                @click="handleAddCollection">
+                <el-icon>
+                    <Plus />
                 </el-icon>
+                <p class="font-medium">保存</p>
             </div>
         </div>
         <div class="CreateViewBody">
             <div class="CreateViewBodyLeft">
                 <p style="font-size: 36px;font-weight: bold;">创建NFT</p>
                 <p style="font-size: 20px;margin-top: 10px;"> 铸造项目后，您将无法更改其任何信息。</p>
-                <div class="CreateViewBodyLeftUpdate">
+                <div v-if="!uploadedImage" @click="openFileInput"
+                    class="flex flex-col justify-center items-center gap-5 min-h-96 w-full border border-dashed border-text-200 rounded-2xl mt-30 bg-bg-200 cursor-pointer transition-bg-20 mt-12 hover:border-solid hover:border-text-200 hover:bg-rgba-18-18-18-0.04">
                     <el-icon size="40">
                         <Upload />
                     </el-icon>
-                    <p style="font-size: 20px;font-weight: bold;margin-top: 20px;"> 拖拽媒体</p>
-                    <p style="font-size: 16px;color: var(--primary-100);font-weight: bold;"> 浏览文件</p>
-                    <p style="font-size: 16px;"> 最大尺寸:50MB</p>
-                    <p style="font-size: 16px;"> JPG、 PNG、 GIF、SVG、MP4</p>
+                    <p class="text-16 text-accent-100 font-bold">
+                        拖拽媒体或点击选择文件
+                    </p>
+                    <p> 最大尺寸:50MB</p>
+                    <input id="fileInput" type="file" ref="fileInput" style="display: none;" @change="uploadFile">
                 </div>
+                <img v-else :src="uploadedImage" alt="上传的图片" />
             </div>
             <div class="CreateViewBodyRight">
-                <p style="font-size: 20px;font-weight: bold;padding:10px 0;">系列</p>
+                <!-- <p style="font-size: 20px;font-weight: bold;padding:10px 0;">系列</p>
                 <div class="CreateViewBodyRightSeries">
                     <div class="CreateViewBodyRightSeriesCreate">
                         <el-icon size="16">
@@ -35,22 +40,36 @@
                         </el-icon>
                     </div>
                     <p style="margin-left: 20px;">创建新系列</p>
-                </div>
-                <p style="font-size: 20px;font-weight: bold;padding:10px 0;">名字</p>
-                <div class="CreateViewBodyRightInput">
+                </div> -->
+                <!-- <p style="font-size: 20px;font-weight: bold;padding:10px 0;">限量数</p>
+                <el-input v-model="name" placeholder="请限定发售的数量" class="">
+                    <template #prefix>
+                        <el-icon color="var(--text-100)" class="el-input__icon">
+                            <search />
+                        </el-icon>
+                    </template>
+</el-input> -->
 
-                    <input type="text" placeholder="命名您的NFT">
-                </div>
-                <p style="font-size: 20px;font-weight: bold;padding:10px 0;">限量数</p>
-                <div class="CreateViewBodyRightInput">
+                <p class="text-xl font-medium py-3">发行号</p>
+                <el-input v-model="issueNumber" placeholder="请输入数字藏品的发行号" class=""></el-input>
+                <p class="text-xl font-medium py-3">名字</p>
+                <!-- 下面为藏品名称搜索框 -->
+                <el-input v-model="name" placeholder="命名您的NFT" class=""></el-input>
 
-                    <input type="text" placeholder="请限定发售的数量">
-                </div>
-                <p style="font-size: 20px;font-weight: bold;padding:10px 0;">描述</p>
-                <div class="CreateViewBodyRightInput" style="padding-bottom: 150px;">
+                <p class="text-xl font-medium py-3">分类</p>
+                <el-select v-model="category" placeholder="请点击选择分类" size="large" :teleported="false" clearable
+                    style="width: 360px;">
+                    <el-option v-for="item in allType" :key="item.objectId" :label="item.name" :value="item.objectId" />
+                </el-select>
 
-                    <input type="text" placeholder="请限定发售的数量">
-                </div>
+                <p class="text-xl font-medium py-3">价格</p>
+                <el-input v-model="price" placeholder="请输入数字藏品的价格" class=""></el-input>
+
+
+                <p class="text-xl font-medium py-3">简短描述</p>
+                <el-input v-model="shortIntro" placeholder="请输入相关数字藏品简短描述" class=""></el-input>
+                <p class="text-xl font-medium py-3">具体描述</p>
+                <el-input v-model="intro" placeholder="请输入相关数字藏品具体描述" class=""></el-input>
             </div>
         </div>
 
@@ -59,15 +78,97 @@
 </template>
 
 <script setup lang="ts">
-import { } from "vue"
-import { useRouter } from 'vue-router'
+import { onMounted, ref, Ref } from "vue"
+import router from "../router";
 
-const router = useRouter()
+import { Type } from "../interfaces/Type"
+
+
+import { userInfoStore } from '../stores/UserInfoStore'
+
+
+import { getAllTypes } from "../api/type"
+import { uploadImage } from "../api/collections"
+import { addCollection } from "../api/collections"
+
+
+let allType: Ref<Type[]> = ref([]);
+
+
+let issueNumber = ref("");
+let name = ref("");
+let category = ref("");
+let price = ref("");
+let shortIntro = ref("");
+let intro = ref("");
+// 定义上传后的图片URL
+const uploadedImage = ref<string | null>(null);
+
+
+
+
+onMounted(async () => {
+    await getAllTypes().then((res) => {
+        allType.value = res;
+        console.log(res)
+    }).catch((err) => {
+        console.log(err)
+    })
+})
 
 const toIndex = () => {
     router.push({
         name: 'IndexView',
     })
+}
+
+
+
+// 通过div点击input的方法
+const openFileInput = () => {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    if (fileInput) {
+        fileInput.click();
+    }
+};
+
+// 上传图片
+const uploadFile = async () => {
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    // 确保存在文件
+    if (fileInput && fileInput.files && fileInput.files.length > 0) {
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+
+        await uploadImage(formData).then((res) => {
+            uploadedImage.value = res as string;
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+};
+
+const handleAddCollection = async () => {
+    console.log
+    let formdata = new FormData();
+
+    formdata.append('issueNumber', issueNumber.value);
+    formdata.append('name', name.value);
+    formdata.append('category', category.value);
+    formdata.append('price', price.value);
+    formdata.append('shortIntro', shortIntro.value);
+    formdata.append('intro', intro.value);
+    formdata.append('cover', uploadedImage.value as string);
+    formdata.append('file', uploadedImage.value as string);
+    formdata.append('type', "图片");
+
+    await addCollection(formdata)
+        .then((res) => {
+            console.log(res)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
 }
 </script>
 
@@ -124,7 +225,7 @@ const toIndex = () => {
 
     .CreateViewBodyRight {
         min-width: 40%;
-        padding-top: 8%;
+
 
         .CreateViewBodyRightSeries {
             display: flex;
@@ -271,5 +372,71 @@ const toIndex = () => {
         background-color: rgba(214, 198, 225, 0.7);
     }
 
+}
+
+.el-input {
+    width: 360px;
+    height: 50px;
+
+    border-radius: 12px;
+    border: 0.5px solid var(--text-200);
+    border: 0;
+    background-color: var(--bg-200);
+
+    font-size: 18px;
+    font-weight: bold;
+
+
+    :deep(.el-input__wrapper) {
+        border-radius: 12px;
+        background-color: var(--bg-300);
+
+    }
+
+
+    :deep(.is-focus) {
+        box-shadow: 0 0 0 1px var(--accent-200)
+    }
+}
+
+// 下面为el-select部分
+@mixin select_radius {
+    border-radius: 12px;
+}
+
+
+// 控制el-select的长度以及圆角
+:deep(.el-select__wrapper) {
+    width: 360px;
+    height: 50px;
+    @include select_radius;
+}
+
+// 控制el-select中文字的样式
+:deep(.el-select__placeholder) {
+    color: var(--text-200);
+    font-size: 18px;
+    font-weight: bold;
+}
+
+// 控制点击后的边框颜色
+:deep(.el-select__wrapper.is-focused) {
+    box-shadow: 0 0 0 1px var(--accent-100);
+}
+
+// 下面为下拉框部分
+// 下面用于控制整体的下拉框圆角
+:deep(.el-select__popper.el-popper) {
+    @include select_radius;
+}
+
+
+//下拉框的文本未选中的样式
+// .el-select-dropdown__item {
+
+// }
+//下拉框的文本颜色选中之后的样式
+.el-select-dropdown__item.is-selected {
+    color: var(--accent-200);
 }
 </style>

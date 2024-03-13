@@ -32,3 +32,13 @@ export const getCollectionsByCategory = (categoryId: string) => {
 export const addCollectionViews = (objectId: string) => {
     return axios.post('api/collections/objects/' + objectId + '/visit');
 }
+
+// 上传图片文件
+export const uploadImage = (params: any) => {
+    return axios.post('api/collections/upload', params);
+}
+
+// 添加藏品
+export const addCollection = (params: any) => {
+    return axios.post('api/collections/objects', params);
+}
