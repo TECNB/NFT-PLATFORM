@@ -10,25 +10,25 @@
                 <div class="TypeListItem">
                     <label>
                         <input type="checkbox" name="type" value="all" checked>
-                        <span style="margin-left: 20px;">动画</span>
+                        <span class="ml-5">动画</span>
                     </label>
                 </div>
                 <div class="TypeListItem">
                     <label>
                         <input type="checkbox" name="type" value="all" checked>
-                        <span style="margin-left: 20px;">现实</span>
+                        <span class="ml-5">现实</span>
                     </label>
                 </div>
                 <div class="TypeListItem">
                     <label>
                         <input type="checkbox" name="type" value="all" checked>
-                        <span style="margin-left: 20px;">科技</span>
+                        <span class="ml-5">科技</span>
                     </label>
                 </div>
                 <div class="TypeListItem">
                     <label>
                         <input type="checkbox" name="type" value="all" checked>
-                        <span style="margin-left: 20px;">动物</span>
+                        <span class="ml-5">动物</span>
                     </label>
                 </div>
             </div>

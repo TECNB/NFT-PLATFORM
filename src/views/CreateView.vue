@@ -84,7 +84,7 @@ import router from "../router";
 import { Type } from "../interfaces/Type"
 
 
-import { userInfoStore } from '../stores/UserInfoStore'
+// import { userInfoStore } from '../stores/UserInfoStore'
 
 
 import { getAllTypes } from "../api/type"

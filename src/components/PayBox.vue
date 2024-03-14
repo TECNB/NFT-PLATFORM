@@ -3,7 +3,7 @@
         <div class="Title">
             <p>购买方式选择</p>
             <div class="Close" @click="toggleVisibility">
-                <el-icon style="height: 90%; width: 90%; border-radius: 50%; object-fit: cover; aspect-ratio: 1/1;">
+                <el-icon class="w-[90%] h-[90%] rounded-full object-cover aspect-square">
                     <Close />
                 </el-icon>
             </div>
@@ -16,14 +16,14 @@
             <label class="chose">
                 <input class="radio" type="radio" name="paymentMethod" value="alipay" checked>
                 <!-- 图片来自于assets/images底下的alpay.png -->
-                <img src="../assets/images/alipay.png" alt="" style="height: 20px; width: 20px;">
+                <img src="../assets/images/alipay.png" alt="" class="h-5 w-5">
                 <span>支付宝</span>
             </label>
 
             <label class="chose">
                 <input class="radio" type="radio" name="paymentMethod" value="wechat">
                 <!-- 图片来自于assets/images底下的alpay.png -->
-                <img src="../assets/images/wechat.png" alt="" style="height: 20px; width: 20px;">
+                <img src="../assets/images/wechat.png" alt="" class="h-5 w-5">
                 <span>微信支付</span>
             </label>
         </div>

@@ -2,13 +2,13 @@
     <div class="LoginBox" v-if="props.ifShow">
         <div class="Background">
             <div class="Close" @click="toggleVisibility">
-                <el-icon style="height: 90%; width: 90%; border-radius: 50%; object-fit: cover; aspect-ratio: 1/1;">
+                <el-icon class="w-[90%] h-[90%] rounded-full object-cover aspect-square">
                     <Close />
                 </el-icon>
             </div>
             <div class="Logo">
                 <img src="https://opensea.io/static/images/logos/opensea-logo.svg" alt=""
-                    style="height: 90%; width: 90%; border-radius: 50%; object-fit: cover; aspect-ratio: 1/1;">
+                    class="w-[90%] h-[90%] rounded-full object-cover aspect-square">
             </div>
         </div>
         <div class="Title">

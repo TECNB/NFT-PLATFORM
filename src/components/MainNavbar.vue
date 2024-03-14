@@ -1,9 +1,9 @@
 <template>
     <div class="MainNavbar">
         <div class="MainNavbarItems">
-            <div class="MainNavbarItem" style="display: flex;justify-content: flex-start;align-items: center;">
+            <div class="MainNavbarItem flex justify-start items-center">
                 <img width="40px" src="https://opensea.io/static/images/logos/opensea-logo.svg" />
-                <p style="padding-left: 10px;" @click="toIndex">NFT Platform</p>
+                <p class="pl-3" @click="toIndex">NFT Platform</p>
             </div>
 
             <p class="MainNavbarItem">中心</p>
@@ -21,10 +21,10 @@
                 </template>
             </el-input>
 
-            <div v-if="hasSearchInput" class="absolute top-20 left-0 w-full bg-bg-300 rounded-2xl p-2 z-10">
+            <div v-if="hasSearchInput" class="absolute top-20 left-0 w-full bg-bg-300 rounded-2xl p-2 z-10" v-loading="loading">
                 <p class="text-left text-xs font-medium px-4 py-2">系列</p>
                 <div v-for="(collection, index) in searchCollectionsArray" :key="index"
-                    class="flex justify-start items-center hover:bg-zinc-100 rounded-xl cursor-pointer mt-2">
+                    class="flex justify-start items-center hover:bg-zinc-100 rounded-xl cursor-pointer mt-2" v-if="!ifSearchNull">
                     <img class="w-9 h-9 rounded-xl object-cover aspect-square mx-3 my-2 z" :src="collection.cover"
                         alt="Collection Image">
                     <div>
@@ -34,10 +34,10 @@
                         </p>
                     </div>
                 </div>
-
-
+                <div class="py-4" v-else>
+                    <p class="font-semibold text-lg">暂无搜索结果</p>
+                </div>
             </div>
-
         </div>
 
         <div class="MainNavbarUser">
@@ -46,19 +46,19 @@
                 <el-icon :size="20">
                     <Message />
                 </el-icon>
-                <p style="padding-left: 10px;">登录</p>
+                <p class="pl-3">登录</p>
             </div>
             <div class="MainNavbarUserLogin" @click="showLogin" v-else>
                 <el-icon :size="20">
                     <Money />
                 </el-icon>
-                <p style="padding-left: 10px;">钱包</p>
+                <p class="pl-3">钱包</p>
             </div>
             <div class="MainNavbarUserLogin" @click="showLogin" v-else>
                 <el-icon :size="20">
                     <Money />
                 </el-icon>
-                <p style="padding-left: 10px;">钱包</p>
+                <p class="pl-3">钱包</p>
             </div>
             <div class="MainNavbarUserInfo" @mouseover="showUserMenu" @mouseleave="hideUserMenu">
                 <el-icon :size="20">
@@ -75,7 +75,7 @@
                         </el-icon>
                         <p>个人资料</p>
                     </div>
-                    <div class="MainNavbarUserMenuItem" style="border-bottom: 1px solid var(--accent-100);"
+                    <div class="MainNavbarUserMenuItem border-b border-solid border-accent-100"
                         @click="toStatisticsFollow">
                         <el-icon>
                             <View />
@@ -90,7 +90,7 @@
                         </el-icon>
                         <p>交易</p>
                     </div>
-                    <div class="MainNavbarUserMenuItem" style="border-bottom: 1px solid var(--accent-100);"
+                    <div class="MainNavbarUserMenuItem border-b border-solid border-accent-100"
                         @click="toCreate">
                         <el-icon>
                             <EditPen />
@@ -109,24 +109,24 @@
                             <Guide />
                         </el-icon>
                         <p>语言</p>
-                        <div style="display: flex;justify-content: space-between;align-items: center;">
-                            <p style="font-weight: normal;font-size: 16px;padding-left: 50px;">中文</p>
-                            <el-icon style="padding-left: -10px;">
+                        <div class="flex justify-between items-center">
+                            <p class="pl-12">中文</p>
+                            <el-icon>
                                 <ArrowRightBold />
                             </el-icon>
                         </div>
 
                     </div>
-                    <div class="MainNavbarUserMenuItem" style="border-bottom: 1px solid var(--accent-100);">
+                    <div class="MainNavbarUserMenuItem border-b border-solid border-accent-100">
                         <el-icon>
                             <Moon />
                         </el-icon>
                         <p>夜间模式</p>
-                        <el-switch v-model="value1" class="ml-2"
-                            style="--el-switch-on-color: var(--accent-200); --el-switch-off-color: var(--accent-100);padding-left: 10px;" />
+                        <el-switch v-model="value1" class="ml-5"
+                            style="--el-switch-on-color: var(--accent-200); --el-switch-off-color: var(--accent-100);" />
                     </div>
 
-                    <div class="MainNavbarUserMenuItem" style="padding-bottom: 0px;" @click="logout">
+                    <div class="MainNavbarUserMenuItem pb-0" @click="logout">
                         <el-icon>
                             <SwitchButton />
                         </el-icon>
@@ -153,9 +153,10 @@
 
 
 <script setup lang="ts">
-import { ref, watch, onMounted,Ref } from "vue"
+import { ref, watch, onMounted, Ref } from "vue"
 import { useRouter, useRoute } from 'vue-router'
 import { AxiosError } from "axios"
+// import { ElLoading } from 'element-plus'
 
 
 // 引入MaskLayer
@@ -198,6 +199,8 @@ const hasSearchInput = ref(false)
 let name = ref('')
 // hasToken设置默认为false
 const hasToken = ref(false);
+const loading = ref(false)
+const ifSearchNull = ref(false)
 // 定义search方法返回的数组
 let searchCollectionsArray: Ref<Collection[]> = ref([]);
 
@@ -221,18 +224,26 @@ watch(() => userInfo.token, (newToken) => {
 
 // search方法
 const search = async () => {
+    loading.value = true
     // 清空search表单
     const searchForm = new FormData();
     searchForm.append('name', name.value);
+    await searchCollections(searchForm).then(res => {
+        
 
-    searchCollections(searchForm).then(res => {
         hasSearchInput.value = true
         searchCollectionsArray.value = res
-        console.log(searchCollectionsArray);
+        if(res.length===0){
+            ifSearchNull.value = true
+        }else{
+            ifSearchNull.value = false
+        }
+        
+        loading.value = false
     }).catch(err => {
         console.log(err);
     })
-    // loading.value = false
+    
 }
 
 
@@ -589,5 +600,8 @@ const showCartList = () => {
     :deep(.is-focus) {
         box-shadow: 0 0 0 1px var(--accent-200)
     }
+}
+:deep(.el-loading-mask){
+    border-radius: 16px;
 }
 </style>../api/user.ts

@@ -3,15 +3,15 @@
         <div class="UserInfoBackground">
             <div style="" class="UserInfoAvatar">
                 <img src="https://i.seadn.io/gcs/files/25059d629ad50cad3009a1f553a44401.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gcs/files/25059d629ad50cad3009a1f553a44401.jpg?auto=format&dpr=2&h=500&fr=1 2x"
-                    alt="" style="height: 90%; width: 90%; border-radius: 50%; object-fit: cover; aspect-ratio: 1/1;">
+                    alt="" class="w-[90%] h-[90%] rounded-full object-cover aspect-square">
             </div>
         </div>
 
         <div class="UserInfoDetail">
             <div class="UserInfoDetailLine1">
-                <h1 style="text-align: start;">{{ userInfo.user?.username }}</h1>
+                <h1 class="text-left">{{ userInfo.user?.username }}</h1>
                 <div>
-                    <el-icon size="24" style="margin-right: 30px;"><Share /></el-icon>
+                    <el-icon size="24" class="mr-7"><Share /></el-icon>
                     <el-icon class="cursor-pointer" size="24" @click="toSetting"><Setting /></el-icon>
                 </div>
                 
@@ -21,11 +21,11 @@
             <div class="UserInfoDetailLine2">
                 <el-icon size="20"><User /></el-icon>
                 <p>{{ userInfo.user?.objectId }}</p>
-                <p style="margin-left: 10px;color: var(--text-200);">加入时间 {{ userInfo.user?.createdAt }}</p>
+                <p class="ml-2 text-text-200">加入时间 {{ userInfo.user?.createdAt }}</p>
             </div>
 
         </div>
-        <UserNavbar style="border-bottom: 0.5px solid var(--text-200);padding-bottom: 25px;"/>
+        <UserNavbar class="border-b-[0.5px] border-solid boder-text-200 pb-6"/>
     </div>
 </template>
 
