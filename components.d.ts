@@ -27,6 +27,7 @@ declare module 'vue' {
     MainNavbar: typeof import('./src/components/MainNavbar.vue')['default']
     MaskLayer: typeof import('./src/components/MaskLayer.vue')['default']
     Navbar: typeof import('./src/components/Navbar.vue')['default']
+    NotFound: typeof import('./src/components/NotFound.vue')['default']
     PayBox: typeof import('./src/components/PayBox.vue')['default']
     Rank: typeof import('./src/components/Rank.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

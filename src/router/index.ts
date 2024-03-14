@@ -4,37 +4,37 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 const routes: Array<RouteRecordRaw> = [
     {
         path: "/",
-        name:"IndexView",
+        name: "IndexView",
         component: () => import("../views/IndexView.vue"),
     },
     {
         path: "/create",
-        name:"CreateView",
+        name: "CreateView",
         component: () => import("../views/CreateView.vue"),
     },
     {
         path: "/user",
-        name:"UserView",
+        name: "UserView",
         component: () => import("../views/UserView.vue"),
     },
     {
         path: "/statistics",
-        name:"StatisticsView",
+        name: "StatisticsView",
         component: () => import("../views/StatisticsView.vue"),
     },
     {
         path: '/nft/:id', // 使用动态路由参数 :id
-        name:"NftView",
+        name: "NftView",
         component: () => import("../views/NftView.vue"),
     },
     {
         path: "/series",
-        name:"SeriesView",
+        name: "SeriesView",
         component: () => import("../views/SeriesView.vue"),
     },
     {
         path: "/setting",
-        name:"SettingView",
+        name: "SettingView",
         component: () => import("../views/SettingView.vue"),
         children: [
             {
@@ -43,7 +43,12 @@ const routes: Array<RouteRecordRaw> = [
             },
         ],
     },
-    
+    {
+        path: '/:catchAll(.*)', // 匹配所有路径
+        name: "NotFoundView",
+        component: () => import("../views/NotFoundView.vue"),
+    }
+
 ];
 // 1.返回一个 router 实列，为函数，里面有配置项（对象） history
 const router = createRouter({
