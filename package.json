@@ -10,12 +10,15 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
+    "@zrcode/tencentcloud-js-v3": "^1.1.4",
     "axios": "^1.6.7",
     "element-plus": "^2.5.1",
     "pinia-plugin-persistedstate": "^3.2.1",
     "vue": "^3.3.11"
   },
   "devDependencies": {
+    "@types/crypto-js": "^4.2.2",
+    "@types/node": "^20.11.28",
     "@vitejs/plugin-vue": "^4.6.2",
     "autoprefixer": "^10.4.17",
     "pinia": "^2.1.7",

@@ -27,6 +27,13 @@
                         拖拽媒体或点击选择文件
                     </p>
                     <p> 最大尺寸:50MB</p>
+                    <div class="flex justify-start items-center gap-2 bg-accent-100 text-black border rounded-2xl cursor-pointer p-2"
+                        @click.native.stop.prevent="handleText2Img">
+                        <el-icon>
+                            <Promotion />
+                        </el-icon>
+                        <p class="font-medium">AI辅助生图</p>
+                    </div>
                     <input id="fileInput" type="file" ref="fileInput" style="display: none;" @change="uploadFile">
                 </div>
                 <img v-else :src="uploadedImage" alt="上传的图片" />
@@ -81,6 +88,8 @@
 import { onMounted, ref, Ref } from "vue"
 import router from "../router";
 
+
+
 import { Type } from "../interfaces/Type"
 
 
@@ -88,8 +97,7 @@ import { Type } from "../interfaces/Type"
 
 
 import { getAllTypes } from "../api/type"
-import { uploadImage } from "../api/collections"
-import { addCollection } from "../api/collections"
+import { uploadImage, addCollection, text2Img } from "../api/collections"
 
 
 let allType: Ref<Type[]> = ref([]);
@@ -139,6 +147,8 @@ const uploadFile = async () => {
     if (fileInput && fileInput.files && fileInput.files.length > 0) {
         const formData = new FormData();
         formData.append('file', fileInput.files[0]);
+        formData.append('type','avatar')
+        console.log("fileInput.files[0]:",fileInput.files[0])
 
         await uploadImage(formData).then((res) => {
             uploadedImage.value = res as string;
@@ -149,7 +159,6 @@ const uploadFile = async () => {
 };
 
 const handleAddCollection = async () => {
-    console.log
     let formdata = new FormData();
 
     formdata.append('issueNumber', issueNumber.value);
@@ -169,6 +178,22 @@ const handleAddCollection = async () => {
         .catch((err) => {
             console.log(err)
         })
+}
+
+const handleText2Img = async () => {
+    console.log("被点击")
+    const requestData = {
+        "Prompt": "女孩",
+        "RspImgType": "url"
+    };
+
+
+    await text2Img(requestData).then((res) => {
+        console.log(res)
+        uploadedImage.value = (res as any).data.Response.ResultImage as string;
+    }).catch((err) => {
+        console.log(err);
+    })
 }
 </script>
 

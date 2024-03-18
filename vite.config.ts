@@ -27,10 +27,12 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
         // 显示请求代理后的真实地址
-        bypass(req, res, options) {
-          const proxyUrl = new URL(req.url || "", options.target)?.href || "";
-          res.setHeader("x-res-proxyUrl", proxyUrl);
-        },
+
+      },
+      '/tencent-api': {
+        target: 'https://aiart.tencentcloudapi.com/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/tencent-api/, ''),
       },
     }
   },
