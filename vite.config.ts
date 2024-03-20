@@ -34,6 +34,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/tencent-api/, ''),
       },
+      '/tencent-download-api': {
+        target: 'https://aiart-1258344699.cos.ap-guangzhou.myqcloud.com/text_to_img',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/tencent-download-api/, ''),
+      },
     }
   },
   css: {

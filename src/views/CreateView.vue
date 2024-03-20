@@ -18,23 +18,29 @@
             <div class="CreateViewBodyLeft">
                 <p style="font-size: 36px;font-weight: bold;">创建NFT</p>
                 <p style="font-size: 20px;margin-top: 10px;"> 铸造项目后，您将无法更改其任何信息。</p>
-                <div v-if="!uploadedImage" @click="openFileInput"
+                <div v-if="!uploadedImage" @click="openFileInput" v-loading="loading" element-loading-text="上传图片中..."
                     class="flex flex-col justify-center items-center gap-5 min-h-96 w-full border border-dashed border-text-200 rounded-2xl mt-30 bg-bg-200 cursor-pointer transition-bg-20 mt-12 hover:border-solid hover:border-text-200 hover:bg-rgba-18-18-18-0.04">
-                    <el-icon size="40">
-                        <Upload />
-                    </el-icon>
-                    <p class="text-16 text-accent-100 font-bold">
-                        拖拽媒体或点击选择文件
-                    </p>
-                    <p> 最大尺寸:50MB</p>
-                    <div class="flex justify-start items-center gap-2 bg-accent-100 text-black border rounded-2xl cursor-pointer p-2"
-                        @click.native.stop.prevent="handleText2Img">
-                        <el-icon>
-                            <Promotion />
+                    <div v-if="!loading" class=" flex flex-col justify-center items-center gap-5">
+                        <el-icon size="40">
+                            <Upload />
                         </el-icon>
-                        <p class="font-medium">AI辅助生图</p>
+                        <p class="text-16 text-accent-100 font-bold">
+                            拖拽媒体或点击选择文件
+                        </p>
+                        <p> 最大尺寸:50MB</p>
+                        <div class="flex justify-start items-center gap-2 bg-accent-100 text-black border rounded-2xl cursor-pointer p-2"
+                            @click.native.stop.prevent="updateIsAIBoxVisible(true)">
+                            <el-icon>
+                                <Promotion />
+                            </el-icon>
+                            <p class="font-medium">AI辅助生图</p>
+                        </div>
+                        <input id="fileInput" type="file" ref="fileInput" style="display: none;" @change="uploadFile">
                     </div>
-                    <input id="fileInput" type="file" ref="fileInput" style="display: none;" @change="uploadFile">
+                    <div v-else class="">
+                        
+                    </div>
+
                 </div>
                 <img v-else :src="uploadedImage" alt="上传的图片" />
             </div>
@@ -80,7 +86,10 @@
             </div>
         </div>
 
-
+        <MaskLayer  :ifShow="isAIBoxVisible" />
+        <AIBox :ifShow="isAIBoxVisible" @updateIfShow="updateIsAIBoxVisible" @saveSuccess="handleSaveSuccess" />
+        <!-- 下面的部分为点击保存后的loading -->
+        <MaskLayer v-loading="loadingCreate" element-loading-text="藏品上传中..." backgroundColor="rgba(255, 255, 255, 0.01)" :ifShow="loadingCreate" />
     </div>
 </template>
 
@@ -92,9 +101,6 @@ import router from "../router";
 
 import { Type } from "../interfaces/Type"
 
-import config from "../constant/config";
-
-import { V3 } from "../utils/V3";
 
 
 // 引入Text2ImgStore
@@ -102,7 +108,7 @@ import { V3 } from "../utils/V3";
 
 
 import { getAllTypes } from "../api/type"
-import { uploadImage, addCollection, text2Img } from "../api/collections"
+import { uploadImage, addCollection } from "../api/collections"
 
 
 // const text2ImgStore = Text2ImgStore();
@@ -117,6 +123,9 @@ let category = ref("");
 let price = ref("");
 let shortIntro = ref("");
 let intro = ref("");
+let isAIBoxVisible = ref(false);
+let loading = ref(false);
+let loadingCreate = ref(false);
 // 定义上传后的图片URL
 const uploadedImage = ref<string | null>(null);
 
@@ -136,6 +145,15 @@ const toIndex = () => {
     })
 }
 
+const updateIsAIBoxVisible = (ifShow: boolean) => {
+    isAIBoxVisible.value = ifShow;
+}
+
+const handleSaveSuccess = (data: any) => {
+    uploadedImage.value = data;
+    console.log("uploadedImage.value", data);
+};
+
 
 
 // 通过div点击input的方法
@@ -151,6 +169,7 @@ const uploadFile = async () => {
     const fileInput = document.getElementById('fileInput') as HTMLInputElement;
     // 确保存在文件
     if (fileInput && fileInput.files && fileInput.files.length > 0) {
+        loading.value = true;
         const formData = new FormData();
         formData.append('file', fileInput.files[0]);
         formData.append('type', 'avatar')
@@ -158,6 +177,7 @@ const uploadFile = async () => {
 
         await uploadImage(formData).then((res) => {
             uploadedImage.value = res as string;
+            loading.value = false;
         }).catch((err) => {
             console.log(err);
         });
@@ -166,10 +186,11 @@ const uploadFile = async () => {
 
 const handleAddCollection = async () => {
     let formdata = new FormData();
+    console.log("category:", category.value)
 
     formdata.append('issueNumber', issueNumber.value);
     formdata.append('name', name.value);
-    formdata.append('category', category.value);
+    formdata.append('categoryId', category.value);
     formdata.append('price', price.value);
     formdata.append('shortIntro', shortIntro.value);
     formdata.append('intro', intro.value);
@@ -177,39 +198,23 @@ const handleAddCollection = async () => {
     formdata.append('file', uploadedImage.value as string);
     formdata.append('type', "图片");
 
+    loadingCreate.value = true;
+
     await addCollection(formdata)
         .then((res) => {
             console.log(res)
+            loadingCreate.value = false;
+            ElMessage.success("创建藏品成功")
+            router.push({
+                name: 'IndexView',
+            })
         })
         .catch((err) => {
             console.log(err)
         })
 }
 
-const handleText2Img = async () => {
-    console.log("被点击")
-    const requestData = {
-        "Prompt": "男孩",
-        "RspImgType": "url"
-    };
-    // 调用V3接口
-    // body参数为requestData
-    const { authorization, timestamp } = V3(config,requestData)
-    const headers = {
-        Authorization: authorization,
-        "X-TC-Timestamp": timestamp
-    }
-    console.log("传递配置参数，签名自动生成：", authorization, timestamp)
 
-
-
-    await text2Img(requestData,headers).then(res => {
-        uploadedImage.value = res?.data?.Response?.ResultImage;
-        console.log("uploadedImage.value:", uploadedImage.value)
-    }).catch((err) => {
-        console.log(err);
-    })
-}
 </script>
 
 <style lang="scss" scoped>
@@ -447,7 +452,7 @@ const handleText2Img = async () => {
 
 // 控制el-select的长度以及圆角
 :deep(.el-select__wrapper) {
-    width: 360px;
+    width: 100%;
     height: 50px;
     @include select_radius;
 }
@@ -477,6 +482,17 @@ const handleText2Img = async () => {
 // }
 //下拉框的文本颜色选中之后的样式
 .el-select-dropdown__item.is-selected {
+    color: var(--accent-200);
+}
+
+:deep(.el-loading-mask){
+    border-radius: 16px;
+}
+
+:deep(.el-loading-spinner .path){
+    stroke: var(--accent-200);
+}
+:deep(.el-loading-spinner .el-loading-text){
     color: var(--accent-200);
 }
 </style>

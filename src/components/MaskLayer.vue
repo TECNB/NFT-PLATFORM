@@ -1,16 +1,19 @@
 <template>
-    <div class="MaskLayer" v-if="props.ifShow">
+    <div class="MaskLayer" v-if="props.ifShow" :style="{ backgroundColor: props.backgroundColor }">
 
     </div>
 </template>
 
 <script setup lang="ts">
-import {  } from 'vue';
+import { defineProps } from 'vue';
 
-const props = defineProps(['ifShow']);
-
-
-
+const props = defineProps({
+    ifShow: Boolean,
+    backgroundColor: {
+        type: String,
+        default: 'rgba(0, 0, 0, 0.6)'
+    }
+});
 </script>
 
 <style lang="scss" scoped>
@@ -21,6 +24,5 @@ const props = defineProps(['ifShow']);
     bottom: 0;
     left: 0;
     z-index: 99;
-    background-color: rgba(0, 0, 0, 0.6);
 }
 </style>
