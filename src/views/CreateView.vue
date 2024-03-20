@@ -92,12 +92,20 @@ import router from "../router";
 
 import { Type } from "../interfaces/Type"
 
+import config from "../constant/config";
 
-// import { userInfoStore } from '../stores/UserInfoStore'
+import { V3 } from "../utils/V3";
+
+
+// 引入Text2ImgStore
+// import { Text2ImgStore } from '../stores/ConfigStore';
 
 
 import { getAllTypes } from "../api/type"
 import { uploadImage, addCollection, text2Img } from "../api/collections"
+
+
+// const text2ImgStore = Text2ImgStore();
 
 
 let allType: Ref<Type[]> = ref([]);
@@ -111,8 +119,6 @@ let shortIntro = ref("");
 let intro = ref("");
 // 定义上传后的图片URL
 const uploadedImage = ref<string | null>(null);
-
-
 
 
 onMounted(async () => {
@@ -147,8 +153,8 @@ const uploadFile = async () => {
     if (fileInput && fileInput.files && fileInput.files.length > 0) {
         const formData = new FormData();
         formData.append('file', fileInput.files[0]);
-        formData.append('type','avatar')
-        console.log("fileInput.files[0]:",fileInput.files[0])
+        formData.append('type', 'avatar')
+        console.log("fileInput.files[0]:", fileInput.files[0])
 
         await uploadImage(formData).then((res) => {
             uploadedImage.value = res as string;
@@ -183,14 +189,23 @@ const handleAddCollection = async () => {
 const handleText2Img = async () => {
     console.log("被点击")
     const requestData = {
-        "Prompt": "女孩",
+        "Prompt": "男孩",
         "RspImgType": "url"
     };
+    // 调用V3接口
+    // body参数为requestData
+    const { authorization, timestamp } = V3(config,requestData)
+    const headers = {
+        Authorization: authorization,
+        "X-TC-Timestamp": timestamp
+    }
+    console.log("传递配置参数，签名自动生成：", authorization, timestamp)
 
 
-    await text2Img(requestData).then((res) => {
-        console.log(res)
-        uploadedImage.value = (res as any).data.Response.ResultImage as string;
+
+    await text2Img(requestData,headers).then(res => {
+        uploadedImage.value = res?.data?.Response?.ResultImage;
+        console.log("uploadedImage.value:", uploadedImage.value)
     }).catch((err) => {
         console.log(err);
     })

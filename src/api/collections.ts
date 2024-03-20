@@ -1,10 +1,11 @@
 import axios from './';
 import Axios from 'axios'
 
-import { V3 } from "../utils/V3";
-
 // 引入Collection接口
 import { Collection } from '../interfaces/Collection';
+
+// 引入Text2ImgStore
+// import { Text2ImgStore } from '../stores/ConfigStore';
 
 // 获取推荐藏品
 export const getRecommendedCollections = () => {
@@ -48,32 +49,20 @@ export const addCollection = (params: any) => {
 }
 
 // AI文字生成藏品
-
-const { authorization, timestamp, curlcmd } = V3(
-    {
-        SECRET_ID: "AKIDi1GauWPMKLVgnqot8QpCUkuz2DYvGlIm",
-        SECRET_KEY: "aJ6t6Z9mYJC0vcSWfrAXu27NUwZCsU4d",
-        action: "TextToImage",
-        host: "aiart.tencentcloudapi.com",
-        service: "aiart",
-        region: "ap-shanghai",
-        version: "2022-12-29",
-        ContentType: "application/json"
-    },
-    {"Prompt":"女孩","RspImgType":"url"}
-)
-console.log("传递配置参数，签名自动生成：", authorization, timestamp, curlcmd)
+// const text2ImgStore = Text2ImgStore()
+// const authorization = text2ImgStore.authorization
+// const timestamp = text2ImgStore.timestamp
 
 
-export const text2Img = (params: any, headers?: Record<string, string>) => {
+export const text2Img = (params: any, headers?: Record<any, any>) => {
     return Axios.post('tencent-api', params, {
         headers: {
             ...headers, // 将传入的自定义头部信息与默认头部信息合并
             // 在这里添加你需要的自定义头部信息
-            Authorization: authorization,
-            Host: 'aiart.tencentcloudapi.com',
+            // Authorization: authorization,
+            // Host: 'aiart.tencentcloudapi.com',
             'X-TC-Action': 'TextToImage',
-            'X-TC-Timestamp': timestamp,
+            // 'X-TC-Timestamp': timestamp,
             'X-TC-Version': '2022-12-29',
             'X-TC-Region': 'ap-shanghai',
 
