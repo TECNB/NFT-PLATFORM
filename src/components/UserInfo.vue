@@ -2,7 +2,7 @@
     <div class="UserInfo">
         <div class="UserInfoBackground">
             <div style="" class="UserInfoAvatar">
-                <img src="https://i.seadn.io/gcs/files/25059d629ad50cad3009a1f553a44401.jpg?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/gcs/files/25059d629ad50cad3009a1f553a44401.jpg?auto=format&dpr=2&h=500&fr=1 2x"
+                <img :src="userInfo.user?.avatar"
                     alt="" class="w-[90%] h-[90%] rounded-full object-cover aspect-square">
             </div>
         </div>

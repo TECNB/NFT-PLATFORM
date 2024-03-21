@@ -78,3 +78,11 @@ export const OwnedCollectionStore = defineStore('OwnedCollectionStore', {
     //数据持久化配置 这里是当前所有变量都持久化
     persist:true
 });
+// 售卖的藏品
+export const SellingCollectionStore = defineStore('SellingCollectionStore', {
+    state: () => ({
+        collections: [] as Collection[],
+    }),
+    //数据持久化配置 这里是当前所有变量都持久化
+    persist:true
+});
