@@ -38,7 +38,7 @@
                         <input id="fileInput" type="file" ref="fileInput" style="display: none;" @change="uploadFile">
                     </div>
                     <div v-else class="">
-                        
+
                     </div>
 
                 </div>
@@ -86,10 +86,11 @@
             </div>
         </div>
 
-        <MaskLayer  :ifShow="isAIBoxVisible" />
+        <MaskLayer :ifShow="isAIBoxVisible" />
         <AIBox :ifShow="isAIBoxVisible" @updateIfShow="updateIsAIBoxVisible" @saveSuccess="handleSaveSuccess" />
         <!-- 下面的部分为点击保存后的loading -->
-        <MaskLayer v-loading="loadingCreate" element-loading-text="藏品上传中..." backgroundColor="rgba(255, 255, 255, 0.01)" :ifShow="loadingCreate" />
+        <MaskLayer v-loading="loadingCreate" element-loading-text="藏品上传中..." backgroundColor="rgba(255, 255, 255, 0.01)"
+            :ifShow="loadingCreate" />
     </div>
 </template>
 
@@ -98,8 +99,12 @@ import { onMounted, ref, Ref } from "vue"
 import router from "../router";
 
 
+import { getImageAuditing } from "../utils/ImageAuditing"
+
 
 import { Type } from "../interfaces/Type"
+import { RecognitionResult } from "../interfaces/RecognitionResult"
+import { AuditResult } from "../interfaces/AuditResult"
 
 
 
@@ -171,16 +176,41 @@ const uploadFile = async () => {
     if (fileInput && fileInput.files && fileInput.files.length > 0) {
         loading.value = true;
         const formData = new FormData();
+        // 将文件添加到formData中
         formData.append('file', fileInput.files[0]);
         formData.append('type', 'avatar')
         console.log("fileInput.files[0]:", fileInput.files[0])
 
+        // 上传图片
         await uploadImage(formData).then((res) => {
             uploadedImage.value = res as string;
             loading.value = false;
         }).catch((err) => {
             console.log(err);
         });
+        // 图片审核
+        const result = await getImageAuditing(uploadedImage.value!)
+        // 审核结果
+        const resultData = (result as AuditResult).RecognitionResult.Result
+        // 审核内容
+        const resultLabel = (result as AuditResult).RecognitionResult.Label
+
+        // 如果审核不通过，弹出提示
+        if(resultData == 1){
+            uploadedImage.value! = ""
+            switch (resultLabel) {
+                case "Porn":
+                    ElMessage.error("图片审核不通过，图片中包含色情内容")
+                    break;
+                case "Terrorism":
+                    ElMessage.error("图片审核不通过，图片中包含暴力内容")
+                    break;
+            }
+        }else if(resultData == 2){
+            ElMessage.info("图片等待人工审核")
+        }else if(resultData == 0){
+            ElMessage.success("图片审核通过")
+        }
     }
 };
 
@@ -485,14 +515,15 @@ const handleAddCollection = async () => {
     color: var(--accent-200);
 }
 
-:deep(.el-loading-mask){
+:deep(.el-loading-mask) {
     border-radius: 16px;
 }
 
-:deep(.el-loading-spinner .path){
+:deep(.el-loading-spinner .path) {
     stroke: var(--accent-200);
 }
-:deep(.el-loading-spinner .el-loading-text){
+
+:deep(.el-loading-spinner .el-loading-text) {
     color: var(--accent-200);
 }
 </style>

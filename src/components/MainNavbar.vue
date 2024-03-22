@@ -7,7 +7,8 @@
             </div>
 
             <p class="MainNavbarItem">中心</p>
-            <p class="MainNavbarItem">广场</p>
+            <!-- <p class="MainNavbarItem">广场</p> -->
+            <p class="MainNavbarItem" @click="toCreate">创建</p>
             <p class="MainNavbarItem" @click="toStatistics">统计信息</p>
 
         </div>
@@ -178,7 +179,7 @@ import { userInfoStore } from '../stores/UserInfoStore';
 
 
 // 引入check
-import { check } from '../api/user.ts'
+import { check } from '../api/user'
 // 引入searchCollections
 import { searchCollections } from '../api/collections'
 
