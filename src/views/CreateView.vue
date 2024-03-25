@@ -120,6 +120,7 @@ import { WatermarkResult } from "../interfaces/WatermarkResult"
 
 import { getAllTypes } from "../api/type"
 import { uploadImage, addCollection } from "../api/collections"
+import { el } from "element-plus/es/locale";
 
 
 // const text2ImgStore = Text2ImgStore();
@@ -139,6 +140,8 @@ let loading = ref(false);
 let loadingCreate = ref(false);
 // 定义上传后的图片URL
 const uploadedImage = ref<string | null>(null);
+const picOperationsJSON = ref<PicOperation | null>(null);
+const picOperations = ref<string>(null);
 
 
 onMounted(async () => {
@@ -178,151 +181,88 @@ const openFileInput = () => {
 // 上传图片
 const uploadFile = async () => {
     const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+
+
     // 暂时保存审核前的图片
     const tempImage = ref<string | null>(null);
     const path = ref<string | null>(null);
     const base64Image = ref<string | null>(null);
     const watermarkUrl = ref<string | null>(null);
-    const picOperations = ref<PicOperation | string>(null);
 
     const LocationUrl = ref<string | null>(null);
     const tempFile = ref<File | null>(null);
 
     let result: AuditResult = null;
 
-    let watermarkStatus = 0;
 
-
-    // 确保存在文件，并检测上传文件的质量，如果超过100Kb则提示，限制上传的文件类型为图片
-    if (fileInput && fileInput.files && fileInput.files.length > 0) {
-        // 排除非图片文件，同时排除svg格式的图片
-        if (!fileInput.files[0].type.includes("image") || fileInput.files[0].type.includes("svg")) {
-            ElMessage.error("请上传非svg格式的图片文件")
-            return;
-        }
-        // 规定上传文件大小
-        if (fileInput.files[0].size > 100 * 1024) {
-            ElMessage.error("上传文件大小不能小于100Kb")
-            return;
-        }
-        // 限制上传文件大小
-        if (fileInput.files[0].size > 50 * 1024 * 1024) {
-            ElMessage.error("上传文件大小不能大于50Mb")
-            return;
-        }
-    }
-
+    const file = fileInput.files[0];
+    // 设置储存路径
     path.value = fileInput.files![0].name
-    // 获取水印图片
+    // 获取水印图片的预签名URL
     watermarkUrl.value = await getObjectUrl("watermark.png") as string;
+    // 将水印图片的预签名URL转化为base64URL的形式
     base64Image.value = tobase64Url(watermarkUrl.value as string);
-    picOperations.value = {
-        "is_pic_info": 1,
-        "rules": [
-            {
-                "fileid": path.value,
-                "rule": `watermark/4/type/2/image/${base64Image.value}`,
-            },
-        ],
-    };
 
-    // 转化为JSON类型
-    picOperations.value = JSON.stringify(picOperations.value);
-    console.log("picOperations.value:", picOperations.value)
 
-    // 检测是否已经存在水印
-    loading.value = true;
-    await addWatermark(path.value, fileInput.files[0], picOperations.value).then((res: WatermarkResult) => {
-        watermarkStatus = res.UploadResult.ProcessResults.Object.WatermarkStatus;
-    }).catch((err) => {
-        console.log(err)
-    })
-    if (watermarkStatus >= 75) {
-        ElMessage.error("尊重版权，禁止上传已存在的藏品")
-        loading.value = false;
+    // 确保存在文件
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
         return;
     }
 
-    picOperations.value = {
-        "is_pic_info": 1,
-        "rules": [
-            {
-                "fileid": path.value,
-                "rule": `watermark/3/type/2/image/${base64Image.value}/level/3`,
-            },
-        ],
-    };
-    // 转化为JSON类型
-    picOperations.value = JSON.stringify(picOperations.value);
-    console.log("picOperations.value:", picOperations.value)
+    // 检测上传文件的质量，如果超过100Kb则提示，限制上传的文件类型为图片
+    if (!checkFileTypeAndSize(file)) {
+        return;
+    }
+
+    loading.value = true;
+    // 检测是否已经存在水印
+    if (!await checkWatermark(file, base64Image.value)) {
+        return
+    } else {
+        console.log("不存在水印")
+    }
+
+    console.log("开始添加水印")
+    // 设置水印规则
+    picOperations.value = setWatermarkRule(path.value, base64Image.value, false)
     // 添加水印
-    await addWatermark(path.value, fileInput.files[0], picOperations.value).then((res: WatermarkResult) => {
-        // 加上http//
-        // LocationUrl.value = "http//" + res.UploadResult.OriginalInfo.Location;
-
-    }).catch((err) => {
-        console.log(err)
-    })
-    // 将打上水印的图片转化为URL
-    await getObjectUrl(path.value).then((res) => {
-        LocationUrl.value = res as string;
+    await addWatermark(path.value, file, picOperations.value).then((res) => {
+        console.log("addWatermark:" + res)
     }).catch((err) => {
         console.log(err)
     })
 
-    // 通过对象存储的URL获取文件对象
-    await getFileObject(LocationUrl.value as string).then((res) => {
-        tempFile.value = res;
-    }).catch((err) => {
-        console.log(err)
-    })
 
+    // 获取打上水印图片的预签名URL
+    LocationUrl.value = await getObjectUrl(path.value) as string;
+
+    // 通过预签名URL获取到文件对象
+    tempFile.value = await getFileObject(LocationUrl.value as string)
+
+    // 下面是上传图片的内容
     const formData = new FormData();
-    // 将文件添加到formData中
     formData.append('file', tempFile.value);
     formData.append('type', 'avatar')
-    console.log("fileInput.files[0]:", tempFile.value)
+    console.log("file:", tempFile.value)
 
     // 上传图片，返回图片URL
     await uploadImage(formData).then((res) => {
         tempImage.value = res as string;
-        console.log("tempImage.value:", tempImage.value)
     }).catch((err) => {
         console.log(err);
     });
-    // 图片审核
+
+    // 获取图片审核结果
     await getImageAuditing(LocationUrl.value!).then((res) => {
-        console.log("LocationUrl.value:" + LocationUrl.value!)
         result = res as AuditResult;
         loading.value = false;
-        return res
     }).catch((err) => {
-        console.log("LocationUrl.value:" + LocationUrl.value!)
         console.log(err)
     })
-    // 审核结果
-    const resultData = (result as AuditResult).RecognitionResult.Result
-    // 审核内容
-    const resultLabel = (result as AuditResult).RecognitionResult.Label
 
-    // 如果审核不通过，弹出提示
-    if (resultData == 1) {
-        uploadedImage.value! = ""
-        switch (resultLabel) {
-            case "Porn":
-                ElMessage.error("图片审核不通过，图片中包含色情内容")
-                break;
-            case "Terrorism":
-                ElMessage.error("图片审核不通过，图片中包含暴力内容")
-                break;
-        }
-    } else if (resultData == 2) {
-        uploadedImage.value = tempImage.value
-        ElMessage.info("图片等待人工审核")
-    } else if (resultData == 0) {
-        uploadedImage.value = tempImage.value
-        ElMessage.success("图片审核通过")
-    }
+    // 审核结果处理
+    handleGetImageAuditing(result, tempImage.value);
+
 };
 
 const handleAddCollection = async () => {
@@ -354,6 +294,98 @@ const handleAddCollection = async () => {
             console.log(err)
         })
 }
+
+// 封装一个设置水印规则的方法
+const setWatermarkRule = (path: string, base64Image: string, ifCheck?: boolean): string => {
+    let picOperationsJSON =  null;
+    if(ifCheck) {
+        picOperationsJSON = {
+            "is_pic_info": 1,
+            "rules": [
+                {
+                    "fileid": "/p3/test2.jpg",
+                    "rule": `watermark/4/type/2/image/${base64Image}`
+                }
+            ]
+        }
+    }else{
+        picOperationsJSON = {
+            "is_pic_info": 1,
+            "rules": [
+                {
+                    "fileid": "/p3/test2.jpg",
+                    "rule": `watermark/3/type/2/image/${base64Image}/level/3`
+                }
+            ]
+        }
+    }
+    let picOperations = JSON.stringify(picOperationsJSON);
+    return picOperations;
+};
+// 辅助函数：检查文件类型和大小
+const checkFileTypeAndSize = (file: File): boolean => {
+    if (!file.type.includes("image") || file.type.includes("svg")) {
+        ElMessage.error("请上传非svg格式的图片文件");
+        return false;
+    }
+    if (file.size < 100 * 1024) {
+        ElMessage.error("上传文件大小不能小于100Kb");
+        return false;
+    }
+    if (file.size > 50 * 1024 * 1024) {
+        ElMessage.error("上传文件大小不能大于50Mb");
+        return false;
+    }
+    return true;
+};
+// 辅助函数：检查是否含有水印
+const checkWatermark = async (file: File, watermarkBase64: string): Promise<boolean | null> => {
+    const path = file.name;
+    const picOperations = setWatermarkRule(path, watermarkBase64,true);
+    let watermarkStatus = 0;
+
+    await addWatermark(path, file, picOperations).then((res: WatermarkResult) => {
+        watermarkStatus = res.UploadResult.ProcessResults.Object.WatermarkStatus;
+    }).catch((err) => {
+        console.log(err)
+    })
+    if (watermarkStatus >= 75) {
+        ElMessage.error("尊重版权，禁止上传已存在的藏品")
+        loading.value = false;
+        return false;
+    } else {
+        return true
+    }
+};
+
+// 辅助函数：图片审核结果
+const handleGetImageAuditing = (result: AuditResult, imageUrl: string) => {
+    // 审核结果
+    const resultData = (result as AuditResult).RecognitionResult.Result
+    // 审核内容
+    const resultLabel = (result as AuditResult).RecognitionResult.Label
+
+    // 如果审核不通过，弹出提示
+    if (resultData == 1) {
+        uploadedImage.value! = ""
+        switch (resultLabel) {
+            case "Porn":
+                ElMessage.error("图片审核不通过，图片中包含色情内容")
+                break;
+            case "Terrorism":
+                ElMessage.error("图片审核不通过，图片中包含暴力内容")
+                break;
+        }
+    } else if (resultData == 2) {
+        uploadedImage.value = imageUrl
+        ElMessage.info("图片等待人工审核")
+    } else if (resultData == 0) {
+        uploadedImage.value = imageUrl
+        ElMessage.success("图片审核通过")
+    }
+}
+
+
 
 
 </script>
