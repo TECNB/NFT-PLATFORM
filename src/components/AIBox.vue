@@ -79,12 +79,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import axios from 'axios';
 
 
 import config from "../constant/config";
 import { V3 } from "../utils/V3";
 import { paintingStyle } from "../constant/paintingStyle";
+import { getFileObject } from "../utils/GetFileObject";
 
 import { Type } from "../interfaces/Type";
 
@@ -165,22 +165,7 @@ const handleSave = async () => {
 
 
     // 发送 GET 请求获取文件内容并转化为 file 对象
-    await axios.get(text2ImgUrl!, {
-        responseType: 'blob', // 设置响应类型为 blob
-
-        headers: {
-            'Access-Control-Allow-Origin': '*', // 允许跨域
-        }
-    })
-        .then(response => {
-            const blob = response.data; // 获取 blob 对象
-            const filename = 'example.jpg'; // 可以自定义文件名
-            const file = new File([blob], filename, { type: blob.type });
-            fileData.value = file; // 将转化后的 file 对象存储到 ref 变量中
-        })
-        .catch(error => {
-            console.error('Error fetching file:', error);
-        });
+    fileData.value = await getFileObject(text2ImgUrl!);
 
     formData.append('file', fileData.value!);
     formData.append('type', 'avatar');
