@@ -40,7 +40,6 @@
                     <div v-else class="">
 
                     </div>
-
                 </div>
                 <img v-else :src="uploadedImage" alt="上传的图片" />
             </div>

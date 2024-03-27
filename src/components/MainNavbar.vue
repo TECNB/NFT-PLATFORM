@@ -9,7 +9,8 @@
             <p class="MainNavbarItem">中心</p>
             <!-- <p class="MainNavbarItem">广场</p> -->
             <p class="MainNavbarItem" @click="toCreate">创建</p>
-            <p class="MainNavbarItem" @click="toStatistics">统计信息</p>
+            <p class="MainNavbarItem" @click="toStatistics">排行</p>
+            <p class="MainNavbarItem" @click="toActivity">活动</p>
 
         </div>
         <div class="MainNavbarInput">
@@ -317,6 +318,11 @@ const toStatisticsFollow = () => {
         name: 'StatisticsView',
     })
     TypeIndex.index = 2
+}
+const toActivity = () => {
+    router.push({
+        name: 'ActivityView',
+    })
 }
 
 const isUserMenuVisible = ref(false);
