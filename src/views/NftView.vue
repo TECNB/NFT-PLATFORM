@@ -21,8 +21,7 @@
                     </div>
 
                 </div>
-                <div class="NftImage">
-
+                <div class="NftImage" v-loading="imageLoading" element-loading-text="数字藏品加载中...">
                     <div class="NftImageImg">
                         <img :src="collectionItem.cover" alt=""
                             style="height: 100%; width: 100%;border-radius: 0 0 20px 20px; object-fit: cover; aspect-ratio: 1/1;">
@@ -109,19 +108,60 @@
                             <Histogram />
                         </el-icon>
                         <p style="font-size: 20px;">历史价格 </p>
-
                     </div>
-
-
+                    <div class="w-full h-32">
+                        <div ref="pricesChartContainer" class="w-full h-full"></div>
+                    </div>
                 </div>
-                <div class="NftViewBodyRightPrice">
+                <div class="NftViewBodyRightPrice mb-20">
                     <div class="NftViewBodyRightPriceIcon">
                         <el-icon size="
                         20">
                             <ChatSquare />
                         </el-icon>
-                        <p style="font-size: 20px;">报价 </p>
+                        <p style="font-size: 20px;">报价</p>
                     </div>
+                    <div class="Table">
+                        <div class="body">
+                            <div class="tableBar">
+                                <div class="SearchInput">
+                                    <el-icon :size="16">
+                                        <Search />
+                                    </el-icon>
+                                    <input type="text" placeholder="请输入数字藏品名称">
+                                </div>
+                                <div class="FilterBox">
+                                    <el-icon>
+                                        <Operation />
+                                    </el-icon>
+                                    <p>筛选</p>
+                                </div>
+                            </div>
+                            <!--下面为表格数据-->
+                            <el-scrollbar height="100%">
+                                <el-table :data="tableData" class="tableBox" table-layout="fixed"
+                                    :row-style="{ height: '100px'}">
+
+                                    <el-table-column prop="price" label="价格"></el-table-column>
+                                    <el-table-column prop="originalPrice" label="人民币价格"></el-table-column>
+                                    <el-table-column prop="Number" label="数量"></el-table-column>
+                                    <el-table-column prop="Endline" label="到期时间"></el-table-column>
+                                    <el-table-column prop="offerStatus" label="报价状态">
+                                        <template v-slot="{ row }">
+                                            <el-tag :type="row.statusType" size="large">{{ row.offerStatus }}</el-tag>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column prop="offerUser" label="来源"></el-table-column>
+
+
+                                </el-table>
+                            </el-scrollbar>
+
+
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -131,10 +171,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted,Ref } from "vue"
+import { ref, onMounted, Ref } from "vue"
 // 引入useRoute
 import { useRoute } from 'vue-router'
 import * as echarts from 'echarts';
+import pricesChartOptions from '../utils/PricesChartOptions';
 
 
 // 引入Collection
@@ -155,19 +196,23 @@ import { CartListCollectionStore } from '../stores/CollectionStore'
 
 
 // 引入getCollectionById
-import { getCollectionById,addCollectionViews } from '../api/collections'
+import { getCollectionById, addCollectionViews } from '../api/collections'
 // 引入addFavoriteCollection以及removeFavoriteCollection
-import { addFavoriteCollection, removeFavoriteCollection} from '../api/user'
+import { addFavoriteCollection, removeFavoriteCollection } from '../api/user'
 
 
 // 实例化CartListCollectionStore
 let CartListCollection = CartListCollectionStore()
 // 实例化userInfoStore
 const userInfo = userInfoStore();
+const pricesChartContainer = ref<HTMLElement | null>(null);
+
+let myPricesChart: echarts.ECharts | null = null;
+
 
 
 // 建立一个变量，该变量内有商品的信息，类型为Collection
-let collectionItem:Ref<Collection>= ref() as Ref<Collection>
+let collectionItem: Ref<Collection> = ref() as Ref<Collection>
 
 // 定义变量isPayBoxVisible
 let isPayBoxVisible = ref(false);
@@ -175,10 +220,34 @@ let objectId = ref('');
 const loading = ref(true);
 // 定义一个变量，用于判断目前的藏品是否被收藏过
 let isFavorite = ref(false);
+const imageLoading = ref(true);
+
+const tableData = ref([
+    {
+        price: "2 ETH",
+        originalPrice: "$200",
+        Number: '1',
+        Endline: '9分钟后',
+        offerStatus: '正常',
+        statusType: 'success',
+        offerUser: 'TEC',
+    },
+    {
+        price: "2 ETH",
+        originalPrice: "$200",
+        Number: '1',
+        Endline: '1分钟前',
+        offerStatus: '已过期',
+        statusType: 'danger',
+        offerUser: 'TEC',
+    },
+
+]);
+
 
 
 onMounted(async () => {
-    
+
     // 获取路由参数
     const route = useRoute();
     objectId.value = route.params.id as string;
@@ -188,20 +257,38 @@ onMounted(async () => {
     await getCollectionById(objectId.value).then((res) => {
         addCollectionViews(objectId.value);
         collectionItem.value = res;
+
         loading.value = false;
     }).catch((err) => {
         console.log(err);
     });
-    
+
+    // 在collectionItem.value.cover加载完成后再loading.value = false;
+    await new Promise((resolve) => {
+        const img = new Image();
+        img.src = collectionItem.value.cover;
+        img.onload = () => {
+            imageLoading.value = false;
+            resolve(null);
+        };
+    });
+
 
     // 根据userInfo中的favoriteCollection数组中的objectId是否包含当前collectionItem的objectId来判断是否被收藏过
     if (userInfo.user?.favoriteCollection.includes(collectionItem.value.objectId)) {
         isFavorite.value = true;
     }
-    
-    console.log("favoriteCollection:"+userInfo.user?.favoriteCollection);
+
+    console.log("favoriteCollection:" + userInfo.user?.favoriteCollection);
     console.log("收藏情况:" + isFavorite.value)
+
+    // 在组件挂载后初始化 ECharts 实例
+    myPricesChart = echarts.init(pricesChartContainer.value!);
+
+    // 调用渲染图表的方法
+    renderPricesChart();
 });
+
 
 // 点击ShoppingCart图标后将该商品collectionItem添加进CartListCollection的方法
 const addCart = () => {
@@ -226,13 +313,13 @@ const handleAddFavoriteCollection = () => {
     // 如果collectionItem.isFavorite为true，则执行removeFavoriteCollection方法
     if (isFavorite.value) {
         removeFavoriteCollection(favoriteCollectionForm).then(() => {
-            console.log("取消收藏中的favoriteCollectionForm:"+favoriteCollectionForm)
+            console.log("取消收藏中的favoriteCollectionForm:" + favoriteCollectionForm)
             isFavorite.value = false;
             ElMessage.success('取消收藏成功');
             // 同时修改userInfo中的favoriteCollection数组
             userInfo.user?.favoriteCollection.splice(userInfo.user?.favoriteCollection.indexOf(collectionItem.value.objectId), 1);
         }).catch((err) => {
-            console.log("取消收藏中的favoriteCollectionForm:"+favoriteCollectionForm)
+            console.log("取消收藏中的favoriteCollectionForm:" + favoriteCollectionForm)
             ElMessage.error('取消收藏失败');
             // 同时修改userInfo中的favoriteCollection数组
             userInfo.user?.favoriteCollection.splice(userInfo.user?.favoriteCollection.indexOf(collectionItem.value.objectId), 1);
@@ -241,7 +328,7 @@ const handleAddFavoriteCollection = () => {
     } else {
         // 如果collectionItem.isFavorite为false，则执行addFavoriteCollection方法
         addFavoriteCollection(favoriteCollectionForm).then(() => {
-            console.log("收藏中的favoriteCollectionForm:"+favoriteCollectionForm)
+            console.log("收藏中的favoriteCollectionForm:" + favoriteCollectionForm)
             isFavorite.value = true;
             ElMessage.success('收藏成功');
         }).catch((err) => {
@@ -249,6 +336,20 @@ const handleAddFavoriteCollection = () => {
             console.log(err);
         });
     }
+};
+
+// 在这里编写渲染图表的方法
+const renderPricesChart = () => {
+    // 使用一至日作为横轴的数据
+    const xAxisData = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00'];
+
+    // 使用示例数据
+    const seriesData = [25, 60, 50, 20, 35, 40, 25];
+
+    let options = pricesChartOptions(xAxisData, seriesData)
+
+    // 使用 setOption 方法设置图表配置
+    myPricesChart?.setOption(options);
 };
 </script>
 
@@ -261,8 +362,8 @@ const handleAddFavoriteCollection = () => {
         width: 100%;
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        gap: 10vh;
+        align-items: flex-start;
+        gap: 30px;
 
         margin-top: 20px;
 
@@ -270,8 +371,8 @@ const handleAddFavoriteCollection = () => {
             flex: 1;
 
             .NftImageIcon {
-                width: 60vh;
-                height: 5vh;
+                width: 100%;
+                height: 100%;
 
                 display: flex;
                 justify-content: space-between;
@@ -294,8 +395,8 @@ const handleAddFavoriteCollection = () => {
             }
 
             .NftImage {
-                width: 60vh;
-                height: 60vh;
+                width: 100%;
+                height: 100%;
 
                 display: flex;
                 flex-direction: column;
@@ -335,9 +436,8 @@ const handleAddFavoriteCollection = () => {
 
             .NftViewBodyRightPrice {
 
-
                 border: 0.5px solid var(--text-200);
-                border-radius: 22.5px;
+                border-radius: 20px;
 
                 padding: 20px;
                 margin-top: 50px;
@@ -368,7 +468,7 @@ const handleAddFavoriteCollection = () => {
 
                         flex: 1;
 
-                        height: 5vh;
+                        height: 40px;
 
                         font-size: 16px;
                         background-color: var(--accent-200);
@@ -437,7 +537,7 @@ const handleAddFavoriteCollection = () => {
 
 
     border: 0.5px solid var(--text-200);
-    border-radius: 22.5px;
+    border-radius: 20px;
 
     padding: 20px;
     margin-top: 20px;
@@ -459,5 +559,147 @@ const handleAddFavoriteCollection = () => {
 
 
 
+}
+
+// 下面为loading的样式
+// :deep(.el-loading-mask) {
+//     border-radius: 16px;
+// }
+
+// 修改图标的颜色
+:deep(.el-loading-spinner .path) {
+    stroke: var(--accent-200);
+}
+
+// 修改文字的颜色
+:deep(.el-loading-spinner .el-loading-text) {
+    color: var(--accent-200);
+}
+
+:deep(.el-tag) {
+    border-radius: 9px;
+}
+.Table {
+    width: auto;
+    height: 92%;
+
+    background: #fff;
+
+    // 左下角以及右下角角度为16px
+    border-radius: 0 0 20px 20px;
+
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-bottom: -20px;
+
+    .header {
+        font-size: 26px;
+        text-align: start;
+        border-bottom: 1px solid var(--primary-200);
+
+        padding: 16px;
+    }
+
+    .body {
+        display: flex;
+        flex-direction: column;
+
+        height: 100%;
+        background: #fff;
+        border-radius: 20px;
+
+        padding: 16px;
+
+        .StatusSelection {
+            display: flex;
+            justify-content: flex-start;
+            align-content: center;
+            gap: 20px;
+
+            // 为item多留出boder的距离
+            min-height: 80px;
+
+            padding: 16px;
+
+            .item {
+                cursor: pointer;
+
+
+                transition: all 0.1s ease-out;
+
+                padding: 8px 16px;
+
+                &:hover {
+                    color: var(--accent-100);
+
+                    border-bottom: 2px solid var(--accent-100);
+                }
+
+                &.active {
+                    color: var(--accent-100);
+                    border-bottom: 2px solid var(--accent-100);
+                }
+            }
+        }
+
+        .tableBar {
+            display: flex;
+            justify-content: space-between;
+            align-content: center;
+            gap: 20px;
+
+            /* 输入框样式 */
+            .SearchInput {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                flex: 1;
+
+                background-color: rgba(250, 250, 250, 1);
+                border-radius: 12px;
+
+
+                padding: 12px;
+                margin-bottom: 20px;
+
+                input {
+                    outline: none;
+                    padding-left: 10px;
+                    font-size: 16px;
+                    width: 200px;
+                    /* 调整输入框的宽度 */
+                    border: 0px;
+                    color: rgba(160, 174, 192, 1);
+                    background-color: rgba(250, 250, 250, 1);
+                }
+            }
+
+            /* 筛选框样式 */
+            .FilterBox {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                gap: 10px;
+
+
+                color: rgba(160, 174, 192, 1);
+                background-color: rgba(250, 250, 250, 1);
+                border-radius: 12px;
+
+
+                padding: 12px;
+                margin-bottom: 20px;
+            }
+        }
+
+
+    }
+}
+
+.tableBox {
+    width: 100%;
+    // 表格的外部是否有边框
+    // border: solid 2px #f3f4f7;
+    border-radius: 2px;
 }
 </style>
