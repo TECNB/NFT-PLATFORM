@@ -134,6 +134,7 @@
 import { ref, onMounted,Ref } from "vue"
 // 引入useRoute
 import { useRoute } from 'vue-router'
+import * as echarts from 'echarts';
 
 
 // 引入Collection
