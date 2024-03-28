@@ -47,6 +47,10 @@ export const uploadImage = (params: any) => {
 export const addCollection = (params: any) => {
     return axios.post('api/collections/objects', params);
 }
+// 添加AI藏品
+export const addAICollection = (params: any) => {
+    return axios.post('api/collections/objects', params);
+}
 
 // AI文字生成藏品
 // const text2ImgStore = Text2ImgStore()

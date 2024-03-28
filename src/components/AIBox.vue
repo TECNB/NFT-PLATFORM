@@ -52,8 +52,8 @@
                             </el-icon>
                         </template>
                     </el-input>
-                    <el-select v-model="category" placeholder="请点击选择图片风格" size="large" :teleported="false" clearable class="w-full mt-5"
-                        >
+                    <el-select v-model="categoryId" placeholder="请点击选择图片风格" size="large" :teleported="false" clearable
+                        class="w-full mt-5">
                         <el-option v-for="item in allType" :key="item.objectId" :label="item.name"
                             :value="item.objectId" />
                     </el-select>
@@ -87,18 +87,23 @@ import { paintingStyle } from "../constant/paintingStyle";
 import { getFileObject } from "../utils/GetFileObject";
 
 import { Type } from "../interfaces/Type";
+import { AIData } from "../interfaces/AIData"
 
 import { uploadImage, text2Img } from "../api/collections"
-
 
 
 const props = defineProps(['ifShow', 'uploadImage']);
 const emit = defineEmits();
 
-let allType:Type[] = paintingStyle;
 
-
-
+let allType: Type[] = paintingStyle;
+let aiData:AIData = {
+    aiCreator: false,
+    aiDescription: "",
+    aiNegDescription: "",
+    aistyle: "",
+    aiImage: ""
+};
 
 // 定义prompt
 let prompt = ref('')
@@ -106,11 +111,14 @@ let prompt = ref('')
 let negativePrompt = ref('')
 let loading = ref(false);
 let saveLoading = ref(false);
-let category = ref("");
+let categoryId = ref("");
+let categoryName = ref("");
 // 定义上传后的图片URL
 const uploadedImage = ref<string | null>(null);
 // 定义一个 ref 变量来存储转化后的 file 对象
 const fileData = ref<File | null>(null);
+
+
 
 
 // 实现toggleVisibility方法
@@ -132,7 +140,7 @@ const handleText2Img = async () => {
         "Prompt": prompt.value,
         "NegativePrompt": negativePrompt.value,
         "RspImgType": "url",
-        "Styles": [category.value]
+        "Styles": [categoryId.value]
     };
 
 
@@ -173,7 +181,17 @@ const handleSave = async () => {
     await uploadImage(formData)
         .then(res => {
             ElMessage.success("保存成功");
-            emit('saveSuccess', res);  // 保存成功后，将图片URL传递给父组件
+            categoryName.value = allType.find(item => item.objectId === categoryId.value)?.name as string;
+
+            aiData.aiImage = res as string;
+            aiData.aiCreator = true;
+            aiData.aiDescription = prompt.value;
+            aiData.aiNegDescription = negativePrompt.value;
+            aiData.aistyle = categoryName.value;
+
+            
+
+            emit('saveSuccess', aiData);  // 保存成功后，将图片URL传递给父组件
             saveLoading.value = false;
             toggleVisibility();  // 关闭AIBox 
         })

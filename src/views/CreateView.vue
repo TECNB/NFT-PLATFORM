@@ -86,7 +86,7 @@
         </div>
 
         <MaskLayer :ifShow="isAIBoxVisible" />
-        <AIBox :ifShow="isAIBoxVisible" @updateIfShow="updateIsAIBoxVisible" @saveSuccess="handleSaveSuccess" />
+        <AIBox :ifShow="isAIBoxVisible"  @updateIfShow="updateIsAIBoxVisible" @saveSuccess="handleSaveSuccess"/>
         <!-- 下面的部分为点击保存后的loading -->
         <MaskLayer v-loading="loadingCreate" element-loading-text="藏品上传中..." backgroundColor="rgba(255, 255, 255, 0.01)"
             :ifShow="loadingCreate" />
@@ -110,6 +110,7 @@ import { RecognitionResult } from "../interfaces/RecognitionResult"
 import { AuditResult } from "../interfaces/AuditResult"
 import { PicOperation } from "../interfaces/PicOperation"
 import { WatermarkResult } from "../interfaces/WatermarkResult"
+import { AIData } from "../interfaces/AIData"
 
 
 
@@ -118,16 +119,20 @@ import { WatermarkResult } from "../interfaces/WatermarkResult"
 
 
 import { getAllTypes } from "../api/type"
-import { uploadImage, addCollection } from "../api/collections"
+import { uploadImage, addCollection,addAICollection } from "../api/collections"
 import { el } from "element-plus/es/locale";
 
 
 // const text2ImgStore = Text2ImgStore();
 
 
-let allType: Ref<Type[]> = ref([]);
 
+let aiCreator:boolean = false;
+let aiDescription = "";
+let aiNegDescription = "";
+let aistyle = "";
 
+let allType = ref<Type[]>([]);
 let issueNumber = ref("");
 let name = ref("");
 let category = ref("");
@@ -162,8 +167,13 @@ const updateIsAIBoxVisible = (ifShow: boolean) => {
     isAIBoxVisible.value = ifShow;
 }
 
-const handleSaveSuccess = (data: any) => {
-    uploadedImage.value = data;
+const handleSaveSuccess = (data: AIData) => {
+    uploadedImage.value = data.aiImage;
+    aiCreator = data.aiCreator;
+    aiDescription = data.aiDescription;
+    aiNegDescription = data.aiNegDescription;
+    aistyle = data.aistyle;
+
     console.log("uploadedImage.value", data);
 };
 
@@ -277,6 +287,12 @@ const handleAddCollection = async () => {
     formdata.append('cover', uploadedImage.value as string);
     formdata.append('file', uploadedImage.value as string);
     formdata.append('type', "图片");
+    if(aiCreator){
+        formdata.append('aiCreator', String(aiCreator));
+        formdata.append('aiDescription', aiDescription);
+        formdata.append('aiNegDescription', aiNegDescription);
+        formdata.append('aistyle', aistyle);
+    }
 
     loadingCreate.value = true;
 
