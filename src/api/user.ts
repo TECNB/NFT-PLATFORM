@@ -36,3 +36,8 @@ export const removeFavoriteCollection = (params:any) => {
     return axios.delete('api/user/me/favoriteCollection',params);
 }
 
+// 修改头像
+export const changeAvatar = (params:any) => {
+    return axios.put<User>('api/user/me/changeAvatar',params);
+}
+

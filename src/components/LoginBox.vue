@@ -83,7 +83,7 @@ import  {ErrorResult}  from '../interfaces/ErrorResult';
 import { userInfoStore } from '../stores/UserInfoStore';
 
 
-import { login, signup } from '../api/user.ts'
+import { login, signup } from '../api/user'
 
 
 
