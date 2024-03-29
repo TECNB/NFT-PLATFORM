@@ -1,7 +1,8 @@
 <template>
     <div class="UserContent">
 
-        <div class="UserContentCollection" v-if="UserIndex.index == 0">
+        <!-- 已收集的藏品 -->
+        <div class="UserContentItem" v-if="UserIndex.index == 0">
             <UserFilterSection />
             <div class="" v-if="isOwnedCollectionNull">
                 <p class="text-left font-medium mb-5">0个项目</p>
@@ -11,7 +12,7 @@
                 </div>
             </div>
 
-            <div class="UserContentLiked" v-else>
+            <div class="UserContentItem" v-else>
                 <div v-for="(item, index) in OwnedCollection.collections" :key="index" class="CollectionListItem">
                     <div class="CollectionListItemImage h-40 w-60">
                         <img class="w-full h-full rounded-t-2xl object-cover" :src="item.cover" alt="" />
@@ -25,29 +26,60 @@
                 </div>
             </div>
         </div>
-        <div class="UserContentOfferGet" v-if="UserIndex.index == 1">
+
+        <!-- 已作出的报价 -->
+        <div class="UserContentItem" v-if="UserIndex.index == 1">
             <!-- <UserFilterSection /> -->
             <div class="UserContentDetail">
                 <h2>没有要显示的报价</h2>
                 <button class="text-white bg-accent-200 mt-5 p-2">返回所有项目</button>
             </div>
         </div>
-        <div class="UserContentDeal" v-if="UserIndex.index == 2">
-            <!-- <UserFilterSection />
-            <div class="UserContentDetail">
-                <h2>没有要显示的交易</h2>
-                <button style="color: white;background-color: var(--accent-200);margin-top: 20px;">返回所有项目</button>
-            </div> -->
-        </div>
-        <div class="UserContentCreate" v-if="UserIndex.index == 3">
+        
+        <!-- 交易中的藏品 -->
+        <div class="UserContentItem" v-if="UserIndex.index == 2">
             <UserFilterSection />
             <div v-if="isSellingCollectionNull" class="UserContentDetail">
                 <h2>未找到创建的项目</h2>
                 <button class="text-white bg-accent-200 mt-5 p-2">返回所有项目</button>
             </div>
+            <div v-if="!isSellingCollectionNull" v-for="(item, index) in SellingCollection.collections" :key="index" @click="toNft(item.objectId)"
+                class="CollectionListItem">
+                <div class="CollectionListItemImage h-40 w-60" style="">
+                    <img class="w-full h-full rounded-t-2xl object-cover" :src="item.cover" alt="" />
+                </div>
+
+                <p class="text-left px-3 py-5">{{ item.name }}</p>
+                <div class="CollectionListItemDetail">
+                    <p style="font-size: 16px; font-weight: normal;">交易价格</p>
+                    <p>{{ item.price }}</p>
+                </div>
+            </div>
         </div>
 
-        <div class="UserContentLiked" v-if="UserIndex.index == 4">
+        <!-- 已创建的藏品 -->
+        <div class="UserContentItem" v-if="UserIndex.index == 3">
+            <UserFilterSection />
+            <div v-if="isCreatedCollectionNull" class="UserContentDetail">
+                <h2>未找到创建的项目</h2>
+                <button class="text-white bg-accent-200 mt-5 p-2">返回所有项目</button>
+            </div>
+            <div v-if="!isCreatedCollectionNull" v-for="(item, index) in CreatedCollection.collections" :key="index" @click="toNft(item.objectId)"
+                class="CollectionListItem">
+                <div class="CollectionListItemImage h-40 w-60" style="">
+                    <img class="w-full h-full rounded-t-2xl object-cover" :src="item.cover" alt="" />
+                </div>
+
+                <p class="text-left px-3 py-5">{{ item.name }}</p>
+                <div class="CollectionListItemDetail">
+                    <p style="font-size: 16px; font-weight: normal;">交易价格</p>
+                    <p>{{ item.price }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 已收藏的藏品 -->
+        <div class="UserContentItem" v-if="UserIndex.index == 4">
             <div v-if="!isFavoriteCollectionNull" v-for="(item, index) in FavoriteCollection.collections" :key="index" @click="toNft(item.objectId)"
                 class="CollectionListItem">
                 <div class="CollectionListItemImage h-40 w-60" style="">
@@ -67,13 +99,17 @@
                 </div>
             </div>
         </div>
-        <div class="UserContentActivity" v-if="UserIndex.index == 5">
+
+        <!-- 活动 -->
+        <div class="UserContentItem" v-if="UserIndex.index == 5">
             <!-- <div class="UserContentDetail">
                 <h2>没有要显示的项目</h2>
                 <button style="color: white;background-color: var(--accent-200);margin-top: 20px;">返回所有项目</button>
             </div> -->
         </div>
-        <div class="UserContentOfferReceive" v-if="UserIndex.index == 6">
+
+        <!-- 收到的报价 -->
+        <div class="UserContentItem" v-if="UserIndex.index == 6">
             <!-- <div class="UserContentDetail">
                 <h2>没有要显示的项目</h2>
                 <button style="color: white;background-color: var(--accent-200);margin-top: 20px;">返回所有项目</button>
@@ -88,13 +124,13 @@ import { onMounted, ref } from "vue"
 import { useRouter } from 'vue-router'
 
 
-import { FavoriteCollectionStore, OwnedCollectionStore, SellingCollectionStore } from '../stores/CollectionStore'
+import { FavoriteCollectionStore, OwnedCollectionStore, SellingCollectionStore,CreatedCollectionStore } from '../stores/CollectionStore'
 import { SelectedUserIndexStore } from '../stores/SelectedIndexStore'
 import UserFilterSection from '../components/UserFilterSection.vue'
 
 
 import { check } from '../api/user'
-import { getCollectionById } from '../api/collections'
+import { getCollectionById,getCreatedCollection } from '../api/collections'
 import { userInfoStore } from "../stores/UserInfoStore";
 
 const router = useRouter()
@@ -104,11 +140,13 @@ const UserIndex = SelectedUserIndexStore()
 const FavoriteCollection = FavoriteCollectionStore()
 const OwnedCollection = OwnedCollectionStore()
 const SellingCollection = SellingCollectionStore()
+const CreatedCollection = CreatedCollectionStore()
 const userInfo = userInfoStore()
 
 let isOwnedCollectionNull = ref(true);
 let isFavoriteCollectionNull = ref(true);
 let isSellingCollectionNull = ref(true);
+let isCreatedCollectionNull = ref(true);
 
 let loading = ref(false)
 
@@ -119,6 +157,8 @@ onMounted(async () => {
     await check().then((res) => {
         userInfo.user = res
     })
+
+    //观测UserIndex.index的变化，当index发生变化时，重新获取数据
     if (UserIndex.index === 4) {
         // 设置通过空数组防止重复存入
         FavoriteCollection.collections = []
@@ -143,21 +183,30 @@ onMounted(async () => {
         const res = await getCollectionById(item);
         SellingCollection.collections.push(res);
     }));
+    // 设置通过空数组防止重复存入
+    CreatedCollection.collections = []
+    await getCreatedCollection().then((res) => {
+        CreatedCollection.collections = res
+    })
 
     // 定义变量表示collectionItems的长度
     let favoriteCollectionItemsLength = FavoriteCollection.collections.length
     let ownedCollectionItemsLength = OwnedCollection.collections.length
     let sellingCollectionItemsLength = SellingCollection.collections.length
+    let createdCollectionItemsLength = CreatedCollection.collections.length
+
     // 如果collectionItemsLength=0时，isOwnedCollectionNull为true
     if (favoriteCollectionItemsLength !== 0) {
         isFavoriteCollectionNull.value = false
     }
-
     if (ownedCollectionItemsLength !== 0) {
         isOwnedCollectionNull.value = false
     }
     if (sellingCollectionItemsLength !== 0) {
         isSellingCollectionNull.value = false
+    }
+    if (createdCollectionItemsLength !== 0) {
+        isCreatedCollectionNull.value = false
     }
 })
 
@@ -219,7 +268,7 @@ const toNft = (objectId: string) => {
         }
     }
 
-    .UserContentLiked {
+    .UserContentItem {
         display: flex;
         justify-content: flex-start;
         align-items: center;

@@ -1,16 +1,16 @@
-// 登录成功后返回的数据
 export interface User {
-    objectId: string;
-    hash: string;
-    username: string;
-    userType: string;
-    phone: string;
-    avatar: string;              // 添加头像字段
-    favoriteCollection: string[]; // 添加喜欢的集合字段
-    ownedCollection: string[];    // 添加拥有的集合字段
-    sellingCollection: string[];    // 添加正在出售的集合字段
-    token: string;
-    lastLogin: string;            // 添加最后登录时间字段
-    createdAt: string;
-    updatedAt: string;
+    objectId: string; // 用户对象ID
+    hash: string; // 哈希值
+    username: string; // 用户名
+    userType: string; // 用户类型
+    phone: string; // 手机号码
+    avatar: string; // 头像
+    orders: string[]; // 订单列表
+    favoriteCollection: string[]; // 收藏的集合列表
+    ownedCollection: string[]; // 拥有的集合列表
+    sellingCollection: string[]; // 正在出售的集合列表
+    token: string; // 令牌
+    lastLogin: string; // 上次登录时间
+    createdAt: string; // 创建时间
+    updatedAt: string; // 更新时间
 }
