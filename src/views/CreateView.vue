@@ -251,7 +251,7 @@ const uploadFile = async () => {
     // 下面是上传图片的内容
     const formData = new FormData();
     formData.append('file', tempFile.value);
-    formData.append('type', 'avatar')
+    formData.append('type', 'collection')
     console.log("file:", tempFile.value)
 
     // 上传图片，返回图片URL

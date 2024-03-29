@@ -97,7 +97,7 @@ const emit = defineEmits();
 
 
 let allType: Type[] = paintingStyle;
-let aiData:AIData = {
+let aiData: AIData = {
     aiCreator: false,
     aiDescription: "",
     aiNegDescription: "",
@@ -140,7 +140,11 @@ const handleText2Img = async () => {
         "Prompt": prompt.value,
         "NegativePrompt": negativePrompt.value,
         "RspImgType": "url",
-        "Styles": [categoryId.value]
+        "Styles": [categoryId.value],
+        // 配置图片的分辨率
+        "ResultConfig": {
+            "Resolution": "1024:1024"
+        }
     };
 
 
@@ -189,7 +193,7 @@ const handleSave = async () => {
             aiData.aiNegDescription = negativePrompt.value;
             aiData.aistyle = categoryName.value;
 
-            
+
 
             emit('saveSuccess', aiData);  // 保存成功后，将图片URL传递给父组件
             saveLoading.value = false;
