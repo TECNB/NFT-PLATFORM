@@ -1,9 +1,10 @@
 <template>
     <div class="UserInfo">
         <div class="UserInfoBackground">
-            <div style="" class="UserInfoAvatar" @mousemove="ifShowEdit = true" @mouseleave="ifShowEdit = false">
+            <div style="" class="UserInfoAvatar" @mousemove="ifShowEdit = true" @mouseleave="ifShowEdit = false"
+                @click="triggerFileInput" v-loading="loading" element-loading-text="头像上传中...">
                 <img :src="userInfo.user?.avatar" alt=""
-                    class="w-[95%] h-[95%] rounded-full object-cover aspect-square cursor-pointer" @click="triggerFileInput">
+                    class="w-[95%] h-[95%] rounded-full object-cover aspect-square cursor-pointer">
                 <transition name="fade">
                     <div class="absolute cursor-pointer" v-if="ifShowEdit">
                         <el-icon color="#FFFFFF" size="24">
@@ -50,6 +51,8 @@ import { useRouter } from 'vue-router'
 
 import UserNavbar from '../components/UserNavbar.vue'
 
+import { uploadImage } from "../api/collections"
+
 // 引入userInfoStore
 import { userInfoStore } from '../stores/UserInfoStore';
 
@@ -63,6 +66,7 @@ const userInfo = userInfoStore();
 
 const ifShowEdit = ref(false);
 const fileInput = ref(null);
+const loading = ref(false);
 
 
 const toSetting = () => {
@@ -73,18 +77,27 @@ const triggerFileInput = () => {
     fileInput.value.click();
 };
 
-const handleFileChange = async(event) => {
+const handleFileChange = async (event) => {
     const file = event.target.files[0];
+
     // 规定上传的文件类型以及质量
     if (!checkFileTypeAndSize(file)) {
         return;
     }
+    // 下面是上传图片的内容
+    const uploadImageFormData = new FormData();
+    uploadImageFormData.append('file', file);
+    uploadImageFormData.append('type', 'collection')
 
-    const formData = new FormData();
-    formData.append('avatar', file);
-    await changeAvatar(formData).then((res) => {
-        console.log(res);
+    loading.value = true;
+    // 上传图片，返回图片URL
+    const imageUrl = await uploadImage(uploadImageFormData)
+
+    const changeAvatarFormData = new FormData();
+    changeAvatarFormData.append('avatar', imageUrl as string);
+    await changeAvatar(changeAvatarFormData).then((res) => {
         userInfo.setUser(res);
+        loading.value = false;
     });
 };
 
@@ -176,5 +189,19 @@ const checkFileTypeAndSize = (file: File): boolean => {
 
         }
     }
+}
+// 下面为loading的样式
+:deep(.el-loading-mask) {
+    border-radius: 500px;
+}
+
+// 修改图标的颜色
+:deep(.el-loading-spinner .path) {
+    stroke: var(--accent-200);
+}
+
+// 修改文字的颜色
+:deep(.el-loading-spinner .el-loading-text) {
+    color: var(--accent-200);
 }
 </style>
