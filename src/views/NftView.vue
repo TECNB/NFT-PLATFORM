@@ -27,15 +27,15 @@
                             style="height: 100%; width: 100%;border-radius: 0 0 20px 20px; object-fit: cover; aspect-ratio: 1/1;">
                     </div>
                 </div>
-                <div class="NftViewBodyRightPrice">
+                <div class="NftViewBodyLeftPrice">
                     <div class="NftViewBodyRightPriceIcon">
                         <el-icon size="20">
                             <Operation />
                         </el-icon>
-                        <p style="font-size: 20px;">描述</p>
+                        <p class="text-xl font-bold">描述</p>
 
                     </div>
-                    <div class="NftViewBodyRightPriceButton" style="text-align: start;">
+                    <div class="NftViewBodyRightPriceButton" style="text-align: start;padding-bottom: 20px;">
                         <p
                             style="color: var(--text-200);font-size: 20px;font-weight: bold;display: inline-block;margin-top: 10px;">
                             创作者</p>
@@ -44,9 +44,38 @@
                         <p style="color: #000;font-size: 16px;">{{ collectionItem.intro }}</p>
                         </p>
                     </div>
-
-
+                    <div class="flex justify-start items-center gap-5 border-solid border-t-[0.5px] border-text-200 cursor-pointer -mx-5 pl-5 py-5" @click="toggleIsShowBlockChainDetail()">
+                        <el-icon size="20">
+                            <Memo />
+                        </el-icon>
+                        <p class="text-xl font-bold">详情</p>
+                        <el-icon v-if="isShowBlockChainDetail" class="ml-auto mr-5"><ArrowUpBold /></el-icon>
+                        <el-icon v-else class="ml-auto mr-5"><ArrowDownBold /></el-icon>
+                    </div>
+                    <div v-if="isShowBlockChainDetail" class="flex justify-center items-center flex-col gap-5 border-solid border-t-[0.5px] border-text-200 -mx-5 px-5 py-5">
+                        <div class="flex justify-between items-center w-full">
+                            <p class="text-lg font-medium">合约地址</p>
+                            <p class="text-base font-medium">{{ collectionItem.objectId }}</p>
+                        </div>
+                        <div class="flex justify-between items-center w-full">
+                            <p class="text-lg font-medium">代币ID</p>
+                            <p class="text-base font-medium">1695</p>
+                        </div>
+                        <div class="flex justify-between items-center w-full">
+                            <p class="text-lg font-medium">代币标准</p>
+                            <p class="text-base font-medium">ERC-721</p>
+                        </div>
+                        <div class="flex justify-between items-center w-full">
+                            <p class="text-lg font-medium">链</p>
+                            <p class="text-base font-medium">Ethereum</p>
+                        </div>
+                        <div class="flex justify-between items-center w-full">
+                            <p class="text-lg font-medium">最后更新日期</p>
+                            <p class="text-base font-medium">{{ collectionItem.createdAt }}</p>
+                        </div>
+                    </div>
                 </div>
+
 
 
             </div>
@@ -140,8 +169,7 @@
                             <!--下面为表格数据-->
                             <el-scrollbar height="100%">
                                 <el-table :data="tableData" class="tableBox" table-layout="fixed"
-                                    :row-style="{ height: '100px'}">
-
+                                    :row-style="{ height: '100px' }">
                                     <el-table-column prop="price" label="价格"></el-table-column>
                                     <el-table-column prop="originalPrice" label="人民币价格"></el-table-column>
                                     <el-table-column prop="Number" label="数量"></el-table-column>
@@ -243,6 +271,14 @@ const tableData = ref([
     },
 
 ]);
+
+// 是否展示区块链详情
+let isShowBlockChainDetail = ref(false);
+
+// 切换isShowBlockChainDetail
+const toggleIsShowBlockChainDetail = () => {
+    isShowBlockChainDetail.value = !isShowBlockChainDetail.value;
+};
 
 
 
@@ -417,7 +453,8 @@ const renderPricesChart = () => {
         }
 
         .NftViewBodyRight {
-            flex: 2;
+
+            width: 55%;
             text-align: start;
 
             .NftViewBodyRightIcon {
@@ -436,8 +473,9 @@ const renderPricesChart = () => {
 
             .NftViewBodyRightPrice {
 
+
                 border: 0.5px solid var(--text-200);
-                border-radius: 20px;
+                border-radius: 12px;
 
                 padding: 20px;
                 margin-top: 50px;
@@ -533,20 +571,21 @@ const renderPricesChart = () => {
 
 }
 
-.NftViewBodyRightPrice {
+.NftViewBodyLeftPrice {
 
 
     border: 0.5px solid var(--text-200);
-    border-radius: 20px;
+    border-radius: 12px;
 
     padding: 20px;
+    padding-bottom: 0px;
     margin-top: 20px;
 
     .NftViewBodyRightPriceIcon {
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        gap: 30px;
+        gap: 20px;
 
         margin-left: -20px;
         margin-right: -20px;
@@ -579,6 +618,7 @@ const renderPricesChart = () => {
 :deep(.el-tag) {
     border-radius: 9px;
 }
+
 .Table {
     width: auto;
     height: 92%;

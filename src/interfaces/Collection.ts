@@ -17,5 +17,6 @@ export interface Collection {
     soldNumber: number;
     recommend: boolean;
     albumId: string | null;
+    createdAt: string;
 }
 

@@ -180,7 +180,7 @@ const handleSave = async () => {
     fileData.value = await getFileObject(text2ImgUrl!);
 
     formData.append('file', fileData.value!);
-    formData.append('type', 'avatar');
+    formData.append('type', 'collection');
 
     await uploadImage(formData)
         .then(res => {
