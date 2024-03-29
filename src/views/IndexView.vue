@@ -5,7 +5,7 @@
 		<TypeNavbar />
 		<el-carousel :interval="4000" type="card" height="300px">
 			<el-carousel-item v-for="(item, index) in CollectionRanking.collections" :key="index"
-				style="border-radius: 20px 20px 0px 0px;">
+				style="border-radius: 20px 20px 0px 0px;" @click="toNft(item.objectId)">
 				<img :src="item.cover" alt="NFT Image"
 					style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;">
 				<h3 text="2xl" justify="center">{{ item.name }}</h3>
@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { onMounted, Ref, ref } from "vue"
-
+import router from "../router";
 
 import { Type } from '../interfaces/Type'
 
@@ -88,6 +88,12 @@ onMounted(async () => {
 		console.log(err);
 	});
 })
+const toNft = (objectId: string) => {
+    router.push({
+        name: 'NftView',
+        params: { id: objectId }, // 传递动态路由参数
+    })
+}
 </script>
 
 <style scoped>
