@@ -21,7 +21,7 @@
                     </div>
 
                 </div>
-                <div class="NftImage" v-loading="imageLoading" element-loading-text="数字藏品加载中...">
+                <div class="NftImage" v-loading="imageLoading" element-loading-text="报价加载中...">
                     <div class="NftImageImg">
                         <img :src="collectionItem.cover" alt=""
                             style="height: 100%; width: 100%;border-radius: 0 0 20px 20px; object-fit: cover; aspect-ratio: 1/1;">
@@ -44,15 +44,21 @@
                         <p style="color: #000;font-size: 16px;">{{ collectionItem.intro }}</p>
                         </p>
                     </div>
-                    <div class="flex justify-start items-center gap-5 border-solid border-t-[0.5px] border-text-200 cursor-pointer -mx-5 pl-5 py-5" @click="toggleIsShowBlockChainDetail()">
+                    <div class="flex justify-start items-center gap-5 border-solid border-t-[0.5px] border-text-200 cursor-pointer -mx-5 pl-5 py-5"
+                        @click="toggleIsShowBlockChainDetail()">
                         <el-icon size="20">
                             <Memo />
                         </el-icon>
                         <p class="text-xl font-bold">详情</p>
-                        <el-icon v-if="isShowBlockChainDetail" class="ml-auto mr-5"><ArrowUpBold /></el-icon>
-                        <el-icon v-else class="ml-auto mr-5"><ArrowDownBold /></el-icon>
+                        <el-icon v-if="isShowBlockChainDetail" class="ml-auto mr-5">
+                            <ArrowUpBold />
+                        </el-icon>
+                        <el-icon v-else class="ml-auto mr-5">
+                            <ArrowDownBold />
+                        </el-icon>
                     </div>
-                    <div v-if="isShowBlockChainDetail" class="flex justify-center items-center flex-col gap-5 border-solid border-t-[0.5px] border-text-200 -mx-5 px-5 py-5">
+                    <div v-if="isShowBlockChainDetail"
+                        class="flex justify-center items-center flex-col gap-5 border-solid border-t-[0.5px] border-text-200 -mx-5 px-5 py-5">
                         <div class="flex justify-between items-center w-full">
                             <p class="text-lg font-medium">合约地址</p>
                             <p class="text-base font-medium">{{ collectionItem.objectId }}</p>
@@ -150,49 +156,62 @@
                         </el-icon>
                         <p style="font-size: 20px;">报价</p>
                     </div>
-                    <div class="Table">
-                        <div class="body">
-                            <div class="tableBar">
-                                <div class="SearchInput">
-                                    <el-icon :size="16">
-                                        <Search />
-                                    </el-icon>
-                                    <input type="text" placeholder="请输入数字藏品名称">
-                                </div>
-                                <div class="FilterBox">
-                                    <el-icon>
-                                        <Operation />
-                                    </el-icon>
-                                    <p>筛选</p>
-                                </div>
-                            </div>
-                            <!--下面为表格数据-->
-                            <el-scrollbar height="100%">
-                                <el-table :data="tableData" class="tableBox" table-layout="fixed"
-                                    :row-style="{ height: '100px' }">
-                                    <el-table-column prop="price" label="价格"></el-table-column>
-                                    <el-table-column prop="originalPrice" label="人民币价格"></el-table-column>
-                                    <el-table-column prop="Number" label="数量"></el-table-column>
-                                    <el-table-column prop="Endline" label="到期时间"></el-table-column>
-                                    <el-table-column prop="offerStatus" label="报价状态">
-                                        <template v-slot="{ row }">
-                                            <el-tag :type="row.statusType" size="large">{{ row.offerStatus }}</el-tag>
-                                        </template>
-                                    </el-table-column>
-                                    <el-table-column prop="offerUser" label="来源"></el-table-column>
-
-
-                                </el-table>
-                            </el-scrollbar>
-
-
-                        </div>
-
-                    </div>
+                    <OfferTable />
 
                 </div>
             </div>
         </div>
+        <div class="border-[0.5px] border-solid border-text-200 px-5 rounded-xl mt-5 bg-white">
+            <div class="flex justify-start items-center gap-5 cursor-pointer -mx-5 pl-5 py-5"
+                @click="toggleIsShowActivity()">
+                <el-icon size="20">
+                    <Switch />
+                </el-icon>
+                <p class="text-xl font-bold">项目活动</p>
+                <el-icon v-if="isShowActivity" class="ml-auto mr-5">
+                    <ArrowUpBold />
+                </el-icon>
+                <el-icon v-else class="ml-auto mr-5">
+                    <ArrowDownBold />
+                </el-icon>
+            </div>
+
+            <!-- 活动情况 -->
+            <div v-if="isShowActivity" class="border-solid border-t-[0.5px] border-text-200 -mx-5 px-5 h-[520px]">
+                <div @click="toggleIsShowFilter()"
+                    class="flex justify-between items-center relative border-[0.5px] border-text-200 border-solid rounded-xl px-5 py-2 mt-5">
+                    <p class="text-left text-lg">筛选</p>
+                    <el-icon v-if="!isShowFilter">
+                        <ArrowDownBold />
+                    </el-icon>
+                    <el-icon v-else>
+                        <ArrowUpBold />
+                    </el-icon>
+                    <div v-if="isShowFilter" class="absolute left-0 top-12 rounded-2xl w-full bg-white shadow-xl z-50 p-5">
+                        <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100" @click="changeFilterCondition('销售')">销售</p>
+                        <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100" @click="changeFilterCondition('交易已接受')">交易已接受</p>
+                        <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100" @click="changeFilterCondition('提供交易')">提供交易</p>
+                        <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100" @click="changeFilterCondition('转移')">转移</p>
+                        <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100" @click="changeFilterCondition('合成')">合成</p>
+                    </div>
+                </div>
+
+                <!-- 用v-for获取filterCondition -->
+                <div class="flex justify-start items-center gap-5 cursor-pointer w-full -mx-5 pl-5 py-5" v-if="filterCondition.length!=0">
+                    <div class="flex justify-between items-center gap-5 bg-gray-100 rounded-xl p-3" v-for="condition in filterCondition" :key="condition">
+                        <p class="font-medium">{{ condition }}</p>
+                        <el-icon @click="clearFilterCondition(condition)"><CloseBold /></el-icon>
+                    </div>
+                    <p @click="clearFilterCondition()" class="text-accent-100 cursor-pointer hover:text-accent-200">全部清除</p>
+                </div>
+
+                <div class="h-[85%]">
+                    <OrderTable />
+                </div>
+
+            </div>
+        </div>
+
         <MaskLayer :ifShow="isPayBoxVisible" />
         <PayBox :ifShow="isPayBoxVisible" @updateIfShow="updateIsPayBoxVisible" />
     </div>
@@ -215,6 +234,8 @@ import MainNavbar from '../components/MainNavbar.vue'
 import MaskLayer from '../components/MaskLayer.vue'
 // 引入PayBox
 import PayBox from '../components/PayBox.vue'
+import OrderTable from '../components/OrderTable.vue'
+import OfferTable from '../components/OfferTable.vue'
 
 
 // 引入UserInfoStore
@@ -250,34 +271,45 @@ const loading = ref(true);
 let isFavorite = ref(false);
 const imageLoading = ref(true);
 
-const tableData = ref([
-    {
-        price: "2 ETH",
-        originalPrice: "$200",
-        Number: '1',
-        Endline: '9分钟后',
-        offerStatus: '正常',
-        statusType: 'success',
-        offerUser: 'TEC',
-    },
-    {
-        price: "2 ETH",
-        originalPrice: "$200",
-        Number: '1',
-        Endline: '1分钟前',
-        offerStatus: '已过期',
-        statusType: 'danger',
-        offerUser: 'TEC',
-    },
+// 定义记录筛选条件
+let filterCondition = ref([]);
 
-]);
 
 // 是否展示区块链详情
 let isShowBlockChainDetail = ref(false);
+// 是否展示项目活动
+let isShowActivity = ref(false);
+// 是否展示筛选
+let isShowFilter = ref(false);
 
 // 切换isShowBlockChainDetail
 const toggleIsShowBlockChainDetail = () => {
     isShowBlockChainDetail.value = !isShowBlockChainDetail.value;
+};
+// 切换isShowActivity
+const toggleIsShowActivity = () => {
+    isShowActivity.value = !isShowActivity.value;
+};
+// 切换isShowFilter
+const toggleIsShowFilter = () => {
+    isShowFilter.value = !isShowFilter.value;
+};
+
+// 点击更换filterCondition
+const changeFilterCondition = (condition: string) => {
+    if (filterCondition.value.includes(condition)) {
+        filterCondition.value.splice(filterCondition.value.indexOf(condition), 1);
+    } else {
+        filterCondition.value.push(condition);
+    }
+};
+// 清除filterCondition，传入为空时，清除所有，传入条件时，清除该条件
+const clearFilterCondition = (condition?: string) => {
+    if (condition) {
+        filterCondition.value.splice(filterCondition.value.indexOf(condition), 1);
+    } else {
+        filterCondition.value = [];
+    }
 };
 
 
@@ -392,6 +424,7 @@ const renderPricesChart = () => {
 <style lang="scss" scoped>
 .NftView {
     width: 100%;
+    padding-bottom: 20px;
 
 
     .NftViewBody {
@@ -473,7 +506,7 @@ const renderPricesChart = () => {
 
             .NftViewBodyRightPrice {
 
-
+                background-color: #FFF;
                 border: 0.5px solid var(--text-200);
                 border-radius: 12px;
 
@@ -572,8 +605,7 @@ const renderPricesChart = () => {
 }
 
 .NftViewBodyLeftPrice {
-
-
+    background-color: #FFF;
     border: 0.5px solid var(--text-200);
     border-radius: 12px;
 
@@ -613,133 +645,5 @@ const renderPricesChart = () => {
 // 修改文字的颜色
 :deep(.el-loading-spinner .el-loading-text) {
     color: var(--accent-200);
-}
-
-:deep(.el-tag) {
-    border-radius: 9px;
-}
-
-.Table {
-    width: auto;
-    height: 92%;
-
-    background: #fff;
-
-    // 左下角以及右下角角度为16px
-    border-radius: 0 0 20px 20px;
-
-    margin-left: -20px;
-    margin-right: -20px;
-    margin-bottom: -20px;
-
-    .header {
-        font-size: 26px;
-        text-align: start;
-        border-bottom: 1px solid var(--primary-200);
-
-        padding: 16px;
-    }
-
-    .body {
-        display: flex;
-        flex-direction: column;
-
-        height: 100%;
-        background: #fff;
-        border-radius: 20px;
-
-        padding: 16px;
-
-        .StatusSelection {
-            display: flex;
-            justify-content: flex-start;
-            align-content: center;
-            gap: 20px;
-
-            // 为item多留出boder的距离
-            min-height: 80px;
-
-            padding: 16px;
-
-            .item {
-                cursor: pointer;
-
-
-                transition: all 0.1s ease-out;
-
-                padding: 8px 16px;
-
-                &:hover {
-                    color: var(--accent-100);
-
-                    border-bottom: 2px solid var(--accent-100);
-                }
-
-                &.active {
-                    color: var(--accent-100);
-                    border-bottom: 2px solid var(--accent-100);
-                }
-            }
-        }
-
-        .tableBar {
-            display: flex;
-            justify-content: space-between;
-            align-content: center;
-            gap: 20px;
-
-            /* 输入框样式 */
-            .SearchInput {
-                display: flex;
-                justify-content: flex-start;
-                align-items: center;
-                flex: 1;
-
-                background-color: rgba(250, 250, 250, 1);
-                border-radius: 12px;
-
-
-                padding: 12px;
-                margin-bottom: 20px;
-
-                input {
-                    outline: none;
-                    padding-left: 10px;
-                    font-size: 16px;
-                    width: 200px;
-                    /* 调整输入框的宽度 */
-                    border: 0px;
-                    color: rgba(160, 174, 192, 1);
-                    background-color: rgba(250, 250, 250, 1);
-                }
-            }
-
-            /* 筛选框样式 */
-            .FilterBox {
-                display: flex;
-                justify-content: flex-start;
-                align-items: center;
-                gap: 10px;
-
-
-                color: rgba(160, 174, 192, 1);
-                background-color: rgba(250, 250, 250, 1);
-                border-radius: 12px;
-
-
-                padding: 12px;
-                margin-bottom: 20px;
-            }
-        }
-
-
-    }
-}
-
-.tableBox {
-    width: 100%;
-    // 表格的外部是否有边框
-    // border: solid 2px #f3f4f7;
-    border-radius: 2px;
 }
 </style>

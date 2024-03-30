@@ -41,3 +41,7 @@ export const changeAvatar = (params:any) => {
     return axios.put<User>('api/user/me/changeAvatar',params);
 }
 
+// 根据 objectId 获取用户
+export const getUserById = (objectId:string) => {
+    return axios.get<User>('api/user/objects/'+objectId);
+}
