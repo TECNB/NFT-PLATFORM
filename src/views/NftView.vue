@@ -161,6 +161,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- 项目活动 -->
         <div class="border-[0.5px] border-solid border-text-200 px-5 rounded-xl mt-5 bg-white">
             <div class="flex justify-start items-center gap-5 cursor-pointer -mx-5 pl-5 py-5"
                 @click="toggleIsShowActivity()">
@@ -176,7 +178,7 @@
                 </el-icon>
             </div>
 
-            <!-- 活动情况 -->
+            
             <div v-if="isShowActivity" class="border-solid border-t-[0.5px] border-text-200 -mx-5 px-5 h-[520px]">
                 <div @click="toggleIsShowFilter()"
                     class="flex justify-between items-center relative border-[0.5px] border-text-200 border-solid rounded-xl px-5 py-2 mt-5">
@@ -187,26 +189,70 @@
                     <el-icon v-else>
                         <ArrowUpBold />
                     </el-icon>
-                    <div v-if="isShowFilter" class="absolute left-0 top-12 rounded-2xl w-full bg-white shadow-xl z-50 p-5">
-                        <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100" @click="changeFilterCondition('销售')">销售</p>
-                        <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100" @click="changeFilterCondition('交易已接受')">交易已接受</p>
-                        <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100" @click="changeFilterCondition('提供交易')">提供交易</p>
-                        <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100" @click="changeFilterCondition('转移')">转移</p>
-                        <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100" @click="changeFilterCondition('合成')">合成</p>
+                    <div v-if="isShowFilter"
+                        class="absolute left-0 top-12 rounded-2xl w-full bg-white shadow-xl z-50 p-5">
+                        <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
+                            @click="changeFilterCondition('销售')">销售</p>
+                        <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
+                            @click="changeFilterCondition('交易已接受')">交易已接受</p>
+                        <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
+                            @click="changeFilterCondition('提供交易')">提供交易</p>
+                        <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
+                            @click="changeFilterCondition('转移')">转移</p>
+                        <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
+                            @click="changeFilterCondition('合成')">合成</p>
                     </div>
                 </div>
 
                 <!-- 用v-for获取filterCondition -->
-                <div class="flex justify-start items-center gap-5 cursor-pointer w-full -mx-5 pl-5 py-5" v-if="filterCondition.length!=0">
-                    <div class="flex justify-between items-center gap-5 bg-gray-100 rounded-xl p-3" v-for="condition in filterCondition" :key="condition">
+                <div class="flex justify-start items-center gap-5 cursor-pointer w-full -mx-5 pl-5 py-5"
+                    v-if="filterCondition.length != 0">
+                    <div class="flex justify-between items-center gap-5 bg-gray-100 rounded-xl p-3"
+                        v-for="condition in filterCondition" :key="condition">
                         <p class="font-medium">{{ condition }}</p>
-                        <el-icon @click="clearFilterCondition(condition)"><CloseBold /></el-icon>
+                        <el-icon @click="clearFilterCondition(condition)">
+                            <CloseBold />
+                        </el-icon>
                     </div>
-                    <p @click="clearFilterCondition()" class="text-accent-100 cursor-pointer hover:text-accent-200">全部清除</p>
+                    <p @click="clearFilterCondition()" class="text-accent-100 cursor-pointer hover:text-accent-200">全部清除
+                    </p>
                 </div>
 
                 <div class="h-[85%]">
                     <OrderTable />
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 来自此系列的更多内容 -->
+        <div class="border-[0.5px] border-solid border-text-200 px-5 rounded-xl mt-5 bg-white">
+            <div class="flex justify-start items-center gap-5 cursor-pointer -mx-5 pl-5 py-5"
+                @click="toggleIsShowMore()">
+                <el-icon>
+                    <MoreFilled />
+                </el-icon>
+                <p class="text-xl font-bold">来自此系列的更多内容</p>
+                <el-icon v-if="isShowMore" class="ml-auto mr-5">
+                    <ArrowUpBold />
+                </el-icon>
+                <el-icon v-else class="ml-auto mr-5">
+                    <ArrowDownBold />
+                </el-icon>
+            </div>
+
+            
+            <div v-if="isShowMore" class="border-solid border-t-[0.5px] border-text-200 -mx-5 px-5 py-5">
+                <!-- v-for从RecommendedCollection中获取数据 -->
+                <div class="flex justify-start items-center gap-5">
+                    <div v-for="item in RecommendedCollection.collections" :key="item.objectId" class="w-64 h-80 rounded-xl shadow-lg cursor-pointer" @click="toNft(item.objectId)">
+                        <img class="w-full h-[70%] rounded-t-xl object-cover" :src="item.cover" alt="">
+                        <div class="flex justify-center items-start flex-col h-[30%] px-2">
+                            <p class="text-lg font-bold">{{ item.name }}</p>
+                            <p class="font-bold">{{ item.price }} ETH</p>
+                            <p class="text-gray-400 font-medium">最后销售: {{ item.price }} ETH</p>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -220,7 +266,8 @@
 <script setup lang="ts">
 import { ref, onMounted, Ref } from "vue"
 // 引入useRoute
-import { useRoute } from 'vue-router'
+import { useRoute,useRouter } from 'vue-router'
+
 import * as echarts from 'echarts';
 import pricesChartOptions from '../utils/PricesChartOptions';
 
@@ -236,12 +283,14 @@ import MaskLayer from '../components/MaskLayer.vue'
 import PayBox from '../components/PayBox.vue'
 import OrderTable from '../components/OrderTable.vue'
 import OfferTable from '../components/OfferTable.vue'
+import CollectionList from '../components/CollectionList.vue'
 
 
 // 引入UserInfoStore
 import { userInfoStore } from '../stores/UserInfoStore'
 // 引入CartListCollectionStore
 import { CartListCollectionStore } from '../stores/CollectionStore'
+import { RecommendedCollectionStore } from '../stores/CollectionStore'
 
 
 // 引入getCollectionById
@@ -250,10 +299,14 @@ import { getCollectionById, addCollectionViews } from '../api/collections'
 import { addFavoriteCollection, removeFavoriteCollection } from '../api/user'
 
 
+const router = useRouter();
+
+
 // 实例化CartListCollectionStore
 let CartListCollection = CartListCollectionStore()
 // 实例化userInfoStore
 const userInfo = userInfoStore();
+const RecommendedCollection = RecommendedCollectionStore()
 const pricesChartContainer = ref<HTMLElement | null>(null);
 
 let myPricesChart: echarts.ECharts | null = null;
@@ -278,9 +331,11 @@ let filterCondition = ref([]);
 // 是否展示区块链详情
 let isShowBlockChainDetail = ref(false);
 // 是否展示项目活动
-let isShowActivity = ref(false);
+let isShowActivity = ref(true);
 // 是否展示筛选
 let isShowFilter = ref(false);
+// 是否展示系列的更多内容
+let isShowMore = ref(true);
 
 // 切换isShowBlockChainDetail
 const toggleIsShowBlockChainDetail = () => {
@@ -293,6 +348,10 @@ const toggleIsShowActivity = () => {
 // 切换isShowFilter
 const toggleIsShowFilter = () => {
     isShowFilter.value = !isShowFilter.value;
+};
+// 切换isShowMore
+const toggleIsShowMore = () => {
+    isShowMore.value = !isShowMore.value;
 };
 
 // 点击更换filterCondition
@@ -419,6 +478,18 @@ const renderPricesChart = () => {
     // 使用 setOption 方法设置图表配置
     myPricesChart?.setOption(options);
 };
+// onBeforeRouteUpdate((to, from, next) => {
+//     window.scrollTo(0, 0);
+//     next();
+// });
+const toNft = (objectId: string) => {
+    router.push({
+        name: 'NftView',
+        params: { id: objectId }, // 传递动态路由参数
+    });
+
+}
+
 </script>
 
 <style lang="scss" scoped>
