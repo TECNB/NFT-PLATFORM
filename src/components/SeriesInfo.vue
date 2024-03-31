@@ -1,9 +1,16 @@
 <template>
     <div class="SeriesInfo">
         <div class="SeriesInfoBackground">
+            <div class="video-container">
+                <video autoplay muted loop>
+                    <source src="https://stream.mux.com/5Bv4IUkYCENew01gNjZkgTK6oyiNltwCPlBu4iyVHoO00/high.mp4"
+                        type="video/mp4">
+                </video>
+            </div>
+
             <div style="" class="SeriesInfoAvatar">
-                <img src="https://i.seadn.io/s/raw/files/6662e4fbea8ad15eb84990bc68351d57.png?auto=format&dpr=1&h=500&fr=1 1x, https://i.seadn.io/s/raw/files/6662e4fbea8ad15eb84990bc68351d57.png?auto=format&dpr=1&h=500&fr=1 2x"
-                    alt="" style="height: 100%; width: 100%; border-radius: 20%; object-fit: cover; aspect-ratio: 1/1;">
+                <img src="https://i.seadn.io/gcs/files/5bb08cd484a9740f41cb70e18f87b455.gif" alt=""
+                    style="height: 100%; width: 100%; border-radius: 20%; object-fit: cover; aspect-ratio: 1/1;">
             </div>
 
             <div class="SeriesInfoDetail">
@@ -23,7 +30,6 @@
                     <p style="flex: 2;">已刊登</p>
                     <p style="flex: 2;">所有者（独特）</p>
                 </div>
-
             </div>
         </div>
         <div class="SeriesInfoDescription">
@@ -135,7 +141,97 @@ const TypeIndex = SelectedTypeIndexStore()
 let CollectionRanking = CollectionRankingStore()
 
 
-let collectionItems: Collection[] = CollectionRanking.collections
+// 定义一个collectionItems，并填上符合Collection类型的数据
+// let tempcollectionItems=[
+//     {
+//         name: "Mint Genesis NFT",
+//         price: 0.0085,
+//         cover: "https://i.seadn.io/gcs/files/5bb08cd484a9740f41cb70e18f87b455.gif"
+//     },
+//     {
+//         name: "Mint Genesis NFT",
+//         price: 0.0085,
+//         cover: "https://i.seadn.io/gcs/files/5bb08cd484a9740f41cb70e18f87b455.gif"
+//     },
+//     {
+//         name: "Mint Genesis NFT",
+//         price: 0.0085,
+//         cover: "https://i.seadn.io/gcs/files/5bb08cd484a9740f41cb70e18f87b455.gif"
+//     },
+//     {
+//         name: "Mint Genesis NFT",
+//         price: 0.0085,
+//         cover: "https://i.seadn.io/gcs/files/5bb08cd484a9740f41cb70e18f87b455.gif"
+//     },
+//     {
+//         name: "Mint Genesis NFT",
+//         price: 0.0085,
+//         cover: "https://i.seadn.io/gcs/files/5bb08cd484a9740f41cb70e18f87b455.gif"
+//     },
+//     {
+//         name: "Mint Genesis NFT",
+//         price: 0.0085,
+//         cover: "https://i.seadn.io/gcs/files/5bb08cd484a9740f41cb70e18f87b455.gif"
+//     },
+//     {
+//         name: "Mint Genesis NFT",
+//         price: 0.0085,
+//         cover: "https://i.seadn.io/gcs/files/5bb08cd484a9740f41cb70e18f87b455.gif"
+//     },
+//     {
+//         name: "Mint Genesis NFT",
+//         price: 0.0085,
+//         cover: "https://i.seadn.io/gcs/files/5bb08cd484a9740f41cb70e18f87b455.gif"
+//     },
+// ]
+let tempcollectionItems=[
+    {
+        name: "Mint Genesis NFT #123",
+        price: 0.0085,
+        cover: "https://i.seadn.io/gcs/files/b03c94dbf648c4fc35279128925ce06a.gif?auto=format&dpr=1&w=256"
+    },
+    {
+        name: "Mint Genesis NFT #143",
+        price: 0.0085,
+        cover: "https://i.seadn.io/gcs/files/8ea128a43332547081499eec41943746.gif?auto=format&dpr=1&w=384"
+    },
+    {
+        name: "Mint Genesis NFT #153",
+        price: 0.0085,
+        cover: "https://i.seadn.io/s/raw/files/26d7834001524aa7d5dbd2c8266ec3e0.gif?auto=format&dpr=1&w=384"
+    },
+    {
+        name: "Mint Genesis NFT #154",
+        price: 0.0085,
+        cover: "https://i.seadn.io/gcs/files/a4fdf768a977393ac6594111b7fad8ac.gif?auto=format&dpr=1&w=384"
+    },
+    {
+        name: "Mint Genesis NFT #142",
+        price: 0.0085,
+        cover: "https://i.seadn.io/gcs/files/8dccf1f82eac93af93c008433ae0a98c.gif?auto=format&dpr=1&w=256"
+    },
+    {
+        name: "Mint Genesis NFT #523",
+        price: 0.0085,
+        cover: "https://i.seadn.io/gcs/files/171f03f9a2fea5c53a200a63cdce8fb2.gif?auto=format&dpr=1&w=256"
+    },
+    {
+        name: "Mint Genesis NFT #432",
+        price: 0.0085,
+        cover: "https://i.seadn.io/gcs/files/38cabbd54b185b87e22797e74a8c6c38.gif?auto=format&dpr=1&w=256"
+    },
+    {
+        name: "Mint Genesis NFT #534",
+        price: 0.0085,
+        cover: "https://i.seadn.io/gcs/files/83f4ef1cd5d98663e74674457353309a.gif?auto=format&dpr=1&w=256"
+    },
+]
+
+let collectionItems: Collection[] = tempcollectionItems
+    
+
+
+// let collectionItems: Collection[] = CollectionRanking.collections
 
 
 const isExpanded = ref(false)
@@ -155,8 +251,8 @@ const selectType = (index: string) => {
 };
 
 // 点击ShoppingCart图标后将该商品collectionItem添加进CartListCollection的方法
-const addCart = (index:number) => {
-    console.log("选中第"+index+"个商品")
+const addCart = (index: number) => {
+    console.log("选中第" + index + "个商品")
     CartListCollection.collections.push(collectionItems[index])
 
     ElMessage.success('已成功添加至购物车');
@@ -183,6 +279,8 @@ const hideDelete = () => {
 <style lang="scss" scoped>
 .SeriesInfo {
     .SeriesInfoBackground {
+        position: relative;
+        overflow: hidden;
         margin-left: -50px;
         margin-right: -50px;
         height: 40vh;
@@ -190,12 +288,32 @@ const hideDelete = () => {
         margin-top: 20px;
         padding: 20px;
 
+        .video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            /* 将视频容器置于底部 */
+            overflow: hidden;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
 
         .SeriesInfoAvatar {
 
             display: flex;
             justify-content: center;
             align-items: center;
+
+            position: relative;
+            z-index: 1;
 
             width: 12vh;
             height: 12vh;
@@ -214,11 +332,15 @@ const hideDelete = () => {
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            position: relative;
+            z-index: 1;
 
 
 
             font-weight: bold;
             text-align: start;
+            
+            /* 确保其他内容在视频之上 */
 
             .SeriesInfoDetailUp {
                 width: 100%;

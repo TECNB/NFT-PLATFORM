@@ -240,7 +240,7 @@ function isValidPhone(phone: string) {
         background-color: var(--bg-200);
         border-radius: 20px 20px 0px 0px;
         // 背景图片为https://opensea.io/static/images/wallet/background-wallet.png
-        background-image: url(https://opensea.io/static/images/wallet/background-wallet.png);
+        // background-image: url(https://opensea.io/static/images/wallet/background-wallet.png);
 
 
         margin-left: -20px;
