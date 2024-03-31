@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    ActivityBox: typeof import('./src/components/ActivityBox.vue')['default']
     AIBox: typeof import('./src/components/AIBox.vue')['default']
     CartList: typeof import('./src/components/CartList.vue')['default']
     CollectionList: typeof import('./src/components/CollectionList.vue')['default']
@@ -17,6 +18,7 @@ declare module 'vue' {
     ElDrawer: typeof import('element-plus/es')['ElDrawer']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElInput: typeof import('element-plus/es')['ElInput']
+    ElInputNumber: typeof import('element-plus/es')['ElInputNumber']
     ElOption: typeof import('element-plus/es')['ElOption']
     ElPagination: typeof import('element-plus/es')['ElPagination']
     ElRadio: typeof import('element-plus/es')['ElRadio']

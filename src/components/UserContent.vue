@@ -35,7 +35,7 @@
                 <button class="text-white bg-accent-200 mt-5 p-2">返回所有项目</button>
             </div>
         </div>
-        
+
         <!-- 交易中的藏品 -->
         <div class="UserContentItem" v-if="UserIndex.index == 2">
             <UserFilterSection />
@@ -43,8 +43,8 @@
                 <h2>未找到创建的项目</h2>
                 <button class="text-white bg-accent-200 mt-5 p-2">返回所有项目</button>
             </div>
-            <div v-if="!isSellingCollectionNull" v-for="(item, index) in SellingCollection.collections" :key="index" @click="toNft(item.objectId)"
-                class="CollectionListItem">
+            <div v-if="!isSellingCollectionNull" v-for="(item, index) in SellingCollection.collections" :key="index"
+                @click="toNft(item.objectId)" class="CollectionListItem">
                 <div class="CollectionListItemImage h-40 w-60" style="">
                     <img class="w-full h-full rounded-t-2xl object-cover" :src="item.cover" alt="" />
                 </div>
@@ -64,24 +64,35 @@
                 <h2>未找到创建的项目</h2>
                 <button class="text-white bg-accent-200 mt-5 p-2">返回所有项目</button>
             </div>
-            <div v-if="!isCreatedCollectionNull" v-for="(item, index) in CreatedCollection.collections" :key="index" @click="toNft(item.objectId)"
-                class="CollectionListItem">
-                <div class="CollectionListItemImage h-40 w-60" style="">
+            <div v-if="!isCreatedCollectionNull" v-for="(item, index) in CreatedCollection.collections" :key="index"
+                @click="toNft(item.objectId)" class="CollectionListItem" @mouseenter="toggleifShowMore(index)"
+                @mouseleave="toggleifShowMore(index)">
+                <div class="CollectionListItemImage h-40 w-60 cursor-pointer" style="">
                     <img class="w-full h-full rounded-t-2xl object-cover" :src="item.cover" alt="" />
                 </div>
 
-                <p class="text-left px-3 py-5">{{ item.name }}</p>
-                <div class="CollectionListItemDetail">
+                <p class="text-left px-3 py-5 cursor-pointer">{{ item.name }}</p>
+                <div class="CollectionListItemDetail cursor-pointer">
                     <p style="font-size: 16px; font-weight: normal;">交易价格</p>
                     <p>{{ item.price }}</p>
                 </div>
+                <transition name="fade">
+                    <div v-if="ifShowMore[index]" @click.native.stop.prevent="updateIsActivityBoxVisible(true,item)"
+                        class="absolute right-0 bottom-0 w-full h-9 rounded-b-2xl bg-accent-200 cursor-pointer">
+                        <div class="flex justify-center items-center gap-5 h-full">
+                            <el-icon color="#FFF"><CirclePlusFilled /></el-icon>
+                            <p class="text-white">举行活动</p>
+                        </div>
+                    </div>
+                </transition>
+
             </div>
         </div>
 
         <!-- 已收藏的藏品 -->
         <div class="UserContentItem" v-if="UserIndex.index == 4">
-            <div v-if="!isFavoriteCollectionNull" v-for="(item, index) in FavoriteCollection.collections" :key="index" @click="toNft(item.objectId)"
-                class="CollectionListItem">
+            <div v-if="!isFavoriteCollectionNull" v-for="(item, index) in FavoriteCollection.collections" :key="index"
+                @click="toNft(item.objectId)" class="CollectionListItem">
                 <div class="CollectionListItemImage h-40 w-60" style="">
                     <img class="w-full h-full rounded-t-2xl object-cover" :src="item.cover" alt="" />
                 </div>
@@ -115,7 +126,8 @@
                 <button style="color: white;background-color: var(--accent-200);margin-top: 20px;">返回所有项目</button>
             </div> -->
         </div>
-
+        <MaskLayer :ifShow="isActivityBoxVisible" />
+        <ActivityBox :ifShow="isActivityBoxVisible" :detail="Detail" @updateIfShow="updateIsActivityBoxVisible" />
     </div>
 </template>
 
@@ -124,13 +136,15 @@ import { onMounted, ref } from "vue"
 import { useRouter } from 'vue-router'
 
 
-import { FavoriteCollectionStore, OwnedCollectionStore, SellingCollectionStore,CreatedCollectionStore } from '../stores/CollectionStore'
+import { FavoriteCollectionStore, OwnedCollectionStore, SellingCollectionStore, CreatedCollectionStore } from '../stores/CollectionStore'
 import { SelectedUserIndexStore } from '../stores/SelectedIndexStore'
 import UserFilterSection from '../components/UserFilterSection.vue'
+import MaskLayer from '../components/MaskLayer.vue'
+import ActivityBox from '../components/ActivityBox.vue'
 
 
 import { check } from '../api/user'
-import { getCollectionById,getCreatedCollection } from '../api/collections'
+import { getCollectionById, getCreatedCollection } from '../api/collections'
 import { userInfoStore } from "../stores/UserInfoStore";
 
 const router = useRouter()
@@ -149,6 +163,13 @@ let isSellingCollectionNull = ref(true);
 let isCreatedCollectionNull = ref(true);
 
 let loading = ref(false)
+
+// 控制是否展示更多选项
+let ifShowMore = ref([])
+// 控制是否展示活动框
+let isActivityBoxVisible = ref(false)
+// 活动框的详情
+let Detail = ref({})
 
 
 onMounted(async () => {
@@ -216,10 +237,30 @@ const toNft = (objectId: string) => {
         params: { id: objectId }, // 传递动态路由参数
     })
 }
+// 切换更多选项
+const toggleifShowMore = (index: number) => {
+    ifShowMore.value[index] = !ifShowMore.value[index]
+}
 
+// 更新活动框
+const updateIsActivityBoxVisible = (value: boolean, detail: any) => {
+    isActivityBoxVisible.value = value
+    if (detail) {
+        Detail.value = detail
+    }
+}
 </script>
 
 <style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
 .UserContent {
     width: 100%;
     padding-bottom: 20px;
@@ -282,6 +323,8 @@ const toNft = (objectId: string) => {
         .CollectionListItem {
             height: 100%;
             width: 240px;
+
+            position: relative;
             background-color: #FFFFFF;
             border-radius: 20px;
             box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
@@ -323,13 +366,16 @@ const toNft = (objectId: string) => {
     border: 0.5px solid var(--text-200);
     border-radius: 20px;
 }
-:deep(.el-loading-mask){
+
+:deep(.el-loading-mask) {
     border-radius: 20px;
 }
-:deep(.el-loading-spinner .path){
+
+:deep(.el-loading-spinner .path) {
     stroke: var(--accent-200);
 }
-:deep(.el-loading-spinner .el-loading-text){
+
+:deep(.el-loading-spinner .el-loading-text) {
     color: var(--accent-200);
 }
 </style>

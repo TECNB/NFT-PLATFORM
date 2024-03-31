@@ -227,7 +227,7 @@ let tempcollectionItems=[
     },
 ]
 
-let collectionItems: Collection[] = tempcollectionItems
+let collectionItems: Collection[] = tempcollectionItems as Collection[]
     
 
 
