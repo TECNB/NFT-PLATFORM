@@ -36,6 +36,7 @@ declare module 'vue' {
     MaskLayer: typeof import('./src/components/MaskLayer.vue')['default']
     Navbar: typeof import('./src/components/Navbar.vue')['default']
     NotFound: typeof import('./src/components/NotFound.vue')['default']
+    OfferBox: typeof import('./src/components/OfferBox.vue')['default']
     OfferTable: typeof import('./src/components/OfferTable.vue')['default']
     OrderTable: typeof import('./src/components/OrderTable.vue')['default']
     PayBox: typeof import('./src/components/PayBox.vue')['default']

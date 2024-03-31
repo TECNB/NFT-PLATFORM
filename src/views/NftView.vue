@@ -110,7 +110,7 @@
                         <el-icon size="20">
                             <Timer />
                         </el-icon>
-                        <p style="font-size: 20px;">促销结束 在2024年2月18日,下午5:16 </p>
+                        <p style="font-size: 20px;">促销结束 在2024年4月18日,下午5:16 </p>
 
                     </div>
 
@@ -128,7 +128,7 @@
                             </div>
                         </div>
 
-                        <div class="button">
+                        <div class="button" @click="updateIsOfferBoxVisibleVisible(true)">
                             <el-icon>
                                 <CollectionTag />
                             </el-icon>
@@ -260,6 +260,9 @@
 
         <MaskLayer :ifShow="isPayBoxVisible" />
         <PayBox :ifShow="isPayBoxVisible" @updateIfShow="updateIsPayBoxVisible" />
+
+        <MaskLayer :ifShow="isOfferBoxVisible" />
+        <OfferBox :ifShow="isOfferBoxVisible" :detail="collectionItem" @updateIfShow="updateIsOfferBoxVisibleVisible" />
     </div>
 </template>
 
@@ -283,6 +286,7 @@ import MaskLayer from '../components/MaskLayer.vue'
 import PayBox from '../components/PayBox.vue'
 import OrderTable from '../components/OrderTable.vue'
 import OfferTable from '../components/OfferTable.vue'
+import OfferBox from '../components/OfferBox.vue'
 import CollectionList from '../components/CollectionList.vue'
 
 
@@ -318,6 +322,8 @@ let collectionItem: Ref<Collection> = ref() as Ref<Collection>
 
 // 定义变量isPayBoxVisible
 let isPayBoxVisible = ref(false);
+// 定义变量isOfferBoxVisible
+let isOfferBoxVisible = ref(false);
 let objectId = ref('');
 const loading = ref(true);
 // 定义一个变量，用于判断目前的藏品是否被收藏过
@@ -426,6 +432,10 @@ const addCart = () => {
 // 实现updateIsPayBoxVisible方法
 const updateIsPayBoxVisible = (newIsPayBoxVisible: boolean) => {
     isPayBoxVisible.value = newIsPayBoxVisible;
+};
+// 实现updateIsOfferBoxVisibleVisible方法
+const updateIsOfferBoxVisibleVisible = (newIsOfferBoxVisible: boolean) => {
+    isOfferBoxVisible.value = newIsOfferBoxVisible;
 };
 
 // 实现handleAddFavoriteCollection方法
@@ -656,7 +666,7 @@ const toNft = (objectId: string) => {
 
 
                     .button:nth-child(2) {
-                        background-color: white;
+                        background-color: rgb(0, 0, 0,0.1);
                         color: #000;
                     }
 
