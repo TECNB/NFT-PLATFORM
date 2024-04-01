@@ -75,50 +75,59 @@
                     <div v-if="isShowType"
                         class="absolute left-0 top-12 rounded-2xl w-full bg-white shadow-xl z-50 p-5">
                         <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
-                        @click.native.stop.prevent="changeTypeCondition('盲盒')">盲盒</p>
+                            @click.native.stop.prevent="changeTypeCondition('盲盒')">盲盒</p>
                         <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
-                        @click.native.stop.prevent="changeTypeCondition('合成')">合成</p>
+                            @click.native.stop.prevent="changeTypeCondition('合成')">合成</p>
                         <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
-                        @click.native.stop.prevent="changeTypeCondition('正常发行系列')">正常发行系列</p>
+                            @click.native.stop.prevent="changeTypeCondition('正常发行系列')">正常发行系列</p>
                     </div>
                 </div>
                 <p class="text-xl font-medium py-3">名字</p>
                 <!-- 下面为藏品名称搜索框 -->
                 <el-input v-model="name" placeholder="命名您的NFT" class=""></el-input>
 
-                <p class="text-xl font-medium py-3">分类</p>
-                <el-select v-model="category" placeholder="请点击选择分类" size="large" :teleported="false" clearable
-                    style="width: 100%;">
-                    <el-option v-for="item in allType" :key="item.objectId" :label="item.name" :value="item.objectId" />
-                </el-select>
+                <p class="text-xl font-medium py-3">信息</p>
+                <el-input v-model="message" placeholder="请输入盲盒相关信息" class=""></el-input>
+
 
                 <p class="text-xl font-medium py-3">添加藏品</p>
 
-                <div  v-if="typeCondition=='盲盒'" @click="updateIsisCollectionBoxBlindBoxVisible(true)"
-                class="flex justify-start items-center gap-5 w-full bg-gray-200 rounded-xl cursor-pointer p-5">
+                <div v-if="typeCondition == '盲盒'&&selectedBlindBox.length==0" @click="updateIsisCollectionBoxBlindBoxVisible(true)"
+                    class="flex justify-start items-center gap-5 w-full bg-gray-200 rounded-xl cursor-pointer p-5">
                     <div class="flex justify-center items-center w-10 h-10 bg-gray-300 rounded-xl cursor-pointer p-6">
-                        <el-icon size="20"><Plus /></el-icon>
+                        <el-icon size="20">
+                            <Plus />
+                        </el-icon>
                     </div>
                     <p class="text-lg font-medium">请添加相关藏品</p>
                 </div>
-                <div  v-if="typeCondition=='合成'" @click="updateisCollectionBoxSynthesisVisible(true)"
-                class="flex justify-start items-center gap-5 w-full bg-gray-200 rounded-xl cursor-pointer p-5">
+                <div v-if="typeCondition == '盲盒'&&selectedBlindBox.length !==0"  @click="updateIsisCollectionBoxBlindBoxVisible(true)"
+                    class="flex justify-start items-center gap-5 w-full bg-gray-200 rounded-xl cursor-pointer p-5">
                     <div class="flex justify-center items-center w-10 h-10 bg-gray-300 rounded-xl cursor-pointer p-6">
-                        <el-icon size="20"><Plus /></el-icon>
+                        <el-icon size="20">
+                            <Plus />
+                        </el-icon>
+                    </div>
+                    <p class="text-lg font-medium">已添加{{ selectedBlindBox.length }}个藏品，点击继续添加</p>
+                </div>
+                <div v-if="typeCondition == '合成'" @click="updateisCollectionBoxSynthesisVisible(true)"
+                    class="flex justify-start items-center gap-5 w-full bg-gray-200 rounded-xl cursor-pointer p-5">
+                    <div class="flex justify-center items-center w-10 h-10 bg-gray-300 rounded-xl cursor-pointer p-6">
+                        <el-icon size="20">
+                            <Plus />
+                        </el-icon>
                     </div>
                     <p class="text-lg font-medium">请添加相关藏品</p>
                 </div>
-                <div v-if="typeCondition=='正常发行系列'" @click="updateisCollectionBoxisVisible(true)"
-                class="flex justify-start items-center gap-5 w-full bg-gray-200 rounded-xl cursor-pointer p-5">
+                <div v-if="typeCondition == '正常发行系列'" @click="updateisCollectionBoxisVisible(true)"
+                    class="flex justify-start items-center gap-5 w-full bg-gray-200 rounded-xl cursor-pointer p-5">
                     <div class="flex justify-center items-center w-10 h-10 bg-gray-300 rounded-xl cursor-pointer p-6">
-                        <el-icon size="20"><Plus /></el-icon>
+                        <el-icon size="20">
+                            <Plus />
+                        </el-icon>
                     </div>
                     <p class="text-lg font-medium">请添加相关藏品</p>
                 </div>
-                
-                
-                <p class="text-xl font-medium py-3">信息</p>
-                <el-input v-model="shortIntro" placeholder="请输入盲盒相关信息" class=""></el-input>
             </div>
         </div>
 
@@ -128,15 +137,19 @@
         <MaskLayer v-loading="loadingCreate" element-loading-text="藏品上传中..." backgroundColor="rgba(255, 255, 255, 0.01)"
             :ifShow="loadingCreate" />
 
-        
-        <MaskLayer v-if="typeCondition=='盲盒'" :ifShow="isCollectionBoxBlindBoxVisible" />
-        <CollectionBoxBlindBox v-if="typeCondition=='盲盒'" :ifShow="isCollectionBoxBlindBoxVisible" @updateIfShow="updateIsisCollectionBoxBlindBoxVisible" />
 
-        <MaskLayer v-if="typeCondition=='合成'" :ifShow="isCollectionBoxSynthesisVisible" />
-        <CollectionBoxSynthesis v-if="typeCondition=='合成'" :ifShow="isCollectionBoxSynthesisVisible" @updateIfShow="updateisCollectionBoxSynthesisVisible" />
+        <MaskLayer v-if="typeCondition == '盲盒'" :ifShow="isCollectionBoxBlindBoxVisible" />
+        <CollectionBoxBlindBox v-if="typeCondition == '盲盒'" :ifShow="isCollectionBoxBlindBoxVisible" 
+        :Selected="selectedBlindBox"
+            @updateIfShow="updateIsisCollectionBoxBlindBoxVisible" />
 
-        <MaskLayer v-if="typeCondition=='正常发行系列'" :ifShow="isCollectionBoxisVisible" />
-        <CollectionBox v-if="typeCondition=='正常发行系列'" :ifShow="isCollectionBoxisVisible" @updateIfShow="updateisCollectionBoxisVisible" />
+        <MaskLayer v-if="typeCondition == '合成'" :ifShow="isCollectionBoxSynthesisVisible" />
+        <CollectionBoxSynthesis v-if="typeCondition == '合成'" :ifShow="isCollectionBoxSynthesisVisible"
+            @updateIfShow="updateisCollectionBoxSynthesisVisible" />
+
+        <MaskLayer v-if="typeCondition == '正常发行系列'" :ifShow="isCollectionBoxisVisible" />
+        <CollectionBox v-if="typeCondition == '正常发行系列'" :ifShow="isCollectionBoxisVisible"
+            @updateIfShow="updateisCollectionBoxisVisible" />
     </div>
 </template>
 
@@ -172,11 +185,17 @@ import { AIData } from "../interfaces/AIData"
 
 import { getAllTypes } from "../api/type"
 import { uploadImage, addCollection, addAICollection } from "../api/collections"
+import { addBlindBox } from "../api/blindBox"
+import { addDrop } from "../api/drop";
+
 import { el } from "element-plus/es/locale";
+import { SelectedTypeIndexStore } from '../stores/SelectedIndexStore';
 
 
 // const text2ImgStore = Text2ImgStore();
 
+// 定义数组selectedBlindBox，包含数目itemsCount以及藏品ID items
+let selectedBlindBox = ref([])
 
 
 let aiCreator: boolean = false;
@@ -211,6 +230,8 @@ const isCollectionBoxSynthesisVisible = ref(false);
 
 // 是否展示正常发行系列
 const isCollectionBoxisVisible = ref(true);
+
+let message = ref("");
 
 
 
@@ -367,130 +388,124 @@ const uploadFile = async () => {
 };
 
 const handleAddCollection = async () => {
-    let formdata = new FormData();
-    console.log("category:", category.value)
+    console.log("selectedBlindBox.value", selectedBlindBox.value)
+    if (typeCondition.value == "盲盒") {
+        let formdata = new FormData();
 
-    formdata.append('issueNumber', issueNumber.value);
-    formdata.append('name', name.value);
-    formdata.append('categoryId', category.value);
-    formdata.append('price', price.value);
-    formdata.append('shortIntro', shortIntro.value);
-    formdata.append('intro', intro.value);
-    formdata.append('cover', uploadedImage.value as string);
-    formdata.append('file', uploadedImage.value as string);
-    formdata.append('type', "图片");
-    if (aiCreator) {
-        formdata.append('aiCreator', String(aiCreator));
-        formdata.append('aiDescription', aiDescription);
-        formdata.append('aiNegDescription', aiNegDescription);
-        formdata.append('aistyle', aistyle);
-    }
+        formdata.append('name', name.value);
+        formdata.append('cover', uploadedImage.value as string);
+        formdata.append('message', message.value);
 
-    loadingCreate.value = true;
+        selectedBlindBox.value.forEach((item) => {
+            formdata.append('items', item.toString());
+        })
+        selectedBlindBox.value.forEach((item) => {
+            formdata.append('itemsCount', aiDescription);
+        })
+        
 
-    await addCollection(formdata)
-        .then((res) => {
+        loadingCreate.value = true;
+        await addBlindBox(formdata).then((res) => {
             console.log(res)
-            loadingCreate.value = false;
-            ElMessage.success("创建藏品成功")
+            ElMessage.success("创建盲盒成功")
             router.push({
                 name: 'IndexView',
             })
-        })
-        .catch((err) => {
+        }).catch((err) => {
             console.log(err)
         })
-}
-
-// 封装一个设置水印规则的方法
-const setWatermarkRule = (path: string, base64Image: string, ifCheck?: boolean): string => {
-    let picOperationsJSON = null;
-    if (ifCheck) {
-        picOperationsJSON = {
-            "is_pic_info": 1,
-            "rules": [
-                {
-                    "fileid": "/p3/test2.jpg",
-                    "rule": `watermark/4/type/2/image/${base64Image}`
-                }
-            ]
-        }
-    } else {
-        picOperationsJSON = {
-            "is_pic_info": 1,
-            "rules": [
-                {
-                    "fileid": "/p3/test2.jpg",
-                    "rule": `watermark/3/type/2/image/${base64Image}/level/3`
-                }
-            ]
-        }
-    }
-    let picOperations = JSON.stringify(picOperationsJSON);
-    return picOperations;
-};
-// 辅助函数：检查文件类型和大小
-const checkFileTypeAndSize = (file: File): boolean => {
-    if (!file.type.includes("image") || file.type.includes("svg")) {
-        ElMessage.error("请上传非svg格式的图片文件");
-        return false;
-    }
-    if (file.size < 100 * 1024) {
-        ElMessage.error("上传文件大小不能小于100Kb");
-        return false;
-    }
-    if (file.size > 50 * 1024 * 1024) {
-        ElMessage.error("上传文件大小不能大于50Mb");
-        return false;
-    }
-    return true;
-};
-// 辅助函数：检查是否含有水印
-const checkWatermark = async (file: File, watermarkBase64: string): Promise<boolean | null> => {
-    const path = file.name;
-    const picOperations = setWatermarkRule(path, watermarkBase64, true);
-    let watermarkStatus = 0;
-
-    await addWatermark(path, file, picOperations).then((res: WatermarkResult) => {
-        watermarkStatus = res.UploadResult.ProcessResults.Object.WatermarkStatus;
-    }).catch((err) => {
-        console.log(err)
-    })
-    if (watermarkStatus >= 75) {
-        ElMessage.error("尊重版权，禁止上传已存在的藏品")
-        loading.value = false;
-        return false;
-    } else {
-        return true
-    }
-};
-
-// 辅助函数：图片审核结果
-const handleGetImageAuditing = (result: AuditResult, imageUrl: string) => {
-    // 审核结果
-    const resultData = (result as AuditResult).RecognitionResult.Result
-    // 审核内容
-    const resultLabel = (result as AuditResult).RecognitionResult.Label
-
-    // 如果审核不通过，弹出提示
-    if (resultData == 1) {
-        uploadedImage.value! = ""
-        switch (resultLabel) {
-            case "Porn":
-                ElMessage.error("图片审核不通过，图片中包含色情内容")
-                break;
-            case "Terrorism":
-                ElMessage.error("图片审核不通过，图片中包含暴力内容")
-                break;
-        }
-    } else if (resultData == 2) {
-        uploadedImage.value = imageUrl
-        ElMessage.info("图片等待人工审核")
-    } else if (resultData == 0) {
-        uploadedImage.value = imageUrl
-        ElMessage.success("图片审核通过")
     }
 }
+
+    // 封装一个设置水印规则的方法
+    const setWatermarkRule = (path: string, base64Image: string, ifCheck?: boolean): string => {
+        let picOperationsJSON = null;
+        if (ifCheck) {
+            picOperationsJSON = {
+                "is_pic_info": 1,
+                "rules": [
+                    {
+                        "fileid": "/p3/test2.jpg",
+                        "rule": `watermark/4/type/2/image/${base64Image}`
+                    }
+                ]
+            }
+        } else {
+            picOperationsJSON = {
+                "is_pic_info": 1,
+                "rules": [
+                    {
+                        "fileid": "/p3/test2.jpg",
+                        "rule": `watermark/3/type/2/image/${base64Image}/level/3`
+                    }
+                ]
+            }
+        }
+        let picOperations = JSON.stringify(picOperationsJSON);
+        return picOperations;
+    };
+    // 辅助函数：检查文件类型和大小
+    const checkFileTypeAndSize = (file: File): boolean => {
+        if (!file.type.includes("image") || file.type.includes("svg")) {
+            ElMessage.error("请上传非svg格式的图片文件");
+            return false;
+        }
+        if (file.size < 100 * 1024) {
+            ElMessage.error("上传文件大小不能小于100Kb");
+            return false;
+        }
+        if (file.size > 50 * 1024 * 1024) {
+            ElMessage.error("上传文件大小不能大于50Mb");
+            return false;
+        }
+        return true;
+    };
+    // 辅助函数：检查是否含有水印
+    const checkWatermark = async (file: File, watermarkBase64: string): Promise<boolean | null> => {
+        const path = file.name;
+        const picOperations = setWatermarkRule(path, watermarkBase64, true);
+        let watermarkStatus = 0;
+
+        await addWatermark(path, file, picOperations).then((res: WatermarkResult) => {
+            watermarkStatus = res.UploadResult.ProcessResults.Object.WatermarkStatus;
+        }).catch((err) => {
+            console.log(err)
+        })
+        if (watermarkStatus >= 75) {
+            ElMessage.error("尊重版权，禁止上传已存在的藏品")
+            loading.value = false;
+            return false;
+        } else {
+            return true
+        }
+    };
+
+    // 辅助函数：图片审核结果
+    const handleGetImageAuditing = (result: AuditResult, imageUrl: string) => {
+        // 审核结果
+        const resultData = (result as AuditResult).RecognitionResult.Result
+        // 审核内容
+        const resultLabel = (result as AuditResult).RecognitionResult.Label
+
+        // 如果审核不通过，弹出提示
+        if (resultData == 1) {
+            uploadedImage.value! = ""
+            switch (resultLabel) {
+                case "Porn":
+                    ElMessage.error("图片审核不通过，图片中包含色情内容")
+                    break;
+                case "Terrorism":
+                    ElMessage.error("图片审核不通过，图片中包含暴力内容")
+                    break;
+            }
+        } else if (resultData == 2) {
+            uploadedImage.value = imageUrl
+            ElMessage.info("图片等待人工审核")
+        } else if (resultData == 0) {
+            uploadedImage.value = imageUrl
+            ElMessage.success("图片审核通过")
+        }
+    }
 
 
 

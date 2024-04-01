@@ -2,7 +2,7 @@
     <div class="CollectionBoxBlindBox" v-if="props.ifShow">
         <div class="Background">
             <div class="Title">
-                <p class="text-lg font-medium">选择藏品并指定概率</p>
+                <p class="text-lg font-medium">选择藏品并指定数量</p>
             </div>
             <div class="Close" @click="toggleVisibility">
                 <el-icon :size="22">
@@ -19,12 +19,13 @@
                     <p class="text-left text-lg font-bold">{{ item.name }}</p>
                     <p class="text-left text-lg font-medium">{{ item.price }} ETH</p>
                 </div>
-                <el-input-number :disabled="ifDisabled" v-model="num[index]" :min="0" :max="maxNumber[index]" @change="handleChange[index]"
-                    :step="0.1" />
+                <el-input-number :disabled="ifDisabled" v-model="num[index]" :min="0" :max="maxNumber[index]"
+                    @change="handleChange(index, $event)" :step="1" />
             </div>
-            <p class="text-right ext-lg font-medium text-accent-100 cursor-pointer hover:text-accent-200 mt-5" @click="resetProbability">重置概率</p>
+            <p class="text-right ext-lg font-medium text-accent-100 cursor-pointer hover:text-accent-200 mt-5"
+                @click="resetProbability">重置概率</p>
 
-            <div class="Complete">
+            <div class="Complete" @click="toggleVisibility">
                 <p>确定添加</p>
             </div>
         </div>
@@ -45,7 +46,7 @@ import { getCollectionById, getCreatedCollection } from '../api/collections'
 let CartListCollection = CartListCollectionStore()
 const CreatedCollection = CreatedCollectionStore()
 
-const props = defineProps(['ifShow']);
+const props = defineProps(['ifShow', 'Selected']);
 const emit = defineEmits();
 
 // 定义一个数组用于储存购物车的内容,并且为响应式
@@ -73,6 +74,11 @@ let totalPrice = 0;
 
 // 定义一个数组用于储存购物车的内容,并且为响应式
 let num = ref<number[]>([]);
+
+interface SelectedItem {
+    items: string;
+    itemsCount: number;
+}
 
 
 onMounted(async () => {
@@ -107,24 +113,24 @@ onMounted(async () => {
  * @param {Array} num - 要监听的数组
  * @param {Array} maxNumber - 要更新的数组
  */
-watch(num, () => {
-    // 计算 num 的和,并保留一位小数
-    let sum = Number(num.value.reduce((prev, curr) => prev + curr, 0).toFixed(1));
-    console.log(sum)
-    if (sum == 1) {
-        // maxNumber 的每个值设置为 num 的对应值乘以 1/sum 保留为一位小数,剩下的maxNumber改为0
-        maxNumber.value = num.value.map((value) => {
-            if (value === 0) {
-                return 0;
-            }
-            return Number((1 / sum).toFixed(1));
-        });
-        ifDisabled = true;
-        
-    } else if (sum < 1){
-        maxNumber.value = Array(num.value.length).fill(1);
-    }
-}, { deep: true });
+// watch(num, () => {
+//     // 计算 num 的和,并保留一位小数
+//     let sum = Number(num.value.reduce((prev, curr) => prev + curr, 0).toFixed(1));
+//     console.log(sum)
+//     if (sum == 1) {
+//         // maxNumber 的每个值设置为 num 的对应值乘以 1/sum 保留为一位小数,剩下的maxNumber改为0
+//         maxNumber.value = num.value.map((value) => {
+//             if (value === 0) {
+//                 return 0;
+//             }
+//             return Number((1 / sum).toFixed(1));
+//         });
+//         ifDisabled = true;
+
+//     } else if (sum < 1){
+//         maxNumber.value = Array(num.value.length).fill(1);
+//     }
+// }, { deep: true });
 
 //当cartList改变时，isDeleteVisible也重新赋值
 watch(cartList.value, (newValue) => {
@@ -146,6 +152,16 @@ watch(CartListCollection.collections, (newValue) => {
     }
     totalPrice = calculateTotalPrice(cartList.value);
 })
+// 当props.Selected中的值改变时，更新num数组
+watch(() => props.Selected, (newValue) => {
+    for (let i = 0; i < num.value.length; i++) {
+        num.value[i] = 0;
+    }
+    for (let i = 0; i < newValue.length; i++) {
+        let index = CreatedCollection.collections.findIndex((item) => item.objectId === newValue[i].items);
+        num.value[index] = newValue[i].itemsCount;
+    }
+}, { deep: true });
 
 // 重置概率
 const resetProbability = () => {
@@ -157,19 +173,48 @@ const resetProbability = () => {
 // 实现handleChange方法
 const handleChange = (index: number, value: number) => {
     num[index] = value;
-    // 通过num数组的值算出maxNumber数组的值
-    // 总记所有的maxNumber数组的值不能超过1的值
-    let sum = 0;
-    for (let i = 0; i < num.value.length; i++) {
-        sum += num.value[i];
+    let items = CreatedCollectionStore().collections[index].objectId;
+    let length = CreatedCollectionStore().collections.length;
+
+    let itemsCount = value;
+
+
+
+    // 选中的商品
+    let Selected: SelectedItem = {
+        items: items,
+        itemsCount: itemsCount
     }
-    for (let i = 0; i < num.value.length; i++) {
-        maxNumber[i] = 1 - sum;
+
+    // 不要向props.Selected中存入重复的items
+    
+    if (props.Selected.length === 0) {
+        props.Selected.push(Selected)
+    } else {
+        let flag = false;
+        for (let i = 0; i < props.Selected.length; i++) {
+            if (props.Selected[i].items === items) {
+                props.Selected[i].itemsCount = itemsCount;
+                flag = true;
+                break;
+            }
+        }
+        if (!flag) {
+            props.Selected.push(Selected)
+        }
     }
 
+    // 检查数组props.Selected中如果有itemsCount为0时，删除该商品
+    for (let i = 0; i < props.Selected.length; i++) {
+        if (props.Selected[i].itemsCount === 0) {
+            props.Selected.splice(i, 1);
+        }
+    }
 
-
+    
+    console.log(props.Selected)
 };
+
 
 
 // 实现toggleVisibility方法
