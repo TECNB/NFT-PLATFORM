@@ -13,6 +13,16 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/CreateView.vue"),
     },
     {
+        path: "/createNftView",
+        name: "CreateNftView",
+        component: () => import("../views/CreateNftView.vue"),
+    },
+    {
+        path: "/createSeriesView",
+        name: "CreateSeriesView",
+        component: () => import("../views/CreateSeriesView.vue"),
+    },
+    {
         path: "/user",
         name: "UserView",
         component: () => import("../views/UserView.vue"),
