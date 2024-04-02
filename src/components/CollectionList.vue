@@ -9,10 +9,14 @@
             </div>
             <!-- 使用translateX实现翻页效果 style="transform:translateX(-280px)" -->
             <div class="CollectionListItems ">
-                <div v-for="(item, index) in displayedItems" :key="index" class="CollectionListItem" @click="toNft(item.objectId)">
-                    <div class="CollectionListItemImage" style="height: 150px; width: 100%;">
+                <div v-for="(item, index) in displayedItems" :key="index" class="CollectionListItem"
+                    @click="toNft(item.objectId)">
+                    <div class="CollectionListItemImage" style="height: 150px; width: 100%;position: relative;">
                         <img style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;"
                             :src="item.cover" alt="" />
+                        <div v-if="item.aiCreator" class="absolute right-3 top-3  bg-accent-200 rounded-xl px-3 py-1">
+                            <p class="text-white text-sm font-medium">AI</p>
+                        </div>
                     </div>
 
                     <p style="text-align: left; padding: 10px 20px;">{{ item.name }}</p>
@@ -23,7 +27,7 @@
                         </div>
                         <div>
                             <p class="text-base font-normal">24小时交易量</p>
-                            <p>{{ item.price }}  ETH</p>
+                            <p>{{ item.price }} ETH</p>
                         </div>
                     </div>
                 </div>
@@ -41,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount,Ref } from "vue"
+import { ref, onMounted, onBeforeUnmount, Ref } from "vue"
 import { useRouter } from 'vue-router'
 
 
@@ -53,7 +57,7 @@ import { Type } from '../interfaces/Type'
 import { getCollectionsByCategory } from '../api/collections'
 
 
-const props = defineProps<{ source: Type | Collection[] ,ifType:boolean, title:String}>()
+const props = defineProps<{ source: Type | Collection[], ifType: boolean, title: String }>()
 const router = useRouter()
 
 
@@ -61,11 +65,14 @@ const collectionItems: Ref<Collection[]> = ref([]);
 const currentPage = ref(0);
 const displayedItems: Ref<Collection[]> = ref([]);
 
+// 判断是否是AI藏品
 
-onMounted(async() => {
+
+
+onMounted(async () => {
     updateDisplayedItems();
     window.addEventListener('resize', updateDisplayedItems);
-    
+
 });
 
 onBeforeUnmount(() => {
@@ -94,16 +101,16 @@ const goToNextPage = () => {
     }
 };
 
-const updateDisplayedItems = async() => {
+const updateDisplayedItems = async () => {
     const itemsPerPage = calculateItemsPerPage();
 
-    if(props.ifType){
+    if (props.ifType) {
         await getCollectionsByCategory((props.source as Type).objectId).then(res => {
             collectionItems.value = res
         }).catch(err => {
             console.log(err)
         })
-    }else{
+    } else {
         collectionItems.value = props.source as Collection[]
     }
     const startIndex = currentPage.value * itemsPerPage;

@@ -19,7 +19,7 @@
                     class="flex flex-col justify-center items-center gap-5 min-h-96 w-full border border-dashed border-text-200 rounded-2xl mt-30 bg-bg-200 cursor-pointer transition-bg-20 mt-12 hover:border-solid hover:border-text-200 hover:bg-rgba-18-18-18-0.04">
 
                     <div class="flex justify-start items-center gap-2 bg-accent-100 text-black border rounded-2xl cursor-pointer p-2"
-                        v-if="!loading" @click="handleText2Img">
+                        v-if="!loading" v-loading="loading"  @click="handleText2Img">
                         <el-icon>
                             <Promotion />
                         </el-icon>

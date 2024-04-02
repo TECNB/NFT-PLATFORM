@@ -2,7 +2,7 @@
 
 export interface Collection {
     objectId: string;
-    hash: string;
+    collectionId: string;
     name: string;
     shortIntro: string;
     intro: string;
@@ -16,7 +16,11 @@ export interface Collection {
     issueNumber: number;
     soldNumber: number;
     recommend: boolean;
-    albumId: string | null;
-    createdAt: string;
+    albumId: number;
+    aiCreator: boolean;
+    aiDescription: string | null;
+    aiNegDescription: string | null;
+    aiStyle: string | null;
+    createdAt: Date | null;
 }
 

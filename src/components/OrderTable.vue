@@ -34,8 +34,8 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="createTime" label="日期" sortable></el-table-column>
-                <el-table-column prop="creator" label="卖家"></el-table-column>
-                <el-table-column prop="solder" label="买家"></el-table-column>
+                <el-table-column prop="creator" label="买家"></el-table-column>
+                <el-table-column prop="solder" label="卖家"></el-table-column>
                 <el-table-column width="90" prop="finishState" label="支付状态">
                     <template v-slot="{ row }">
                         <el-tag :type="row.finishState ? 'success' : 'danger'" size="large">

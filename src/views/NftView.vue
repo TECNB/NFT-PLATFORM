@@ -22,9 +22,13 @@
 
                 </div>
                 <div class="NftImage" v-loading="imageLoading" element-loading-text="报价加载中...">
-                    <div class="NftImageImg">
+                    <div class="NftImageImg relative">
                         <img :src="collectionItem.cover" alt=""
                             style="height: 100%; width: 100%;border-radius: 0 0 20px 20px; object-fit: cover; aspect-ratio: 1/1;">
+                        <div v-if="collectionItem.aiCreator&&!imageLoading"
+                            class="absolute right-3 top-3  bg-accent-200 rounded-xl px-3 py-1">
+                            <p class="text-white text-sm font-medium">AI</p>
+                        </div>
                     </div>
                 </div>
                 <div class="NftViewBodyLeftPrice">
@@ -178,7 +182,7 @@
                 </el-icon>
             </div>
 
-            
+
             <div v-if="isShowActivity" class="border-solid border-t-[0.5px] border-text-200 -mx-5 px-5 h-[520px]">
                 <div @click="toggleIsShowFilter()"
                     class="flex justify-between items-center relative border-[0.5px] border-text-200 border-solid rounded-xl px-5 py-2 mt-5">
@@ -200,7 +204,7 @@
                         <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
                             @click="changeFilterCondition('转移')">转移</p>
                         <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
-                            @click="changeFilterCondition('合成')">合成</p>
+                            @click="changeFilterCondition('空投')">空投</p>
                     </div>
                 </div>
 
@@ -241,11 +245,12 @@
                 </el-icon>
             </div>
 
-            
+
             <div v-if="isShowMore" class="border-solid border-t-[0.5px] border-text-200 -mx-5 px-5 py-5">
                 <!-- v-for从RecommendedCollection中获取数据 -->
                 <div class="flex justify-start items-center gap-5">
-                    <div v-for="item in RecommendedCollection.collections" :key="item.objectId" class="w-64 h-80 rounded-xl shadow-lg cursor-pointer" @click="toNft(item.objectId)">
+                    <div v-for="item in RecommendedCollection.collections" :key="item.objectId"
+                        class="w-64 h-80 rounded-xl shadow-lg cursor-pointer" @click="toNft(item.objectId)">
                         <img class="w-full h-[70%] rounded-t-xl object-cover" :src="item.cover" alt="">
                         <div class="flex justify-center items-start flex-col h-[30%] px-2">
                             <p class="text-lg font-bold">{{ item.name }}</p>
@@ -269,7 +274,7 @@
 <script setup lang="ts">
 import { ref, onMounted, Ref } from "vue"
 // 引入useRoute
-import { useRoute,useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import * as echarts from 'echarts';
 import pricesChartOptions from '../utils/PricesChartOptions';
@@ -666,7 +671,7 @@ const toNft = (objectId: string) => {
 
 
                     .button:nth-child(2) {
-                        background-color: rgb(0, 0, 0,0.1);
+                        background-color: rgb(0, 0, 0, 0.1);
                         color: #000;
                     }
 

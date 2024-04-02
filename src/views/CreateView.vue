@@ -1,7 +1,7 @@
 <template>
     <div class="CreateView flex justify-center items-center gap-5">
         <div class="flex justify-start items-start flex-col w-1/2 h-full">
-            <div class="flex justify-center items-center w-10 h-10 bg-gray-200 rounded-full p-2">
+            <div class="flex justify-center items-center w-10 h-10 bg-gray-200 rounded-full cursor-pointer p-2" @click="toIndex">
                 <el-icon size="20">
                     <Back />
                 </el-icon>
@@ -91,6 +91,11 @@ const toCreateNftView = () => {
 const toCreateSeriesView = () => {
     router.push({
         name: 'CreateSeriesView',
+    })
+}
+const toIndex = () => {
+    router.push({
+        name: 'IndexView',
     })
 }
 </script>
