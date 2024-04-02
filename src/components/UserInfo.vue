@@ -36,7 +36,7 @@
                     <User />
                 </el-icon>
                 <p>{{ userInfo.user?.objectId }}</p>
-                <p class="ml-2 text-text-200">加入时间 {{ userInfo.user?.createdAt }}</p>
+                <p class="ml-2 text-text-200">加入时间 {{ new Date(userInfo.user?.createdAt).toLocaleString()}}</p>
             </div>
 
         </div>

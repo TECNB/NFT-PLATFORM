@@ -33,7 +33,12 @@
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="createTime" label="日期" sortable></el-table-column>
+                <el-table-column prop="createTime" label="日期" sortable>
+                    <template v-slot="{ row }">
+                        <!-- 解析日期，格式如下：2024-04-01T16:33:00.127+08:00,精确到秒 -->
+                        {{ new Date(row.createTime).toLocaleString() }}
+                    </template>
+                </el-table-column>
                 <el-table-column prop="creator" label="买家"></el-table-column>
                 <el-table-column prop="solder" label="卖家"></el-table-column>
                 <el-table-column width="90" prop="finishState" label="支付状态">
