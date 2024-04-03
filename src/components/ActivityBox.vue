@@ -16,7 +16,7 @@
                 <p class="text-lg font-medium">{{ props.detail.objectId }}</p>
             </div>
         </div>
-        <div class="flex justify-start items-center gap-5 mt-5">
+        <div class="flex justify-start items-center gap-5 mt-5" v-if="filterCondition == '转移'">
             <p class="text-lg font-medium">数量</p>
             <el-input-number v-model="num" :min="1" :max="10" @change="handleChange" />
         </div>
@@ -36,13 +36,13 @@
                     @click.native.stop.prevent="changeFilterCondition('转移')">转移</p>
 
                 <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
-                    @click.native.stop.prevent="changeFilterCondition('降价')">降价</p>
+                    @click.native.stop.prevent="changeFilterCondition('修改价格')">修改价格</p>
 
-                <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
-                    @click.native.stop.prevent="changeFilterCondition('空投')">空投</p>
+                <!-- <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
+                    @click.native.stop.prevent="changeFilterCondition('空投')">空投</p> -->
             </div>
         </div>
-        <div class="" v-if="filterCondition == '空投'">
+        <!-- <div class="" v-if="filterCondition == '空投'">
             <p class="text-lg font-medium mt-5">空投范围</p>
             <div class="flex justify-between items-center gap-5">
                 <div class="w-full rounded-lg p-3 mt-8" :class="{'bg-gray-100 border border-gray-100': airdropRange === '全站'}" @click="changeAirdropRange('全站')">
@@ -56,11 +56,13 @@
             <div class="w-full bg-accent-200 rounded-lg p-3 mt-8">
                 <p class="text-white text-center text-lg font-medium" @click="toggleVisibility">确定</p>
             </div>
-        </div>
-        <div class="" v-if="filterCondition == '降价'">
-            <p class="text-lg font-medium mt-5">降价至</p>
-            <el-input v-model="transferObjectId" placeholder="请输入降价后的金额"></el-input>
-            <div class="w-full bg-accent-200 rounded-lg p-3 mt-8" @click="toggleVisibility">
+        </div> -->
+        <div class="" v-if="filterCondition == '修改价格'">
+            <p class="text-lg font-medium mt-5">原价为:{{ props.detail.price }} 人民币</p>
+
+            <p class="text-lg font-medium mt-5">修改价格至</p>
+            <el-input v-model="price" placeholder="请输入修改价格后的金额"></el-input>
+            <div class="w-full bg-accent-200 rounded-lg p-3 mt-8" @click="updatePrice()">
                 <p class="text-white text-center text-lg font-medium">确定</p>
             </div>
         </div>
@@ -78,8 +80,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import { Collection } from '../interfaces/Collection';
+
+import { CreatedCollectionStore } from '../stores/CollectionStore'
+
+import { updateCollectionPrice } from '../api/collections';
+
 const props = defineProps(['ifShow', 'detail']);
 const emit = defineEmits();
+
+const CreatedCollection = CreatedCollectionStore()
 
 const toggleVisibility = () => {
     emit('updateIfShow', false);
@@ -90,7 +100,7 @@ let num = ref(1);
 let transferObjectId = ref("");
 
 // 定义记录筛选条件
-let filterCondition = ref("空投");
+let filterCondition = ref("修改价格");
 
 // 记录空投范围
 let airdropRange = ref("全站");
@@ -98,8 +108,29 @@ let airdropRange = ref("全站");
 // 是否展示筛选
 let isShowFilter = ref(false);
 
+// 修改价格后的金额
+let price = ref(""); // 修改价格后的
 
 
+
+const updatePrice = async () => {
+    const formdata = new FormData();
+    formdata.append('price', price.value);
+    await updateCollectionPrice(props.detail.objectId, formdata).then(res => {
+        toggleVisibility();
+        console.log("price:",(res as Collection).price)
+        // 修改CreatedCollection.collections数组
+        // 找到要更新的集合对象,然后更新价格
+        CreatedCollection.collections.forEach((item, index) => {
+            if (item.objectId === props.detail.objectId) {
+                console.log("index:",index)
+                CreatedCollection.collections[index].price = (res as Collection).price;
+            }
+        });
+        ElMessage.success("价格修改成功");
+
+    })
+};
 
 // 切换isShowFilter
 const toggleIsShowFilter = () => {

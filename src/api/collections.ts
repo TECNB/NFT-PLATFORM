@@ -82,3 +82,8 @@ export const text2Img = (params: any, headers?: Record<any, any>) => {
 export const getCreatedCollection = () => {
     return axios.get<Collection[]>('api/user/me/issuedCollections');
 }
+
+// 藏品调价
+export const updateCollectionPrice = (objectId: string, params: any) => {
+    return axios.put('api/collections/objects/' + objectId + '/price', params);
+}
