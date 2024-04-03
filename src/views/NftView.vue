@@ -482,11 +482,21 @@ const handleAddFavoriteCollection = () => {
 
 // 在这里编写渲染图表的方法
 const renderPricesChart = () => {
+    
     // 使用一至日作为横轴的数据
-    const xAxisData = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00'];
+    // const xAxisData = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00'];
+
+    // 格式化historyPriceTime的值为时间格式
+    // 格式化方法如下：new Date(userInfo.user?.createdAt).toLocaleString()
+    const xAxisData = collectionItem.value.historyPriceTime.map((item) => {
+        return new Date(item).toLocaleString();
+    });
+
+    
 
     // 使用示例数据
-    const seriesData = [25, 60, 50, 20, 35, 40, 25];
+    // const seriesData = [25, 60, 50, 20, 35, 40, 25];
+    const seriesData = collectionItem.value.historyPrice;
 
     let options = pricesChartOptions(xAxisData, seriesData)
 

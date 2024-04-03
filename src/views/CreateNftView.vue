@@ -376,9 +376,9 @@ const checkWatermark = async (file: File, watermarkBase64: string): Promise<bool
 // 辅助函数：图片审核结果
 const handleGetImageAuditing = (result: AuditResult, imageUrl: string) => {
     // 审核结果
-    const resultData = (result as AuditResult).RecognitionResult.Result
+    const resultData = result.RecognitionResult.Result
     // 审核内容
-    const resultLabel = (result as AuditResult).RecognitionResult.Label
+    const resultLabel = result.RecognitionResult.Label
 
     // 如果审核不通过，弹出提示
     if (resultData == 1) {
