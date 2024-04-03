@@ -10,9 +10,9 @@
             </div>
         </div>
         <div class="flex justify-start items-center gap-4">
-            <div class="StatisticsFilter" v-for="(filter, index) in filterListIndex.index" :key="index">
+            <div class="StatisticsFilter">
                 <p class="font-bold">{{ filter }}</p>
-                <el-icon class="cursor-pointer" @click="deleteFilterIndex(index)">
+                <el-icon class="cursor-pointer">
                     <CloseBold />
                 </el-icon>
             </div>
@@ -22,66 +22,138 @@
         <!-- 如果关注列表时去掉前方的序号 -->
         <div class="StatisticsContent">
             <div class="StatisticsContentTitle">
-                <p style="flex: 3;" v-if="TypeIndex.index !== 2">#</p>
+                <p style="flex: 3;">#</p>
                 <p style="flex: 5;">名称</p>
-                <p style="flex: 2;text-align: end;">价格</p>
-                <p style="flex: 2;text-align: end;">交易来源</p>
-                <p style="flex: 2;text-align: end;">交易对象</p>
-                <p style="flex: 2;text-align: end;">时间</p>
-                <!-- 下面的部分是用于放置图标做出的空缺 -->
-                <p style="flex: 1;text-align: end;" v-if="TypeIndex.index == 2"></p>
+                <p style="flex: 2;" v-if="filter==='盲盒'">价格</p>
+
+                <p style="flex: 5;" v-if="filter==='盲盒'">介绍</p>
+                <p style="flex: 5;" v-if="filter==='预发行'">介绍</p>
+
+                <p style="flex: 2;" v-if="filter==='预发行'">预定发行时间</p>
+
+                <p style="flex: 2;text-align: left" v-if="filter==='空投'">投放数量</p>
+                <p style="flex: 2;text-align: left" v-if="filter==='空投'">开始时间</p>
+                <p style="flex: 2;text-align: left" v-if="filter==='空投'">结束时间</p>
+
+
             </div>
-            <div class="StatisticsContentDetail" v-for="(item, index) in CollectionRanking.collections" :key="index">
-                <div class="flex-[3_0_0%] flex justify-center items-center gap-10" v-if="TypeIndex.index !== 2">
+            <div class="StatisticsContentDetail border-t border-solid border-gray-300 p-3" v-for="(item, index) in displayCollections" :key="index">
+                <div class="flex-[3_0_0%] flex justify-center items-center gap-10" v-if="filter==='盲盒'">
                     <el-icon class="">
-                        <Discount />
+                        <MessageBox />
                     </el-icon>
-                    <p class="mr-auto">Sale</p>
+                    <p class="mr-auto">{{ filter }}</p>
                 </div>
-                <div class="StatisticsContentDetailName" style="flex: 5;">
+                <div class="flex-[3_0_0%] flex justify-center items-center gap-10" v-if="filter==='空投'">
+                    <el-icon class="">
+                        <Promotion />
+                    </el-icon>
+                    <p class="mr-auto">{{ filter }}</p>
+                </div>
+                <div class="flex-[3_0_0%] flex justify-center items-center gap-10" v-if="filter==='预发行'">
+                    <el-icon class="">
+                        <Bell />
+                    </el-icon>
+                    <p class="mr-auto">{{ filter }}</p>
+                </div>
+                <div class="flex-[3_0_0%] flex justify-center items-center gap-10" v-if="filter==='系列合成'">
+                    <el-icon class="">
+                        <Menu />
+                    </el-icon>
+                    <p class="mr-auto">{{ filter }}</p>
+                </div>
+                <el-skeleton animated="true" :loading="loading">
+                    <div class="StatisticsContentDetailName" style="flex: 5;">
                     <div class="flex-[1.4_0_0%]">
                         <img :src="item.cover" alt=""
-                            style="height: 100%; width: 100%; border-radius: 20px; object-fit: cover; aspect-ratio: 1/1;">
+                            style="height: 80%; width: 80%; border-radius: 20px; object-fit: cover; aspect-ratio: 1/1;">
                     </div>
                     <div style="flex: 5;">
                         <p style="text-align: start;padding-left: 25px;">{{ item.name }}</p>
                     </div>
 
                 </div>
-                <div style="flex: 2;text-align: end;">{{ item.price }} ETH</div>
-                <div style="flex: 2;text-align: end;">C8DE09</div>
-                <div style="flex: 2;text-align: end;">YD204D</div>
-                <div style="flex: 2;text-align: end;">10 秒前</div>
-                <div style="flex: 1;" class="icon" v-if="TypeIndex.index == 2"><el-icon>
-                        <Delete />
-                    </el-icon></div>
+                <div style="flex: 2;text-align: left;" v-if="filter==='盲盒'">{{ item.price }} ETH</div>
+                
+
+                <div style="flex: 5;text-align: left;" v-if="filter==='盲盒'">{{ item.intro }}</div>
+                <div style="flex: 5;text-align: left;" v-if="filter==='预发行'">{{ item.shortDescription }}</div>
+
+                <div style="flex: 2;text-align: left;" v-if="filter==='预发行'">{{ new Date(item.issueTime).toLocaleString() }}</div>
+
+                <div style="flex: 2;text-align: left;" v-if="filter==='空投'">{{ item.dropCount }}</div>
+                <div style="flex: 2;text-align: left;" v-if="filter==='空投'">{{ new Date(item.dropTime).toLocaleString() }}</div>
+                <div style="flex: 2;text-align: left;" v-if="filter==='空投'">{{ new Date(item.endTime).toLocaleString() }}</div>
+
+                </el-skeleton>
+                
             </div>
         </div>
         <MaskLayer :ifShow="isFilterVisible" />
-        <FilterList :ifShow="isFilterVisible" @updateIfShow="updateIsFilterVisible" />
+        <FilterList :ifShow="isFilterVisible" :filter="filter" @updateIfShow="updateIsFilterVisible" @updateFilter="setFilter"/>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref,Ref,onMounted,watch } from "vue"
 import MainNavbar from '../components/MainNavbar.vue'
 
-
+import { Collection } from '../interfaces/Collection'
 
 import { StatisticsTypeIndexStore } from '../stores/SelectedIndexStore'
-import { CollectionRankingStore } from '../stores/CollectionStore'
+// import { CollectionRankingStore } from '../stores/CollectionStore'
 import { FilterListIndexStore } from '../stores/SelectedIndexStore'
 
+import { getAllCollections } from '../api/collections'
+import { getAllBlindBoxs } from '../api/blindBox'
+import { getAllDrops } from '../api/drop'
+import { getIssueDates } from '../api/issueDate'
 
-const TypeIndex = StatisticsTypeIndexStore()
+
 const filterListIndex = FilterListIndexStore();
-const CollectionRanking = CollectionRankingStore();
+// const CollectionRanking = CollectionRankingStore();
 
+// 目前所展示的数字藏品
+const displayCollections = ref([]);
+
+// 筛选条件
+const filter = ref('盲盒');
+
+let loading = ref(false)
+
+// 通过watch filterListIndex.index中的值来获取对应的数字藏品
+watch(filter, async (newFilter) => {
+    console.log('filter:',newFilter)
+    loading.value = true
+    switch(newFilter){
+        case '盲盒':
+            loading
+            displayCollections.value = await getAllBlindBoxs();
+            break;
+        case '空投':
+            displayCollections.value = await getAllDrops();
+            break;
+        case '预发行':
+            displayCollections.value = await getIssueDates();
+            break;
+        default:
+            displayCollections.value = await getAllCollections();
+    }
+    loading.value = false
+})
+
+// 根据filterListIndex.index中的值来获取对应的数字藏品
+onMounted(async () => {
+    displayCollections.value = await getAllBlindBoxs();
+})
 
 const isFilterVisible = ref(false);
 
 const updateIsFilterVisible = (value: boolean) => {
     isFilterVisible.value = value;
+}
+const setFilter = (value: string) => {
+    filter.value = value;
 }
 
 
@@ -90,9 +162,9 @@ const choseFilter = () => {
     console.log('choseFilter')
 }
 
-const deleteFilterIndex = (index: number) => {
-    filterListIndex.index.splice(index, 1);
-}
+// const deleteFilterIndex = (index: number) => {
+//     filterListIndex.index.splice(index, 1);
+// }
 
 </script>
 

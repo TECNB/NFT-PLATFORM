@@ -87,3 +87,8 @@ export const getCreatedCollection = () => {
 export const updateCollectionPrice = (objectId: string, params: any) => {
     return axios.put('api/collections/objects/' + objectId + '/price', params);
 }
+
+// 获取所有的藏品
+export const getAllCollections = () => {
+    return axios.get<Collection[]>('api/collections/objects');
+}

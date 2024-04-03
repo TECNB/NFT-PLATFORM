@@ -28,36 +28,36 @@
         </div>
         <div class="" v-if="ifShowType">
             <div class="">
-                <div class="TypeItem" :class="{ 'Selected': filterListIndex.index.includes('全部') }">
-                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilterIndex('全部')">全部</p>
+                <!-- <div class="TypeItem" :class="{ 'Selected': filter==='全部' }">
+                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilter('全部')">全部</p>
+                </div> -->
+                <div class="TypeItem" :class="{ 'Selected': filter==='降价' }">
+                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilter('降价')">降价</p>
                 </div>
-                <div class="TypeItem" :class="{ 'Selected': filterListIndex.index.includes('降价') }">
-                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilterIndex('降价')">降价</p>
-                </div>
-                <div class="TypeItem" :class="{ 'Selected': filterListIndex.index.includes('预发行') }">
-                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilterIndex('预发行')">预发行</p>
-                </div>
-            </div>
-            <div class="mt-4">
-                <div class="TypeItem" :class="{ 'Selected': filterListIndex.index.includes('系列合成') }">
-                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilterIndex('系列合成')">系列合成</p>
-                </div>
-                <div class="TypeItem" :class="{ 'Selected': filterListIndex.index.includes('盲盒') }">
-                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilterIndex('盲盒')">盲盒</p>
-                </div>
-                <div class="TypeItem" :class="{ 'Selected': filterListIndex.index.includes('空投') }">
-                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilterIndex('空投')">空投</p>
+                <div class="TypeItem" :class="{ 'Selected': filter==='预发行' }">
+                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilter('预发行')">预发行</p>
                 </div>
             </div>
             <div class="mt-4">
-                <div class="TypeItem" :class="{ 'Selected': filterListIndex.index.includes('求购') }">
-                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilterIndex('求购')">求购</p>
+                <div class="TypeItem" :class="{ 'Selected': filter==='系列合成' }">
+                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilter('系列合成')">系列合成</p>
                 </div>
-                <div class="TypeItem" :class="{ 'Selected': filterListIndex.index.includes('交换') }">
-                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilterIndex('交换')">交换</p>
+                <div class="TypeItem" :class="{ 'Selected': filter==='盲盒' }">
+                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilter('盲盒')">盲盒</p>
                 </div>
-                <div class="TypeItem" :class="{ 'Selected': filterListIndex.index.includes('收购') }">
-                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilterIndex('收购')">收购</p>
+                <div class="TypeItem" :class="{ 'Selected': filter==='空投' }">
+                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilter('空投')">空投</p>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="TypeItem" :class="{ 'Selected': filter==='求购' }">
+                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilter('求购')">求购</p>
+                </div>
+                <div class="TypeItem" :class="{ 'Selected': filter==='交换' }">
+                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilter('交换')">交换</p>
+                </div>
+                <div class="TypeItem" :class="{ 'Selected': filter==='收购' }">
+                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilter('收购')">收购</p>
                 </div>
             </div>
         </div>
@@ -91,18 +91,14 @@
 <script setup lang="ts">
 import { ref } from "vue"
 
-import { FilterListIndexStore } from '../stores/SelectedIndexStore'
-
-const props = defineProps(['ifShow']);
+const props = defineProps(['ifShow','filter']);
 const emit = defineEmits();
 
-const filterListIndex = FilterListIndexStore();
 
 const ifShowType = ref(true);
 const ifShowCollection = ref(false);
 const name = ref('');
 
-filterListIndex.index = ['全部'];
 
 
 
@@ -118,15 +114,8 @@ const toggleCollection = (value: boolean) => {
 const search = () => {
     console.log(name.value);
 };
-const setFilterIndex = (value: string) => {
-    const index = filterListIndex.index.indexOf(value);
-    if (index > -1) {
-        // 如果 value 已经存在于数组中，就从数组中删除它
-        filterListIndex.index.splice(index, 1);
-    } else {
-        // 如果 value 不存在于数组中，就添加到数组中
-        filterListIndex.index.push(value);
-    }
+const setFilter = (value: string) => {
+    emit('updateFilter', value);
 }
 </script>
 
