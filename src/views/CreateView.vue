@@ -22,7 +22,7 @@
                                 <p class="text-xl font-bold">创建集合</p>
                             </div>
                             <div class="">
-                                <p class="font-medium">启动您的 NFT 收藏供其他人铸造。</p>
+                                <p class="font-medium">创建一个集合,用于盲盒以及合成等玩法</p>
                             </div>
                         </div>
                         <div class="">
@@ -41,7 +41,28 @@
                                 <p class="text-xl font-bold">铸造数字藏品</p>
                             </div>
                             <div class="">
-                                <p class="font-medium">创建一个集合并将 NFT 直接铸造到您的钱包中。</p>
+                                <p class="font-medium">创建一个数字藏品至区块链
+                                    
+                                </p>
+                            </div>
+                        </div>
+                        <div class="">
+                            <el-icon size="20">
+                                <Right />
+                            </el-icon>
+                        </div>
+                    </div>
+                    <div @click="toCreateIssueDateView"
+                        class=" flex justify-between items-center w-full cursor-pointer bg-white rounded-xl shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-5">
+                        <div class="flex justify-start items-center flex-col gap-3">
+                            <div class="flex justify-start items-center gap-3 w-full">
+                                <el-icon>
+                                    <Menu />
+                                </el-icon>
+                                <p class="text-xl font-bold">预定发行计划</p>
+                            </div>
+                            <div class="">
+                                <p class="font-medium">创建一个发行计划,增加正式发行时的热度</p>
                             </div>
                         </div>
                         <div class="">
@@ -91,6 +112,11 @@ const toCreateNftView = () => {
 const toCreateSeriesView = () => {
     router.push({
         name: 'CreateSeriesView',
+    })
+}
+const toCreateIssueDateView = () => {
+    router.push({
+        name: 'CreateIssueDateView',
     })
 }
 const toIndex = () => {

@@ -23,6 +23,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/CreateSeriesView.vue"),
     },
     {
+        path: "/createIssueDateView",
+        name: "CreateIssueDateView",
+        component: () => import("../views/CreateIssueDateView.vue"),
+    },
+    {
         path: "/user",
         name: "UserView",
         component: () => import("../views/UserView.vue"),
