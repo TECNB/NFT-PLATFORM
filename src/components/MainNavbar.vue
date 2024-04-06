@@ -2,7 +2,7 @@
     <div class="MainNavbar">
         <div class="MainNavbarItems">
             <div class="MainNavbarItem flex justify-start items-center">
-                <img width="40px" src="https://opensea.io/static/images/logos/opensea-logo.svg" />
+                <img width="40px" src="../assets/images/logo.png" />
                 <p class="pl-3" @click="toIndex">NFT Platform</p>
             </div>
 

@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { userInfoStore } from '../stores/UserInfoStore';
-import { updatePassword } from '../api/user.ts';
+import { updatePassword } from '../api/user';
 
 // 实例化 userInfoStore
 const userInfo = userInfoStore();

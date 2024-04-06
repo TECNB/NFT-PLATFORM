@@ -2,24 +2,42 @@
     <div class="HelpView">
         <MainNavbar />
         <div class="px-64">
-            <el-input v-model="name" placeholder="搜索" class="mt-4" @change="search">
+            <el-input v-model="name" placeholder="搜索帮助" class="mt-4" @change="search">
                 <template #prefix>
                     <el-icon color="var(--text-100)" class="el-input__icon">
                         <Search />
                     </el-icon>
                 </template>
             </el-input>
-            <div class="grid auto-rows-auto gap-x-4 sm:gap-x-6 gap-y-4 sm:gap-y-6 md:grid-cols-3 -mx-3 mt-10">
-                <div v-for="helpItem in helpList" :key="helpItem.title" class="flex justify-center items-center flex-col border border-bg-100 border-solid hover:border-accent-200 transition-all duration-300 rounded-xl">
-                        <img class="w-full h-32 object-cover rounded-xl" :src="helpItem.cover" alt="">
-                        <div class="p-5">
-                            <p class="text-center text-lg font-medium">{{ helpItem.title }}</p>
-                            <p class="text-center">{{ helpItem.description }}</p>
-                        </div>
+            <div class="grid auto-rows-auto  gap-x-4 grid-cols-3 gap-5 -mx-3 mt-10 pb-10">
+                <div v-for="helpItem in helpList" :key="helpItem.title"
+                    class="flex justify-start items-center flex-col border border-bg-100 border-solid hover:border-accent-200 transition-all duration-300 rounded-xl">
+                    <img class="w-full h-32 object-cover rounded-xl" :src="helpItem.cover" alt="">
+                    <div class="p-5">
+                        <p class="text-center text-lg font-medium">{{ helpItem.title }}</p>
+                        <p class="text-center">{{ helpItem.description }}</p>
                     </div>
-
+                </div>
             </div>
         </div>
+        <div class="fixed right-10 bottom-10">
+            <div class="flex justify-center items-center w-16 h-16 rounded-full bg-[#1868b7] cursor-pointer"
+                @click="toggleDialogVisible">
+                <transition mode="out-in" name="fade">
+                    <img v-if="!dialogVisible" class="w-8 h-8"
+                        src="https://downloads.intercomcdn.com/i/o/471778/a60fd017eb1fb0c35f832f1b/8327ccd8ee41ec101d8855bb90fa2931.png"
+                        alt="">
+                    <svg v-else width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M18.601 8.39897C18.269 8.06702 17.7309 8.06702 17.3989 8.39897L12 13.7979L6.60099 8.39897C6.26904 8.06702 5.73086 8.06702 5.39891 8.39897C5.06696 8.73091 5.06696 9.2691 5.39891 9.60105L11.3989 15.601C11.7309 15.933 12.269 15.933 12.601 15.601L18.601 9.60105C18.9329 9.2691 18.9329 8.73091 18.601 8.39897Z"
+                            fill="white"></path>
+                    </svg>
+                </transition>
+            </div>
+        </div>
+        <HelpBox v-if="dialogVisible"/>
+        
 
     </div>
 </template>
@@ -31,21 +49,21 @@ import router from "../router";
 
 import MainNavbar from '../components/MainNavbar.vue'
 
-// 建立一个数组用于存放标题，描述，封面
+// 建立一个数组用于存放标题,描述,封面
 let helpList = ref([
     {
         title: '开始使用',
-        description: '了解如何创建账户，设置钱包以及在 Opensea 上可以做什么',
+        description: '了解如何创建账户,设置钱包以及在 Opensea 上可以做什么',
         cover: '/src/assets/images/start.png'
     },
     {
         title: '购买',
-        description: '了解如何购买首个 NFT，了解gas 费，并查看 0pensea 上什么免gas费',
+        description: '了解如何购买首个 NFT,了解gas 费,并查看 0pensea 上什么免gas费',
         cover: '/src/assets/images/buy.png'
     },
     {
         title: '出售',
-        description: '学习如何发布要出售的 NFT，并了解发布待售 NFT 的不同方法',
+        description: '学习如何发布要出售的 NFT,并了解发布待售 NFT 的不同方法',
         cover: '/src/assets/images/sell.png'
     },
     {
@@ -60,7 +78,7 @@ let helpList = ref([
     },
     {
         title: '用户内容',
-        description: '我们的服务条款请查阅https：//opensea。io/tos，其中概述了我们的用户行为和内容政策。您可…',
+        description: '我们的服务条款请查阅https：//opensea。io/tos,其中概述了我们的用户行为和内容政策。您可…',
         cover: '/src/assets/images/userContent.png'
     },
     {
@@ -82,6 +100,14 @@ let helpList = ref([
 
 let name = ref('');
 
+// 控制是否展示对话框
+let dialogVisible = ref(false);
+
+// 切换是否展示对话框
+const toggleDialogVisible = () => {
+    dialogVisible.value = !dialogVisible.value;
+}
+
 const toIndex = () => {
     router.push({
         name: 'IndexView',
@@ -95,18 +121,28 @@ const search = async () => {
 </script>
 
 <style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
 .HelpView {
     width: 100%;
     height: 100%;
 }
 
 .el-input {
-    height: 50px;
+    height: 60px;
 
     border-radius: 12px;
     border: 0.5px solid var(--text-200);
     border: 0;
-    background-color: var(--bg-200);
+    background-color: white;
 
     font-size: 18px;
     font-weight: bold;
@@ -114,7 +150,7 @@ const search = async () => {
 
     :deep(.el-input__wrapper) {
         border-radius: 12px;
-        background-color: var(--bg-200);
+        background-color: white;
 
     }
 

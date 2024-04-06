@@ -7,7 +7,7 @@
                 </el-icon>
             </div>
             <div class="Logo">
-                <img src="https://opensea.io/static/images/logos/opensea-logo.svg" alt=""
+                <img src="../assets/images/logo.png" alt=""
                     class="w-[90%] h-[90%] rounded-full object-cover aspect-square">
             </div>
         </div>
