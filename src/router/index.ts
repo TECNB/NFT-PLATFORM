@@ -53,6 +53,11 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import("../views/ActivityView.vue"),
     },
     {
+        path: "/help",
+        name: "HelpView",
+        component: () => import("../views/HelpView.vue"),
+    },
+    {
         path: "/setting",
         name: "SettingView",
         component: () => import("../views/SettingView.vue"),

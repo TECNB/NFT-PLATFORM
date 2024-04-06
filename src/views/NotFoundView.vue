@@ -1,5 +1,5 @@
 <template>
-    <div class="NotFoundView dis">
+    <div class="NotFoundView">
         <MainNavbar/>
         <img class="w-[600px] m-auto py-10 rounded-sm" src="../assets/images/Page_not_found.png" alt="">
         <p class="text-4xl font-bold">此页面已丢失</p>
