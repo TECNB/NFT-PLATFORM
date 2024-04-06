@@ -158,6 +158,7 @@ const changeSelectedCollection = (index: number) => {
 // 点击改变选中后的藏品synthesisedCollection
 const changeSynthesisedCollection = (index: number) => {
     synthesisedCollection.value = CreatedCollection.collections[index]
+    emit('update', synthesisedCollection.value)
 }
 
 

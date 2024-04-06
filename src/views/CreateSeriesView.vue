@@ -108,9 +108,10 @@
                             <Plus />
                         </el-icon>
                     </div>
-                    <p class="text-lg font-medium">已添加{{ selectedBlindBox.length }}个藏品，点击继续添加</p>
+                    <p class="text-lg font-medium">已添加{{ selectedBlindBox.length }}个藏品,点击继续添加</p>
                 </div>
-                <div v-if="typeCondition == '合成'" @click="updateisCollectionBoxSynthesisVisible(true)"
+
+                <div v-if="typeCondition == '合成'&&finalCollection === ''" @click="updateisCollectionBoxSynthesisVisible(true)"
                     class="flex justify-start items-center gap-5 w-full bg-gray-200 rounded-xl cursor-pointer p-5">
                     <div class="flex justify-center items-center w-10 h-10 bg-gray-300 rounded-xl cursor-pointer p-6">
                         <el-icon size="20">
@@ -119,6 +120,16 @@
                     </div>
                     <p class="text-lg font-medium">请添加相关藏品</p>
                 </div>
+                <div v-if="typeCondition == '合成'&&finalCollection !== ''"  @click="updateisCollectionBoxSynthesisVisible(true)"
+                    class="flex justify-start items-center gap-5 w-full bg-gray-200 rounded-xl cursor-pointer p-5">
+                    <div class="flex justify-center items-center w-10 h-10 bg-gray-300 rounded-xl cursor-pointer p-6">
+                        <el-icon size="20">
+                            <Plus />
+                        </el-icon>
+                    </div>
+                    <p class="text-lg font-medium">已添加合成后藏品,点击进行修改</p>
+                </div>
+
                 <div v-if="typeCondition == '正常发行系列'" @click="updateisCollectionBoxisVisible(true)"
                     class="flex justify-start items-center gap-5 w-full bg-gray-200 rounded-xl cursor-pointer p-5">
                     <div class="flex justify-center items-center w-10 h-10 bg-gray-300 rounded-xl cursor-pointer p-6">
@@ -145,7 +156,7 @@
 
         <MaskLayer v-if="typeCondition == '合成'" :ifShow="isCollectionBoxSynthesisVisible" />
         <CollectionBoxSynthesis v-if="typeCondition == '合成'" :ifShow="isCollectionBoxSynthesisVisible"
-            @updateIfShow="updateisCollectionBoxSynthesisVisible" />
+            @updateIfShow="updateisCollectionBoxSynthesisVisible" @update="updateFinalCollection"/>
 
         <MaskLayer v-if="typeCondition == '正常发行系列'" :ifShow="isCollectionBoxisVisible" />
         <CollectionBox v-if="typeCondition == '正常发行系列'" :ifShow="isCollectionBoxisVisible"
@@ -186,6 +197,7 @@ import { AIData } from "../interfaces/AIData"
 import { getAllTypes } from "../api/type"
 import { uploadImage, addCollection, addAICollection } from "../api/collections"
 import { addBlindBox } from "../api/blindBox"
+import { addAlbum } from "../api/album"
 import { addDrop } from "../api/drop";
 
 import { el } from "element-plus/es/locale";
@@ -233,6 +245,8 @@ const isCollectionBoxisVisible = ref(true);
 
 let message = ref("");
 
+let finalCollection = ref("")
+
 
 
 
@@ -245,6 +259,10 @@ onMounted(async () => {
         console.log(err)
     })
 })
+
+const updateFinalCollection = (data: string) => {
+    finalCollection.value = data;
+}
 
 const updateIsisCollectionBoxBlindBoxVisible = (ifShow: boolean) => {
     isCollectionBoxBlindBoxVisible.value = ifShow;
@@ -408,6 +426,28 @@ const handleAddCollection = async () => {
         await addBlindBox(formdata).then((res) => {
             console.log(res)
             ElMessage.success("创建盲盒成功")
+            router.push({
+                name: 'IndexView',
+            })
+        }).catch((err) => {
+            console.log(err)
+        })
+    }else if(typeCondition.value == "合成"){
+        let formdata = new FormData();
+
+        formdata.append('name', name.value);
+        formdata.append('cover', uploadedImage.value as string);
+        formdata.append('intro', message.value);
+        formdata.append('finalCollection', finalCollection.value);
+
+        console.log("finalCollection",finalCollection.value)
+        
+        
+
+        loadingCreate.value = true;
+        await addAlbum(formdata).then((res) => {
+            console.log(res)
+            ElMessage.success("创建空投成功")
             router.push({
                 name: 'IndexView',
             })
