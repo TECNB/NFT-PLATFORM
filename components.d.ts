@@ -58,6 +58,7 @@ declare module 'vue' {
     SettingSidebar: typeof import('./src/components/SettingSidebar.vue')['default']
     SettingUser: typeof import('./src/components/SettingUser.vue')['default']
     SettingUserInfo: typeof import('./src/components/SettingUserInfo.vue')['default']
+    Start: typeof import('./src/components/Start.vue')['default']
     TypeNavbar: typeof import('./src/components/TypeNavbar.vue')['default']
     UserBackground: typeof import('./src/components/UserBackground.vue')['default']
     UserContent: typeof import('./src/components/UserContent.vue')['default']

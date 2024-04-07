@@ -16,6 +16,7 @@
     "cos-nodejs-sdk-v5": "^2.13.3",
     "echarts": "^5.5.0",
     "element-plus": "^2.5.1",
+    "markdown-it": "^14.1.0",
     "pinia-plugin-persistedstate": "^3.2.1",
     "vue": "^3.3.11"
   },
