@@ -13,7 +13,7 @@
         <div class="Content">
             <!-- v-for从CreatedCollection.collections中获取数据 -->
             <p class="text-left text-lg font-medium">合成后的藏品</p>
-            <div v-for="(item, index) in CreatedCollection.collections" :key="index"
+            <div v-for="(item, index) in CreatedCollection.collections.filter(collection => collection.final === true)" :key="index"
                 class="flex justify-start items-center gap-5 cursor-pointer rounded-xl mt-5 p-3"
                 @click="changeSynthesisedCollection(index)" :class="{ 'bg-gray-100': synthesisedCollection === item }">
                 <img class="w-16 h-16 rounded-lg" :src="item.cover" alt="" />
@@ -24,7 +24,7 @@
             </div>
             <p class="text-left text-lg font-medium mt-5">待收集的藏品</p>
 
-            <div v-for="(item, index) in CreatedCollection.collections" :key="index"
+            <div v-for="(item, index) in CreatedCollection.collections.filter(collection => collection.final === false)" :key="index"
                 class="flex justify-start items-center gap-5 cursor-pointer rounded-xl mt-5 p-3"
                 @click="changeSelectedCollection(index)" :class="{ 'bg-gray-100': selectedCollection.includes(item) }">
                 <img class="w-16 h-16 rounded-lg" :src="item.cover" alt="" />
@@ -154,6 +154,7 @@ const changeSelectedCollection = (index: number) => {
     } else {
         selectedCollection.value.push(selectedItem);
     }
+    console.log(selectedCollection.value)
 };
 // 点击改变选中后的藏品synthesisedCollection
 const changeSynthesisedCollection = (index: number) => {

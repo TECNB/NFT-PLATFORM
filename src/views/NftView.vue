@@ -23,9 +23,14 @@
                 </div>
                 <div class="NftImage" v-loading="imageLoading" element-loading-text="报价加载中...">
                     <div class="NftImageImg relative">
-                        <img :src="collectionItem.cover" alt=""
+                        <img v-if="!isVideo" :src="collectionItem.cover" alt=""
                             style="height: 100%; width: 100%;border-radius: 0 0 20px 20px; object-fit: cover; aspect-ratio: 1/1;">
-                        <div v-if="collectionItem.aiCreator&&!imageLoading"
+                        <video v-else style="height: 100%; width: 100%;border-radius: 0 0 20px 20px; object-fit: cover; aspect-ratio: 1/1;"
+                            autoplay muted loop>
+                            <source :src="collectionItem.file"
+                                type="video/mp4">
+                        </video>
+                        <div v-if="collectionItem.aiCreator && !imageLoading"
                             class="absolute right-3 top-3  bg-accent-200 rounded-xl px-3 py-1">
                             <p class="text-white text-sm font-medium">AI</p>
                         </div>
@@ -348,6 +353,8 @@ let isShowFilter = ref(false);
 // 是否展示系列的更多内容
 let isShowMore = ref(true);
 
+let isVideo = ref(false);
+
 // 切换isShowBlockChainDetail
 const toggleIsShowBlockChainDetail = () => {
     isShowBlockChainDetail.value = !isShowBlockChainDetail.value;
@@ -401,15 +408,25 @@ onMounted(async () => {
         console.log(err);
     });
 
-    // 在collectionItem.value.cover加载完成后再loading.value = false;
-    await new Promise((resolve) => {
-        const img = new Image();
-        img.src = collectionItem.value.cover;
-        img.onload = () => {
-            imageLoading.value = false;
-            resolve(null);
-        };
-    });
+    // 判断collectionItem.value的file中是否包含mp4后缀
+    if (collectionItem.value.file.includes('.mp4')) {
+        // 如果包含则将isVideo设置为true
+        isVideo.value = true;
+        imageLoading.value = false;
+    } else {
+        isVideo.value = false;
+        // 在collectionItem.value.cover加载完成后再loading.value = false;
+        await new Promise((resolve) => {
+            const img = new Image();
+            img.src = collectionItem.value.cover;
+            img.onload = () => {
+                imageLoading.value = false;
+                resolve(null);
+            };
+        });
+    }
+
+
 
 
     // 根据userInfo中的favoriteCollection数组中的objectId是否包含当前collectionItem的objectId来判断是否被收藏过
@@ -482,7 +499,7 @@ const handleAddFavoriteCollection = () => {
 
 // 在这里编写渲染图表的方法
 const renderPricesChart = () => {
-    
+
     // 使用一至日作为横轴的数据
     // const xAxisData = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00'];
 
@@ -492,7 +509,7 @@ const renderPricesChart = () => {
         return new Date(item).toLocaleString();
     });
 
-    
+
 
     // 使用示例数据
     // const seriesData = [25, 60, 50, 20, 35, 40, 25];

@@ -40,7 +40,7 @@
             </div>
 
         </div>
-        <UserNavbar class="border-b-[0.5px] border-solid boder-text-200 pb-6" />
+        <UserNavbar class="border-b border-solid boder-text-100 pb-6" />
     </div>
 </template>
 

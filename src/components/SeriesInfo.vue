@@ -87,9 +87,16 @@
             <div v-for="(item, index) in collectionItems" :key="index" class="CollectionListItem"
                 @mouseenter="showDelete(index)" @mouseleave="hideDelete">
                 <div class="CollectionListItemImage" style="height: 150px; width: 240px;">
+                    <video style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;" autoplay muted loop>
+                        <source src="https://stream.mux.com/5Bv4IUkYCENew01gNjZkgTK6oyiNltwCPlBu4iyVHoO00/high.mp4"
+                            type="video/mp4">
+                    </video>
+                </div>
+
+                <!-- <div class="CollectionListItemImage" style="height: 150px; width: 240px;">
                     <img style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;"
                         :src="item.cover" alt="" />
-                </div>
+                </div> -->
 
                 <p style="text-align: left; padding: 10px 20px;">{{ item.name }}</p>
                 <div class="CollectionListItemDetail">
@@ -184,7 +191,7 @@ let CollectionRanking = CollectionRankingStore()
 //         cover: "https://i.seadn.io/gcs/files/5bb08cd484a9740f41cb70e18f87b455.gif"
 //     },
 // ]
-let tempcollectionItems=[
+let tempcollectionItems = [
     {
         name: "Mint Genesis NFT #123",
         price: 0.0085,
@@ -228,7 +235,7 @@ let tempcollectionItems=[
 ]
 
 let collectionItems: Collection[] = tempcollectionItems as Collection[]
-    
+
 
 
 // let collectionItems: Collection[] = CollectionRanking.collections
@@ -339,7 +346,7 @@ const hideDelete = () => {
 
             font-weight: bold;
             text-align: start;
-            
+
             /* 确保其他内容在视频之上 */
 
             .SeriesInfoDetailUp {

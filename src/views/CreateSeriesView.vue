@@ -84,7 +84,7 @@
                 </div>
                 <p class="text-xl font-medium py-3">名字</p>
                 <!-- 下面为藏品名称搜索框 -->
-                <el-input v-model="name" placeholder="命名您的NFT" class=""></el-input>
+                <el-input v-model="name" placeholder="命名您的系列" class=""></el-input>
 
                 <p class="text-xl font-medium py-3">信息</p>
                 <el-input v-model="message" placeholder="请输入盲盒相关信息" class=""></el-input>
@@ -412,13 +412,13 @@ const handleAddCollection = async () => {
 
         formdata.append('name', name.value);
         formdata.append('cover', uploadedImage.value as string);
-        formdata.append('message', message.value);
+        formdata.append('intro', message.value);
 
         selectedBlindBox.value.forEach((item) => {
-            formdata.append('items', item.toString());
+            formdata.append('items', item.items.toString());
         })
         selectedBlindBox.value.forEach((item) => {
-            formdata.append('itemsCount', aiDescription);
+            formdata.append('itemsCount', item.itemsCount);
         })
         
 

@@ -18,7 +18,7 @@
             <div class="CreateNftViewBodyLeft">
                 <p style="font-size: 36px;font-weight: bold;">创建数字藏品</p>
                 <p style="font-size: 20px;margin-top: 10px;"> 铸造项目后，您将无法更改其任何信息。</p>
-                <div v-if="!uploadedImage" @click="openFileInput" v-loading="loading" element-loading-text="上传图片中..."
+                <div v-if="!uploadedImage" @click="openFileInput" v-loading="loading" element-loading-text="上传文件中..."
                     class="flex flex-col justify-center items-center gap-5 min-h-96 w-full border border-dashed border-text-200 rounded-2xl mt-30 bg-bg-200 cursor-pointer transition-bg-20 mt-12 hover:border-solid hover:border-text-200 hover:bg-rgba-18-18-18-0.04">
                     <div v-if="!loading" class=" flex flex-col justify-center items-center gap-5">
                         <el-icon size="40">
@@ -26,6 +26,9 @@
                         </el-icon>
                         <p class="text-16 text-accent-100 font-bold">
                             拖拽媒体或点击选择文件
+                        </p>
+                        <p class="text-16 text-accent-200 font-bold" v-if="uploadedFile">
+                            继续添加封面
                         </p>
                         <p> 最大尺寸:50MB</p>
                         <div class="flex justify-start items-center gap-2 bg-accent-100 text-black border rounded-2xl cursor-pointer p-2"
@@ -41,7 +44,15 @@
 
                     </div>
                 </div>
-                <img v-else :src="uploadedImage" alt="上传的图片" />
+                <div class="">
+                    <el-checkbox size="large" v-model="final">是否作为最终合成商品</el-checkbox>
+                </div>
+                <img v-if="uploadedImage && !isVideo" :src="uploadedImage" alt="上传的图片" />
+                <video v-if="uploadedImage && isVideo"
+                    style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;" autoplay
+                    muted loop>
+                    <source :src="uploadedImage" type="video/mp4">
+                </video>
             </div>
             <div class="CreateNftViewBodyRight">
                 <!-- <p style="font-size: 20px;font-weight: bold;padding:10px 0;">系列</p>
@@ -62,8 +73,8 @@
                     </template>
 </el-input> -->
 
-                <p class="text-xl font-medium py-3">发行号</p>
-                <el-input v-model="issueNumber" placeholder="请输入数字藏品的发行号" class=""></el-input>
+                <p class="text-xl font-medium py-3">发行数量</p>
+                <el-input v-model="issueNumber" placeholder="请输入数字藏品的发行数量" class=""></el-input>
                 <p class="text-xl font-medium py-3">名字</p>
                 <!-- 下面为藏品名称搜索框 -->
                 <el-input v-model="name" placeholder="命名您的NFT" class=""></el-input>
@@ -86,7 +97,7 @@
         </div>
 
         <MaskLayer :ifShow="isAIBoxVisible" />
-        <AIBox :ifShow="isAIBoxVisible"  @updateIfShow="updateIsAIBoxVisible" @saveSuccess="handleSaveSuccess"/>
+        <AIBox :ifShow="isAIBoxVisible" @updateIfShow="updateIsAIBoxVisible" @saveSuccess="handleSaveSuccess" />
         <!-- 下面的部分为点击保存后的loading -->
         <MaskLayer v-loading="loadingCreate" element-loading-text="藏品上传中..." backgroundColor="rgba(255, 255, 255, 0.01)"
             :ifShow="loadingCreate" />
@@ -119,15 +130,14 @@ import { AIData } from "../interfaces/AIData"
 
 
 import { getAllTypes } from "../api/type"
-import { uploadImage, addCollection,addAICollection } from "../api/collections"
-import { el } from "element-plus/es/locale";
+import { uploadImage, addCollection, addAICollection } from "../api/collections"
 
 
 // const text2ImgStore = Text2ImgStore();
+let final = ref(false);
 
 
-
-let aiCreator:boolean = false;
+let aiCreator: boolean = false;
 let aiDescription = "";
 let aiNegDescription = "";
 let aistyle = "";
@@ -146,6 +156,13 @@ let loadingCreate = ref(false);
 const uploadedImage = ref<string | null>(null);
 const picOperationsJSON = ref<PicOperation | null>(null);
 const picOperations = ref<string>(null);
+
+// 是否是视频文件
+const isVideo = ref<boolean>(false);
+
+const uploadedFile = ref<string | null>(null);
+
+const checked = ref(false);
 
 
 onMounted(async () => {
@@ -218,12 +235,49 @@ const uploadFile = async () => {
         return;
     }
 
-    // 检测上传文件的质量，如果超过100Kb则提示，限制上传的文件类型为图片
-    if (!checkFileTypeAndSize(file)) {
+    loading.value = true;
+    // 判断是否是视频
+    if (file.type.includes("video")) {
+        isVideo.value = true;
+        // 下面是上传图片的内容
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', 'collection')
+        console.log("file:", file)
+        // 上传图片，返回图片URL
+        await uploadImage(formData).then((res) => {
+            uploadedFile.value = res as string;
+            console.log("uploadedFile.value", uploadedFile.value)
+        }).catch((err) => {
+            console.log(err);
+        });
+        ElMessage.success("上传视频文件成功,请再上传一张封面图片");
+        loading.value = false;
+        isVideo.value = false;
         return;
+    } else {
+        // 检测上传文件的质量，如果超过100Kb则提示，限制上传的文件类型为图片
+        if (!checkFileTypeAndSize(file)) {
+            return;
+        }
+        isVideo.value = false;
+        // // 下面是上传图片的内容
+        // const formData = new FormData();
+        // formData.append('file', tempFile.value);
+        // formData.append('type', 'collection')
+        // console.log("file:", tempFile.value)
+
+        // // 上传图片，返回图片URL
+        // await uploadImage(formData).then((res) => {
+        //     tempImage.value = res as string;
+        // }).catch((err) => {
+        //     console.log(err);
+        // });
     }
 
-    loading.value = true;
+
+
+
     // 检测是否已经存在水印
     if (!await checkWatermark(file, base64Image.value)) {
         return
@@ -265,6 +319,7 @@ const uploadFile = async () => {
     await getImageAuditing(LocationUrl.value!).then((res) => {
         result = res as AuditResult;
         loading.value = false;
+
     }).catch((err) => {
         console.log(err)
     })
@@ -285,9 +340,17 @@ const handleAddCollection = async () => {
     formdata.append('shortIntro', shortIntro.value);
     formdata.append('intro', intro.value);
     formdata.append('cover', uploadedImage.value as string);
-    formdata.append('file', uploadedImage.value as string);
+    formdata.append('final', String(final.value));
+    formdata.append('checked', String(checked.value));
+
+    if (!uploadedFile.value) {
+        formdata.append('file', uploadedImage.value as string);
+    } else {
+        formdata.append('file', uploadedFile.value as string);
+    }
+
     formdata.append('type', "图片");
-    if(aiCreator){
+    if (aiCreator) {
         formdata.append('aiCreator', String(aiCreator));
         formdata.append('aiDescription', aiDescription);
         formdata.append('aiNegDescription', aiNegDescription);
@@ -312,8 +375,8 @@ const handleAddCollection = async () => {
 
 // 封装一个设置水印规则的方法
 const setWatermarkRule = (path: string, base64Image: string, ifCheck?: boolean): string => {
-    let picOperationsJSON =  null;
-    if(ifCheck) {
+    let picOperationsJSON = null;
+    if (ifCheck) {
         picOperationsJSON = {
             "is_pic_info": 1,
             "rules": [
@@ -323,7 +386,7 @@ const setWatermarkRule = (path: string, base64Image: string, ifCheck?: boolean):
                 }
             ]
         }
-    }else{
+    } else {
         picOperationsJSON = {
             "is_pic_info": 1,
             "rules": [
@@ -356,7 +419,7 @@ const checkFileTypeAndSize = (file: File): boolean => {
 // 辅助函数：检查是否含有水印
 const checkWatermark = async (file: File, watermarkBase64: string): Promise<boolean | null> => {
     const path = file.name;
-    const picOperations = setWatermarkRule(path, watermarkBase64,true);
+    const picOperations = setWatermarkRule(path, watermarkBase64, true);
     let watermarkStatus = 0;
 
     await addWatermark(path, file, picOperations).then((res: WatermarkResult) => {
@@ -383,6 +446,7 @@ const handleGetImageAuditing = (result: AuditResult, imageUrl: string) => {
     // 如果审核不通过，弹出提示
     if (resultData == 1) {
         uploadedImage.value! = ""
+        checked.value = false;
         switch (resultLabel) {
             case "Porn":
                 ElMessage.error("图片审核不通过，图片中包含色情内容")
@@ -393,9 +457,11 @@ const handleGetImageAuditing = (result: AuditResult, imageUrl: string) => {
         }
     } else if (resultData == 2) {
         uploadedImage.value = imageUrl
+        checked.value = false;
         ElMessage.info("图片等待人工审核")
     } else if (resultData == 0) {
         uploadedImage.value = imageUrl
+        checked.value = true;
         ElMessage.success("图片审核通过")
     }
 }
