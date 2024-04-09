@@ -72,6 +72,16 @@
                         </el-icon>
                     </template>
 </el-input> -->
+                <div @click="updateIsisCollectionBoxBlindBoxVisible(true)"
+                    class="flex justify-start items-center gap-5 w-full bg-gray-200 rounded-xl cursor-pointer p-5">
+                    <div class="flex justify-center items-center w-10 h-10 bg-gray-300 rounded-xl cursor-pointer p-6">
+                        <el-icon size="20">
+                            <Plus />
+                        </el-icon>
+                    </div>
+                    <p v-if="selectedBlindBox.length ===0" class="text-lg font-medium">选择是否加入合集</p>
+                    <p v-else class="text-lg font-medium">已添加至合集,点击可重新添加</p>
+                </div>
 
                 <p class="text-xl font-medium py-3">发行数量</p>
                 <el-input v-model="issueNumber" placeholder="请输入数字藏品的发行数量" class=""></el-input>
@@ -81,7 +91,7 @@
 
                 <p class="text-xl font-medium py-3">分类</p>
                 <el-select v-model="category" placeholder="请点击选择分类" size="large" :teleported="false" clearable
-                    style="width: 360px;">
+                    style="width: 100%">
                     <el-option v-for="item in allType" :key="item.objectId" :label="item.name" :value="item.objectId" />
                 </el-select>
 
@@ -101,6 +111,10 @@
         <!-- 下面的部分为点击保存后的loading -->
         <MaskLayer v-loading="loadingCreate" element-loading-text="藏品上传中..." backgroundColor="rgba(255, 255, 255, 0.01)"
             :ifShow="loadingCreate" />
+
+        <MaskLayer v-if="isCollectionBoxBlindBoxVisible" :ifShow="isCollectionBoxBlindBoxVisible" />
+        <AlbumBox v-if="isCollectionBoxBlindBoxVisible" :ifShow="isCollectionBoxBlindBoxVisible"
+            :Selected="selectedBlindBox" @updateSelectedBlindBox="handleUpdateSelectedBlindBox" @updateIfShow="updateIsisCollectionBoxBlindBoxVisible" />
     </div>
 </template>
 
@@ -152,10 +166,14 @@ let intro = ref("");
 let isAIBoxVisible = ref(false);
 let loading = ref(false);
 let loadingCreate = ref(false);
+// 定义数组selectedBlindBox，包含数目itemsCount以及藏品ID items
+let selectedBlindBox = ref([])
 // 定义上传后的图片URL
 const uploadedImage = ref<string | null>(null);
 const picOperationsJSON = ref<PicOperation | null>(null);
 const picOperations = ref<string>(null);
+
+const isCollectionBoxBlindBoxVisible = ref(false);
 
 // 是否是视频文件
 const isVideo = ref<boolean>(false);
@@ -180,6 +198,10 @@ const toCreate = () => {
     })
 }
 
+const updateIsisCollectionBoxBlindBoxVisible = (ifShow: boolean) => {
+    isCollectionBoxBlindBoxVisible.value = ifShow;
+}
+
 const updateIsAIBoxVisible = (ifShow: boolean) => {
     isAIBoxVisible.value = ifShow;
 }
@@ -193,6 +215,11 @@ const handleSaveSuccess = (data: AIData) => {
 
     console.log("uploadedImage.value", data);
 };
+
+const handleUpdateSelectedBlindBox = (data: any) => {
+    selectedBlindBox.value = data;
+    console.log("selectedBlindBox", selectedBlindBox.value)
+}
 
 
 
@@ -342,6 +369,10 @@ const handleAddCollection = async () => {
     formdata.append('cover', uploadedImage.value as string);
     formdata.append('final', String(final.value));
     formdata.append('checked', String(checked.value));
+    if(selectedBlindBox.value.length > 0){
+        formdata.append('albumId', String(selectedBlindBox.value[0].objectId));
+    }
+    
 
     if (!uploadedFile.value) {
         formdata.append('file', uploadedImage.value as string);
@@ -674,7 +705,7 @@ const handleGetImageAuditing = (result: AuditResult, imageUrl: string) => {
 }
 
 .el-input {
-    width: 360px;
+    width: 100%;
     height: 50px;
 
     border-radius: 12px;

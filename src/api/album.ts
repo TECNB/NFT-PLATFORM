@@ -3,17 +3,17 @@ import axios from './';
 import { Album } from '../interfaces/Album';
 
 
-// 获取所有盲盒
+// 获取所有合集
 export const getAllAlbums = () => {
     return axios.get<Album[]>('api/album/all');
 };
 
-// 根据objectId获取盲盒
+// 根据objectId获取合集
 export const getAlbumById = (objectId
     : string) => {
     return axios.get<Album>('api/album/objects/' + objectId);
 }
-// 添加盲盒
+// 添加合集
 export const addAlbum = (params: any) => {
     return axios.post<Album>('api/album/add', params);
 }

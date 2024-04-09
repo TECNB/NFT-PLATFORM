@@ -10,6 +10,8 @@ declare module 'vue' {
     ActivitBox: typeof import('./src/components/ActivitBox.vue')['default']
     ActivityBox: typeof import('./src/components/ActivityBox.vue')['default']
     AIBox: typeof import('./src/components/AIBox.vue')['default']
+    ALBox: typeof import('./src/components/ALBox.vue')['default']
+    AlbumBox: typeof import('./src/components/AlbumBox.vue')['default']
     CartList: typeof import('./src/components/CartList.vue')['default']
     CollectionBox: typeof import('./src/components/CollectionBox.vue')['default']
     CollectionBoxBlindBox: typeof import('./src/components/CollectionBoxBlindBox.vue')['default']

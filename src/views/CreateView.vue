@@ -19,7 +19,7 @@
                                 <el-icon>
                                     <Menu />
                                 </el-icon>
-                                <p class="text-xl font-bold">创建集合</p>
+                                <p class="text-xl font-bold">创建合集</p>
                             </div>
                             <div class="">
                                 <p class="font-medium">创建一个集合,用于盲盒以及合成等玩法</p>

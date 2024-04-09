@@ -16,8 +16,8 @@
         </div>
         <div class="CreateSeriesViewBody">
             <div class="CreateSeriesViewBodyLeft">
-                <p style="font-size: 36px;font-weight: bold;">创建系列</p>
-                <p style="font-size: 20px;margin-top: 10px;"> 铸造系列后，您将无法更改其任何信息。</p>
+                <p style="font-size: 36px;font-weight: bold;">创建合集</p>
+                <p style="font-size: 20px;margin-top: 10px;"> 铸造合集后，您将无法更改其任何信息。</p>
                 <div v-if="!uploadedImage" @click="openFileInput" v-loading="loading" element-loading-text="上传图片中..."
                     class="flex flex-col justify-center items-center gap-5 min-h-96 w-full border border-dashed border-text-200 rounded-2xl mt-30 bg-bg-200 cursor-pointer transition-bg-20 mt-12 hover:border-solid hover:border-text-200 hover:bg-rgba-18-18-18-0.04">
                     <div v-if="!loading" class=" flex flex-col justify-center items-center gap-5">
@@ -44,14 +44,14 @@
                 <img v-else :src="uploadedImage" alt="上传的图片" />
             </div>
             <div class="CreateSeriesViewBodyRight">
-                <!-- <p style="font-size: 20px;font-weight: bold;padding:10px 0;">系列</p>
+                <!-- <p style="font-size: 20px;font-weight: bold;padding:10px 0;">合集</p>
                 <div class="CreateSeriesViewBodyRightSeries">
                     <div class="CreateSeriesViewBodyRightSeriesCreate">
                         <el-icon size="16">
                             <Plus />
                         </el-icon>
                     </div>
-                    <p style="margin-left: 20px;">创建新系列</p>
+                    <p style="margin-left: 20px;">创建新合集</p>
                 </div> -->
                 <!-- <p style="font-size: 20px;font-weight: bold;padding:10px 0;">限量数</p>
                 <el-input v-model="name" placeholder="请限定发售的数量" class="">
@@ -78,16 +78,19 @@
                             @click.native.stop.prevent="changeTypeCondition('盲盒')">盲盒</p>
                         <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
                             @click.native.stop.prevent="changeTypeCondition('合成')">合成</p>
-                        <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
-                            @click.native.stop.prevent="changeTypeCondition('正常发行系列')">正常发行系列</p>
+                        <!-- <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
+                            @click.native.stop.prevent="changeTypeCondition('正常发行合集')">正常发行合集</p> -->
                     </div>
                 </div>
                 <p class="text-xl font-medium py-3">名字</p>
                 <!-- 下面为藏品名称搜索框 -->
-                <el-input v-model="name" placeholder="命名您的系列" class=""></el-input>
+                <el-input v-model="name" placeholder="命名您的合集" class=""></el-input>
 
                 <p class="text-xl font-medium py-3">信息</p>
-                <el-input v-model="message" placeholder="请输入盲盒相关信息" class=""></el-input>
+                <el-input v-model="message" placeholder="请输入合集相关信息" class=""></el-input>
+
+                <p v-if="typeCondition == '盲盒'" class="text-xl font-medium py-3">价格</p>
+                <el-input v-if="typeCondition == '盲盒'" v-model="price" placeholder="请输入盲盒价格" class=""></el-input>
 
 
                 <p class="text-xl font-medium py-3">添加藏品</p>
@@ -130,7 +133,7 @@
                     <p class="text-lg font-medium">已添加合成后藏品,点击进行修改</p>
                 </div>
 
-                <div v-if="typeCondition == '正常发行系列'" @click="updateisCollectionBoxisVisible(true)"
+                <div v-if="typeCondition == '正常发行合集'" @click="updateisCollectionBoxisVisible(true)"
                     class="flex justify-start items-center gap-5 w-full bg-gray-200 rounded-xl cursor-pointer p-5">
                     <div class="flex justify-center items-center w-10 h-10 bg-gray-300 rounded-xl cursor-pointer p-6">
                         <el-icon size="20">
@@ -158,8 +161,8 @@
         <CollectionBoxSynthesis v-if="typeCondition == '合成'" :ifShow="isCollectionBoxSynthesisVisible"
             @updateIfShow="updateisCollectionBoxSynthesisVisible" @update="updateFinalCollection"/>
 
-        <MaskLayer v-if="typeCondition == '正常发行系列'" :ifShow="isCollectionBoxisVisible" />
-        <CollectionBox v-if="typeCondition == '正常发行系列'" :ifShow="isCollectionBoxisVisible"
+        <MaskLayer v-if="typeCondition == '正常发行合集'" :ifShow="isCollectionBoxisVisible" />
+        <CollectionBox v-if="typeCondition == '正常发行合集'" :ifShow="isCollectionBoxisVisible"
             @updateIfShow="updateisCollectionBoxisVisible" />
     </div>
 </template>
@@ -225,6 +228,8 @@ let intro = ref("");
 let isAIBoxVisible = ref(false);
 let loading = ref(false);
 let loadingCreate = ref(false);
+
+
 // 定义上传后的图片URL
 const uploadedImage = ref<string | null>(null);
 const picOperationsJSON = ref<PicOperation | null>(null);
@@ -240,7 +245,7 @@ const isCollectionBoxBlindBoxVisible = ref(false);
 // 是否展示合成
 const isCollectionBoxSynthesisVisible = ref(false);
 
-// 是否展示正常发行系列
+// 是否展示正常发行合集
 const isCollectionBoxisVisible = ref(true);
 
 let message = ref("");
@@ -413,6 +418,7 @@ const handleAddCollection = async () => {
         formdata.append('name', name.value);
         formdata.append('cover', uploadedImage.value as string);
         formdata.append('intro', message.value);
+        formdata.append('price',price.value)
 
         selectedBlindBox.value.forEach((item) => {
             formdata.append('items', item.items.toString());
