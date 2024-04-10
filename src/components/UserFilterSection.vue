@@ -7,28 +7,10 @@
             </el-icon>
             <div class="TypeList" v-if="isTypeListVisible">
                 <!-- 勾选框 -->
-                <div class="TypeListItem">
+                <div class="TypeListItem" v-for="type in typeList" :key="type.objectId">
                     <label>
-                        <input type="checkbox" name="type" value="all" checked>
-                        <span class="ml-5">动画</span>
-                    </label>
-                </div>
-                <div class="TypeListItem">
-                    <label>
-                        <input type="checkbox" name="type" value="all" checked>
-                        <span class="ml-5">现实</span>
-                    </label>
-                </div>
-                <div class="TypeListItem">
-                    <label>
-                        <input type="checkbox" name="type" value="all" checked>
-                        <span class="ml-5">科技</span>
-                    </label>
-                </div>
-                <div class="TypeListItem">
-                    <label>
-                        <input type="checkbox" name="type" value="all" checked>
-                        <span class="ml-5">动物</span>
+                        <input type="checkbox" name="type" :value="type.objectId" checked>
+                        <span class="ml-5">{{ type.name }}</span>
                     </label>
                 </div>
             </div>
@@ -72,13 +54,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { onMounted, ref } from "vue"
+
+import {getAllTypes} from '../api/type'
 
 // 定义变量控制是否展示ConditionList
 let isConditionListVisible = ref(false);
 // 定义变量控制是否展示TypeList
 let isTypeListVisible = ref(false);
 
+let typeList = ref([]);
 // 定义一个函数用于控制ConditionList的显示与隐藏
 const toggleConditionList = () => {
     isConditionListVisible.value = !isConditionListVisible.value;
@@ -87,6 +72,12 @@ const toggleConditionList = () => {
 const toggleTypeList = () => {
     isTypeListVisible.value = !isTypeListVisible.value;
 };
+
+onMounted(() => {
+    getAllTypes().then((res) => {
+        typeList.value = res;
+    })
+})
 </script>
 
 <style lang="scss" scoped>
@@ -115,7 +106,7 @@ const toggleTypeList = () => {
 
 
 
-        width: 150px;
+        width: 180px;
         height: 50px;
 
         background-color: #FFFFFF;
@@ -143,7 +134,7 @@ const toggleTypeList = () => {
             top: 60px;
             left: 0px;
 
-            width: 150px;
+            width: 180px;
 
             background-color: #FFFFFF;
             border-radius: 12px;
