@@ -41,7 +41,7 @@
 
                     </div>
                 </div>
-                <img v-else :src="uploadedImage" alt="上传的图片" />
+                <img class="w-full min-h-96 rounded-xl object-cover" v-else :src="uploadedImage" alt="上传的图片" />
             </div>
             <div class="CreateSeriesViewBodyRight">
                 <!-- <p style="font-size: 20px;font-weight: bold;padding:10px 0;">合集</p>

@@ -41,7 +41,7 @@
 
                     </div>
                 </div>
-                <img v-else :src="uploadedImage" alt="上传的图片" />
+                <img class="w-full min-h-96 rounded-xl object-cover" v-else :src="uploadedImage" alt="上传的图片" />
             </div>
             <div class="CreateSeriesViewBodyRight">
                 <p class="text-xl font-medium py-3">名字</p>
