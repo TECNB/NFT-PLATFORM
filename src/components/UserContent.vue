@@ -21,7 +21,7 @@
                     <p class="text-left px-3 py-5">{{ item.name }}</p>
                     <div class="CollectionListItemDetail">
                         <p style="font-size: 16px; font-weight: normal;">交易价格</p>
-                        <p>{{ item.price }}</p>
+                        <p>¥ {{ item.price }}</p>
                     </div>
                 </div>
             </div>
@@ -52,7 +52,7 @@
                 <p class="text-left px-3 py-5">{{ item.name }}</p>
                 <div class="CollectionListItemDetail">
                     <p style="font-size: 16px; font-weight: normal;">交易价格</p>
-                    <p>{{ item.price }}</p>
+                    <p>¥ {{ item.price }}</p>
                 </div>
             </div>
         </div>
@@ -74,7 +74,7 @@
                 <p class="text-left px-3 py-5 cursor-pointer">{{ item.name }}</p>
                 <div class="CollectionListItemDetail cursor-pointer">
                     <p style="font-size: 16px; font-weight: normal;">交易价格</p>
-                    <p>{{ item.price }}</p>
+                    <p>¥ {{ item.price }}</p>
                 </div>
                 <transition name="fade">
                     <div v-if="ifShowMore[index]" @click.native.stop.prevent="updateIsActivityBoxVisible(true,item)"
@@ -100,7 +100,7 @@
                 <p class="text-left px-3 py-5">{{ item.name }}</p>
                 <div class="CollectionListItemDetail">
                     <p style="font-size: 16px; font-weight: normal;">交易价格</p>
-                    <p>{{ item.price }}</p>
+                    <p>¥ {{ item.price }}</p>
                 </div>
             </div>
             <div v-else class="">

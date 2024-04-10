@@ -28,11 +28,11 @@
                     <div class="CollectionListItemDetail">
                         <div>
                             <p class="text-base font-normal">交易价格</p>
-                            <p>{{ item.price }} ETH</p>
+                            <p>¥ {{ item.price }}</p>
                         </div>
                         <div>
-                            <p class="text-base font-normal">24小时交易量</p>
-                            <p>{{ item.price }} ETH</p>
+                            <p class="text-base font-normal">交易量</p>
+                            <p>{{ item.soldNumber }}</p>
                         </div>
                     </div>
                 </div>

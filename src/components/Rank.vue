@@ -19,7 +19,7 @@
                             </div>
                             <div style="padding-left: 20px;">
                                 <p>{{ collection.name }}</p>
-                                <p style="color: var(--text-200); padding-top: 10px;">价格:¥{{ collection.price }}</p>
+                                <p style="color: var(--text-200); padding-top: 10px;">价格:¥ {{ collection.price }}</p>
                             </div>
                         </div>
                         <p v-if="TypeIndex.index === 0" style="flex: 4; text-align: end;">{{ collection.visitCount }}</p>

@@ -38,7 +38,7 @@
                     </div>
 
                 </div>
-                <div style="flex: 2;text-align: end;">¥{{ item.price }}</div>
+                <div style="flex: 2;text-align: end;">¥ {{ item.price }}</div>
                 <div style="flex: 2;text-align: end;">{{ item.soldNumber }}</div>
                 
                 <div style="flex: 2;text-align: end;">{{ item.issueNumber }}</div>
