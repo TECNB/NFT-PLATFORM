@@ -12,8 +12,13 @@
                 <div v-for="(item, index) in displayedItems" :key="index" class="CollectionListItem"
                     @click="toNft(item.objectId)">
                     <div class="CollectionListItemImage" style="height: 150px; width: 100%;position: relative;">
-                        <img style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;"
+                        <img v-if="!item.file.includes('.mp4')" style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;"
                             :src="item.cover" alt="" />
+                        <video v-else :src="item.file" type="video/mp4"
+                            style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;"
+                            autoplay muted loop>
+
+                        </video>
                         <div v-if="item.aiCreator" class="absolute right-3 top-3  bg-accent-200 rounded-xl px-3 py-1">
                             <p class="text-white text-sm font-medium">AI</p>
                         </div>
@@ -65,6 +70,8 @@ const collectionItems: Ref<Collection[]> = ref([]);
 const currentPage = ref(0);
 const displayedItems: Ref<Collection[]> = ref([]);
 
+const isVideo = ref([]); // 判断是否是视频
+
 // 判断是否是AI藏品
 
 
@@ -72,6 +79,7 @@ const displayedItems: Ref<Collection[]> = ref([]);
 onMounted(async () => {
     updateDisplayedItems();
     window.addEventListener('resize', updateDisplayedItems);
+
 
 });
 
