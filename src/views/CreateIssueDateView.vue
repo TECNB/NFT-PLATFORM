@@ -49,7 +49,7 @@
                 <el-input v-model="name" placeholder="命名您的发行计划" class=""></el-input>
 
                 <p class="text-xl font-medium py-3">简要介绍</p>
-                <el-input v-model="shortDescription" placeholder="请输入预发行计划介绍" class=""></el-input>
+                <el-input v-model="shortDescription" placeholder="请输入发行计划介绍" class=""></el-input>
 
 
                 <p class="text-xl font-medium py-3">截止时间</p>

@@ -10,23 +10,28 @@
                 </el-icon>
             </div>
         </div>
-        <div class="Content">
-            <p class="text-left text-lg font-medium mt-5">添加藏品</p>
+        <el-scrollbar height="620px">
+            <div class="Content">
+                <p class="text-left text-lg font-medium mt-5">添加藏品</p>
 
-            <div v-for="(item, index) in CreatedCollection.collections" :key="index"
-                class="flex justify-start items-center gap-5 cursor-pointer rounded-xl mt-5 p-3"
-                @click="changeSelectedCollection(index)" :class="{ 'bg-gray-100': selectedCollection.includes(item) }">
-                <img class="w-16 h-16 rounded-lg" :src="item.cover" alt="" />
-                <div class="flex justify-center items-start flex-col w-20">
-                    <p class="text-left text-lg font-bold">{{ item.name }}</p>
-                    <p class="text-left text-lg font-medium">{{ item.price }} ETH</p>
+                <div v-for="(item, index) in CreatedCollection.collections" :key="index"
+                    class="flex justify-start items-center gap-5 cursor-pointer rounded-xl mt-5 p-3"
+                    @click="changeSelectedCollection(index)"
+                    :class="{ 'bg-gray-100': selectedCollection.includes(item) }">
+                    <img class="w-16 h-16 rounded-lg" :src="item.cover" alt="" />
+                    <div class="flex justify-center items-start flex-col w-20">
+                        <p class="text-left text-lg font-bold">{{ item.name }}</p>
+                        <p class="text-left text-lg font-medium">{{ item.price }} ETH</p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="Complete cursor-pointer" @click="toggleVisibility">
-                <p>确定添加</p>
+
             </div>
+        </el-scrollbar>
+        <div class="Complete cursor-pointer" @click="toggleVisibility">
+            <p>确定添加</p>
         </div>
+
     </div>
 </template>
 
@@ -384,29 +389,29 @@ const updateCartData = () => {
                 accent-color: var(--accent-200);
             }
         }
-
-        .Complete {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex: 1;
-
-
-            height: 50px;
-
-            background-color: var(--bg-200);
-            color: var(--accent-200);
-
-            border-radius: 12px;
-            border: 0.5px solid var(--text-200);
-            font-weight: bold;
-
-
-            padding: 12px;
-            margin-top: 20px;
-
-        }
     }
+}
+
+.Complete {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+
+
+    height: 50px;
+
+    background-color: var(--bg-200);
+    color: var(--accent-200);
+
+    border-radius: 12px;
+    border: 0.5px solid var(--text-200);
+    font-weight: bold;
+
+
+    padding: 12px;
+    margin-top: 20px;
+
 }
 
 :deep(.el-input) {

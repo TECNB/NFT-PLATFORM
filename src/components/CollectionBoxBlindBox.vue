@@ -10,24 +10,29 @@
                 </el-icon>
             </div>
         </div>
-        <div class="Content">
-            <!-- v-for从CreatedCollection.collections中获取数据 -->
-            <div v-for="(item, index) in CreatedCollection.collections" :key="index"
-                class="flex justify-around items-center gap-5 mt-5">
-                <img class="w-16 h-16 rounded-lg" :src="item.cover" alt="" />
-                <div class="flex justify-center items-start flex-col w-20">
-                    <p class="text-left text-lg font-bold">{{ item.name }}</p>
-                    <p class="text-left text-lg font-medium">{{ item.price }} ETH</p>
+        <el-scrollbar height="620px">
+            <div class="Content">
+                <!-- v-for从CreatedCollection.collections中获取数据 -->
+                <div v-for="(item, index) in CreatedCollection.collections" :key="index"
+                    class="flex justify-around items-center gap-5 mt-5">
+                    <img class="w-16 h-16 rounded-lg" :src="item.cover" alt="" />
+                    <div class="flex justify-center items-start flex-col w-20">
+                        <p class="text-left text-lg font-bold">{{ item.name }}</p>
+                        <p class="text-left text-lg font-medium">{{ item.price }} ETH</p>
+                    </div>
+                    <el-input-number :disabled="ifDisabled" v-model="num[index]" :min="0" :max="maxNumber[index]"
+                        @change="handleChange(index, $event)" :step="1" />
                 </div>
-                <el-input-number :disabled="ifDisabled" v-model="num[index]" :min="0" :max="maxNumber[index]"
-                    @change="handleChange(index, $event)" :step="1" />
-            </div>
-            <p class="text-right ext-lg font-medium text-accent-100 cursor-pointer hover:text-accent-200 mt-5"
-                @click="resetProbability">重置概率</p>
 
-            <div class="Complete" @click="toggleVisibility">
-                <p>确定添加</p>
+
+
             </div>
+        </el-scrollbar>
+        <p class="text-right ext-lg font-medium text-accent-100 cursor-pointer hover:text-accent-200 mt-5"
+            @click="resetProbability">重置数量</p>
+        <div class="Complete" @click="toggleVisibility">
+
+            <p>确定添加</p>
         </div>
     </div>
 </template>
@@ -187,7 +192,7 @@ const handleChange = (index: number, value: number) => {
     }
 
     // 不要向props.Selected中存入重复的items
-    
+
     if (props.Selected.length === 0) {
         props.Selected.push(Selected)
     } else {
@@ -211,7 +216,7 @@ const handleChange = (index: number, value: number) => {
         }
     }
 
-    
+
     console.log(props.Selected)
 };
 
@@ -406,28 +411,30 @@ const updateCartData = () => {
             }
         }
 
-        .Complete {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex: 1;
 
-
-            height: 50px;
-
-            background-color: var(--bg-200);
-            color: var(--accent-200);
-
-            border-radius: 12px;
-            border: 0.5px solid var(--text-200);
-            font-weight: bold;
-
-
-            padding: 12px;
-            margin-top: 20px;
-
-        }
     }
+}
+
+.Complete {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+
+
+    height: 50px;
+
+    background-color: var(--bg-200);
+    color: var(--accent-200);
+
+    border-radius: 12px;
+    border: 0.5px solid var(--text-200);
+    font-weight: bold;
+
+
+    padding: 12px;
+    margin-top: 20px;
+
 }
 
 :deep(.el-input) {
