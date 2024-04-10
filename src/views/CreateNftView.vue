@@ -47,7 +47,10 @@
                 <div class="">
                     <el-checkbox size="large" v-model="final">是否作为最终合成商品</el-checkbox>
                 </div>
-                <img v-if="uploadedImage && !isVideo" :src="uploadedImage" alt="上传的图片" />
+                <div class="min-h-96 w-full" v-if="uploadedImage && !isVideo" >
+                    <img class="w-full h-full rounded-xl object-cover" :src="uploadedImage" alt="上传的图片" />
+                </div>
+                
                 <video v-if="uploadedImage && isVideo"
                     style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;" autoplay
                     muted loop>
@@ -521,7 +524,7 @@ const handleGetImageAuditing = (result: AuditResult, imageUrl: string) => {
 
 
     .CreateNftViewBodyLeft {
-        min-width: 40%;
+        width: 40%;
 
 
         .CreateNftViewBodyLeftUpdate {

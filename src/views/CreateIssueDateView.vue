@@ -453,7 +453,7 @@ const handleGetImageAuditing = (result: AuditResult, imageUrl: string) => {
 
 
     .CreateSeriesViewBodyLeft {
-        min-width: 40%;
+        width: 40%;
 
 
         .CreateSeriesViewBodyLeftUpdate {

@@ -577,7 +577,7 @@ const handleAddCollection = async () => {
 
 
     .CreateSeriesViewBodyLeft {
-        min-width: 40%;
+        width: 40%;
 
 
         .CreateSeriesViewBodyLeftUpdate {
