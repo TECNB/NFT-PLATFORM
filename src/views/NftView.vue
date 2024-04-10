@@ -86,7 +86,7 @@
                         </div>
                         <div class="flex justify-between items-center w-full">
                             <p class="text-lg font-medium">最后更新日期</p>
-                            <p class="text-base font-medium">{{ collectionItem.createdAt }}</p>
+                            <p class="text-base font-medium">{{new Date(collectionItem.createdAt).toLocaleString()}}</p>
                         </div>
                     </div>
                 </div>
@@ -124,7 +124,7 @@
                     </div>
 
                     <p style="color: var(--text-200);margin-top: 20px;">当前价格</p>
-                    <p style="font-size: 32px;font-weight: bold;">{{ collectionItem.price }} ETH</p>
+                    <p style="font-size: 32px;font-weight: bold;">¥ {{ collectionItem.price }}</p>
                     <div class="NftViewBodyRightPriceButton">
                         <div class="button">
                             <div class="buyWord" @click="updateIsPayBoxVisible(true)">
@@ -259,8 +259,8 @@
                         <img class="w-full h-[70%] rounded-t-xl object-cover" :src="item.cover" alt="">
                         <div class="flex justify-center items-start flex-col h-[30%] px-2">
                             <p class="text-lg font-bold">{{ item.name }}</p>
-                            <p class="font-bold">{{ item.price }} ETH</p>
-                            <p class="text-gray-400 font-medium">最后销售: {{ item.price }} ETH</p>
+                            <p class="font-bold">¥ {{ item.price }}</p>
+                            <p class="text-gray-400 font-medium">销售量: {{ item.soldNumber }}</p>
                         </div>
                     </div>
                 </div>

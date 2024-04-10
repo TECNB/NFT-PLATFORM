@@ -5,8 +5,10 @@ const pricesChartOptions = (xAxisData: string[], seriesData: number[]) => {
             data: xAxisData,
         },
         yAxis: {
+            show: true,
             type: 'value',
             position: 'right',
+            
         },
         grid: {
             x: 0,

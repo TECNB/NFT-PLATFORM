@@ -55,7 +55,11 @@
                         </el-tag>
                     </template>
                 </el-table-column>
-                <el-table-column prop="price" label="价格"></el-table-column>
+                <el-table-column prop="price" label="价格">
+                    <template v-slot="{ row }">
+                        <p>¥ {{ row.price }}</p>
+                    </template>
+                </el-table-column>
 
             </el-table>
 

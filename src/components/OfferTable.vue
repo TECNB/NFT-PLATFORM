@@ -5,7 +5,6 @@
             <el-scrollbar height="100%">
                 <el-table :data="tableData" class="tableBox" table-layout="fixed" :row-style="{ height: '100px' }">
                     <el-table-column prop="price" label="价格"></el-table-column>
-                    <el-table-column prop="originalPrice" label="人民币价格"></el-table-column>
                     <el-table-column prop="Number" label="数量"></el-table-column>
                     <el-table-column prop="Endline" label="到期时间"></el-table-column>
                     <el-table-column prop="offerStatus" label="报价状态">
@@ -29,17 +28,15 @@
 import { ref } from "vue"
 const tableData = ref([
     {
-        price: "2 ETH",
-        originalPrice: "$200",
+        price: "¥ 9",
         Number: '1',
-        Endline: '9分钟后',
+        Endline: '10分钟后',
         offerStatus: '正常',
         statusType: 'success',
         offerUser: 'TEC',
     },
     {
-        price: "2 ETH",
-        originalPrice: "$200",
+        price: "¥ 8",
         Number: '1',
         Endline: '1分钟前',
         offerStatus: '已过期',
