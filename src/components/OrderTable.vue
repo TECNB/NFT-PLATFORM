@@ -82,7 +82,7 @@ import { getOrders } from '../api/order';
 import { getUserById } from '../api/user';
 
 
-const props = defineProps(['dateOrder', 'typeOrder']);
+const props = defineProps(['dateOrder', 'typeOrder','objectId']);
 
 
 const items = ref(['全部订单', '待付款', '申诉中', '退款中', '已完成']);
@@ -92,39 +92,7 @@ const loading = ref(false);
 
 
 const input = ref('');
-const tableData: Ref<Order[]> = ref([
-    // {
-    //     orderName: '订单1',
-    //     orderDate: '2024-02-24',
-    //     buyer: '买家1',
-    //     paymentStatus: '已完成',
-    //     orderStatus: '已退款',
-    //     price: 100,
-    //     paymentType: 'success',
-    //     orderType: 'primary',
-    // },
-    // {
-    //     orderName: '订单2',
-    //     orderDate: '2024-02-25',
-    //     buyer: '买家2',
-    //     paymentStatus: '未完成',
-    //     orderStatus: '退款中',
-    //     price: 150,
-    //     paymentType: 'danger',
-    //     orderType: 'warning',
-    // },
-    // {
-    //     orderName: '订单3',
-    //     orderDate: '2024-02-26',
-    //     buyer: '买家3',
-    //     paymentStatus: '未完成',
-    //     orderStatus: '已取消',
-    //     price: 120,
-    //     paymentType: 'success',
-    //     orderType: 'danger',
-    // },
-    // // 添加更多订单数据...
-]);
+const tableData: Ref<Order[]> = ref([]);
 
 
 
@@ -133,6 +101,8 @@ const counts = ref(tableData.value.length);
 const page = ref(1);
 const user = 'admin';
 const allData = ref<Order[]>([]);
+
+
 
 
 // 通过watch监听props.dateOrder的变化
@@ -170,7 +140,7 @@ onMounted(async () => {
     allData.value = await getOrders();
     counts.value = allData.value.length;
     // tableData.value 为res中选择pageSize.value行数据
-    tableData.value = allData.value.slice((page.value - 1) * pageSize.value, page.value * pageSize.value);
+    tableData.value = allData.value.slice((page.value - 1) * pageSize.value, page.value * pageSize.value).filter((item) => item.target === props.objectId);
 
 
     // 遍历订单数据，获取订单的创建者信息

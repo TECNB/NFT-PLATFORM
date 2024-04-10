@@ -58,7 +58,7 @@
             </div>
         </div> -->
         <div class="" v-if="filterCondition == '修改价格'">
-            <p class="text-lg font-medium mt-5">原价为:{{ props.detail.price }} 人民币</p>
+            <p class="text-lg font-medium mt-5">原价为:¥ {{ props.detail.price }}</p>
 
             <p class="text-lg font-medium mt-5">修改价格至</p>
             <el-input v-model="price" placeholder="请输入修改价格后的金额"></el-input>

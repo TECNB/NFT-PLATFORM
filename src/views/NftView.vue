@@ -82,7 +82,7 @@
                         </div>
                         <div class="flex justify-between items-center w-full">
                             <p class="text-lg font-medium">链</p>
-                            <p class="text-base font-medium">Ethereum</p>
+                            <p class="text-base font-medium">蚂蚁链</p>
                         </div>
                         <div class="flex justify-between items-center w-full">
                             <p class="text-lg font-medium">最后更新日期</p>
@@ -228,7 +228,7 @@
                 </div>
 
                 <div class="h-[85%]">
-                    <OrderTable />
+                    <OrderTable :objectId="collectionItem.objectId" />
                 </div>
 
             </div>
