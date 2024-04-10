@@ -16,7 +16,7 @@
                 <p class="text-left text-lg font-medium">合成后的藏品</p>
                 <div v-for="(item, index) in CreatedCollection.collections.filter(collection => collection.final === true)"
                     :key="index" class="flex justify-start items-center gap-5 cursor-pointer rounded-xl mt-5 p-3"
-                    @click="changeSynthesisedCollection(index)"
+                    @click="changeSynthesisedCollection(item.objectId)"
                     :class="{ 'bg-gray-100': synthesisedCollection === item }">
                     <img class="w-16 h-16 rounded-lg" :src="item.cover" alt="" />
                     <div class="flex justify-center items-start flex-col w-20">
@@ -28,7 +28,7 @@
 
                 <div v-for="(item, index) in CreatedCollection.collections.filter(collection => collection.final === false)"
                     :key="index" class="flex justify-start items-center gap-5 cursor-pointer rounded-xl mt-5 p-3"
-                    @click="changeSelectedCollection(index)"
+                    @click="changeSelectedCollection(item.objectId)"
                     :class="{ 'bg-gray-100': selectedCollection.includes(item) }">
                     <img class="w-16 h-16 rounded-lg" :src="item.cover" alt="" />
                     <div class="flex justify-center items-start flex-col w-20">
@@ -153,8 +153,10 @@ watch(num, () => {
 }, { deep: true });
 
 // 点击改变选中后的藏品selectedCollection
-const changeSelectedCollection = (index: number) => {
-    const selectedItem = CreatedCollection.collections[index];
+const changeSelectedCollection = (objectId: string) => {
+
+    const selectedItem = CreatedCollection.collections.find(collection => collection.objectId === objectId);
+
     if (selectedCollection.value.includes(selectedItem)) {
         selectedCollection.value = selectedCollection.value.filter(item => item !== selectedItem);
     } else {
@@ -163,8 +165,10 @@ const changeSelectedCollection = (index: number) => {
     console.log(selectedCollection.value)
 };
 // 点击改变选中后的藏品synthesisedCollection
-const changeSynthesisedCollection = (index: number) => {
-    synthesisedCollection.value = CreatedCollection.collections[index]
+const changeSynthesisedCollection = (objectId: string) => {
+    
+    synthesisedCollection.value = CreatedCollection.collections.find(collection => collection.objectId === objectId);
+
     emit('update', synthesisedCollection.value)
 }
 
