@@ -1,7 +1,7 @@
 <template>
     <div class="StatisticsView">
         <MainNavbar />
-        <h1 class="text-left text-3xl font-medium mx-0 my-16">系列统计信息</h1>
+        <h1 class="text-left text-3xl font-medium mx-0 my-16">藏品统计信息</h1>
         <div class="StatisticsNavbar">
             <div class="StatisticsNavbarItem" @click="selectType(0)" :class="{ 'selected': TypeIndex.index === 0 }">
                 <p>热门</p>
@@ -14,20 +14,19 @@
             </div>
 
         </div>
-        <FilterSection from="StatisticsView" />
+        <!-- <FilterSection from="StatisticsView" /> -->
         <!-- 如果关注列表时去掉前方的序号 -->
         <div class="StatisticsContent">
             <div class="StatisticsContentTitle">
                 <p style="flex: 1;" v-if="TypeIndex.index !== 2">#</p>
-                <p style="flex: 12;">系列</p>
+                <p style="flex: 12;">藏品</p>
+                <p style="flex: 2;text-align: end;">价格</p>
                 <p style="flex: 2;text-align: end;">交易量</p>
-                <p style="flex: 2;text-align: end;">变化</p>
-                <p style="flex: 2;text-align: end;">地板价</p>
-                <p style="flex: 2;text-align: end;">销售</p>
+                <p style="flex: 2;text-align: end;">发售数量</p>
                 <!-- 下面的部分是用于放置图标做出的空缺 -->
                 <p style="flex: 1;text-align: end;" v-if="TypeIndex.index == 2"></p>
             </div>
-            <div class="StatisticsContentDetail" v-for="(item, index) in CollectionRanking.collections" :key="index">
+            <div class="StatisticsContentDetail" v-for="(item, index) in displayedItems.filter(collection => collection.final === false)" :key="index">
                 <div style="flex: 1;text-align: start;" v-if="TypeIndex.index !== 2">{{ index + 1 }}</div>
                 <div class="StatisticsContentDetailName" style="flex: 12;">
                     <div style="flex: 1;">
@@ -39,10 +38,10 @@
                     </div>
 
                 </div>
-                <div style="flex: 2;text-align: end;">{{ item.price }}</div>
-                <div style="flex: 2;text-align: end;">{{ item.price }}</div>
-                <div style="flex: 2;text-align: end;">{{ item.price }}</div>
-                <div style="flex: 2;text-align: end;">{{ item.price }}</div>
+                <div style="flex: 2;text-align: end;">¥{{ item.price }}</div>
+                <div style="flex: 2;text-align: end;">{{ item.soldNumber }}</div>
+                
+                <div style="flex: 2;text-align: end;">{{ item.issueNumber }}</div>
                 <div style="flex: 1;" class="icon" v-if="TypeIndex.index == 2"><el-icon>
                         <Delete />
                     </el-icon></div>
@@ -53,19 +52,43 @@
 </template>
 
 <script setup lang="ts">
-import { } from "vue"
+import { onMounted, ref,watch } from "vue"
 
 
 import MainNavbar from '../components/MainNavbar.vue'
 import FilterSection from '../components/FilterSection.vue'
 
+import { Collection } from '../interfaces/Collection'
+
 
 import { StatisticsTypeIndexStore } from '../stores/SelectedIndexStore'
-import {CollectionRankingStore} from '../stores/CollectionStore'
+import {CollectionRankingStore,FavoriteCollectionStore} from '../stores/CollectionStore'
 
 
 const TypeIndex = StatisticsTypeIndexStore()
 const CollectionRanking = CollectionRankingStore();
+const FavoriteCollection = FavoriteCollectionStore();
+
+let displayedItems = ref<Collection[]>([]);
+
+
+// watch TypeIndex.index
+watch(() => TypeIndex.index, (index) => {
+    if (index === 0) {
+        // 根据观看数visitCount排序
+        displayedItems.value = CollectionRanking.collections.filter(collection => collection.final === false).sort((a, b) => b.visitCount - a.visitCount);
+    } else if (index === 1) {
+        // 根据销售额排序soldNumber
+        displayedItems.value = CollectionRanking.collections.filter(collection => collection.final === false).sort((a, b) => b.soldNumber - a.soldNumber);
+    } else if (index === 2) {
+        displayedItems.value = FavoriteCollection.collections;
+    }
+});
+onMounted(() => {
+    displayedItems.value = CollectionRanking.collections.filter(collection => collection.final === false).sort((a, b) => b.visitCount - a.visitCount);
+});
+
+
 
 
 const selectType = (index: number) => {
