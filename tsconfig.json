@@ -3,13 +3,18 @@
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2020",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "skipLibCheck": true,
-    "types": ["element-plus/global","node"],
+    "types": [
+      "element-plus/global",
+      "node"
+    ],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    
-
     /* Bundler mode */
     // "moduleResolution": "bundler",
     "moduleResolution": "node",
@@ -18,14 +23,28 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "preserve",
-    
-
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "auto-imports.d.ts", "src/utils/V3.js", "src/utils/ImageAuditing.js"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "compilerOptions": {
+    "allowJs": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "auto-imports.d.ts",
+    "src/utils/V3.js",
+    "src/utils/ImageAuditing.js"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }

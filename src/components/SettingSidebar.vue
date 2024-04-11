@@ -3,12 +3,12 @@
         <div class="sidebar-logo-container">
             <p class="text-left">设置</p>
         </div>
-        <el-scrollbar height="90%" >
+        <el-scrollbar height="90%">
 
             <ul>
                 <!-- 遍历菜单项 -->
                 <li v-for="(menu, index) in menus" :key="index">
-                    <div class="menu-item" @click="selectMenu(index, menu.children, menu.path!)"
+                    <div class="menu-item" @click="selectMenu(index, menu.path!)"
                         :class="{ 'active-menu': selectedMenu === index }">
                         <el-icon color="var(--text-100)" v-if="selectedMenu === index">
                             <component :is="menu.icon"></component>
@@ -17,23 +17,7 @@
                             <component :is="menu.icon"></component>
                         </el-icon>
                         <p>{{ menu.label }}</p>
-                        <!-- 如果有子菜单，显示箭头 -->
-                        <el-icon v-if="menu.children" class="ml-7">
-                            <ArrowDownBold v-if="!ifShowSubMenu" />
-                            <ArrowUpBold v-else />
-                        </el-icon>
-
                     </div>
-                    <!-- 如果有子菜单，渲染子菜单 -->
-                    <ul v-if="menu.children && ifShowSubMenu">
-                        <li v-for="(child, childIndex) in menu.children" :key="childIndex">
-                            <div class="menu-item child-menu"
-                                @click="selectSubMenu(index, childIndex, menu.children[childIndex].path!)"
-                                :class="{ 'active-menu': selectedSubMenu === childIndex }">
-                                <p class="ml-6">{{ child.label }}</p>
-                            </div>
-                        </li>
-                    </ul>
                 </li>
             </ul>
 
@@ -86,19 +70,10 @@ const toggleSubMenu = () => {
 };
 
 
-const selectMenu = (index: number, ifChildren: any, path: string) => {
-    if (!ifChildren) {
-        selectedMenu.value = index;
-        selectedSubMenu.value = null; // 清除子菜单的选中状态
-        router.push(`/setting${path}`); // 使用子路由的路径
-
-    } else {
-        selectedMenu.value = null;
-        selectedSubMenu.value = 0; // 清除子菜单的选中状态
-        router.push(menus[index].children![0].path!);
-        toggleSubMenu();
-
-    }
+const selectMenu = (index: number, path: string) => {
+    selectedMenu.value = index;
+    selectedSubMenu.value = null; // 清除子菜单的选中状态
+    router.push(`/setting${path}`); // 使用子路由的路径
 
 };
 
@@ -156,10 +131,11 @@ const selectSubMenu = (parentIndex: number, childIndex: number, path: string) =>
         p {
             font-size: 16px;
             color: var(--text-200);
+
             &:hover {
 
                 color: var(--text-100);
-        }
+            }
         }
 
         &.active-menu {
