@@ -3,7 +3,7 @@ import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } f
 // 引入ErrorResult接口
 import  {ErrorResult}  from '../interfaces/ErrorResult';
 
-const URL: string = 'http://localhost:5173'
+const URL: string = 'http://42.192.90.134:5173'
 enum RequestEnums {
     TIMEOUT = 20000,
     OVERDUE = 600, // 登录失效

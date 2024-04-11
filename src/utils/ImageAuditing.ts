@@ -3,7 +3,8 @@
 // nodejs 端可直接使用 CAM 密钥计算签名，建议用限制最小权限的子用户的 CAM 密钥
 // 最小权限原则说明 https://cloud.tencent.com/document/product/436/38618
 import config from '../constant/config';
-import * as COS from 'cos-js-sdk-v5'; // 使用 import 语法导入 COS 模块
+import COS from 'cos-js-sdk-v5';
+
 import { RecognitionResult } from '../interfaces/RecognitionResult';
 
 const cos = new COS({

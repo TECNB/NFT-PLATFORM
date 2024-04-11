@@ -9,7 +9,7 @@
             <div class="flex justify-center w-full h-full">
                 <div class="flex justify-center self-center w-full flex-col gap-5">
                     <div class="flex justify-start items-center gap-5 w-full">
-                        <img class="w-10 h-10" src="https://opensea.io/static/images/logos/opensea-logo.svg" alt="">
+                        <img class="w-10 h-10" src="../assets/images/logo.png" alt="">
                         <p class="text-5xl font-bold">创建</p>
                     </div>
                     <div @click="toCreateSeriesView"
@@ -92,11 +92,12 @@
 
 <script setup lang="ts">
 import { onMounted, ref, Ref } from "vue"
-import router from "../router";
+import { useRouter } from 'vue-router'
 
 import { CollectionRankingStore } from '../stores/CollectionStore'
 
 const CollectionRanking = CollectionRankingStore()
+const router = useRouter();
 
 const toNft = (objectId: string) => {
     router.push({

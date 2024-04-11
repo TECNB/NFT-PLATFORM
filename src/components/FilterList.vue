@@ -39,8 +39,8 @@
                 </div>
             </div>
             <div class="mt-4">
-                <div class="TypeItem" :class="{ 'Selected': filter==='系列合成' }">
-                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilter('系列合成')">系列合成</p>
+                <div class="TypeItem" :class="{ 'Selected': filter==='合成' }">
+                    <p class="text-text-100 font-medium text-lg text-center" @click="setFilter('合成')">合成</p>
                 </div>
                 <div class="TypeItem" :class="{ 'Selected': filter==='盲盒' }">
                     <p class="text-text-100 font-medium text-lg text-center" @click="setFilter('盲盒')">盲盒</p>

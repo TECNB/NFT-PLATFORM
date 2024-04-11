@@ -28,12 +28,13 @@
 
                 <p style="flex: 5;" v-if="filter==='盲盒'">介绍</p>
                 <p style="flex: 5;" v-if="filter==='预发行'">介绍</p>
+                <p style="flex: 5;" v-if="filter==='合成'">介绍</p>
 
                 <p style="flex: 2;" v-if="filter==='预发行'">预定发行时间</p>
 
                 <p style="flex: 2;text-align: left" v-if="filter==='空投'">投放数量</p>
-                <p style="flex: 2;text-align: left" v-if="filter==='空投'">开始时间</p>
-                <p style="flex: 2;text-align: left" v-if="filter==='空投'">结束时间</p>
+                <p style="flex: 3;text-align: left" v-if="filter==='空投'">开始时间</p>
+                <p style="flex: 3;text-align: left" v-if="filter==='空投'">结束时间</p>
 
 
             </div>
@@ -56,7 +57,7 @@
                     </el-icon>
                     <p class="mr-auto">{{ filter }}</p>
                 </div>
-                <div class="flex-[3_0_0%] flex justify-center items-center gap-10" v-if="filter==='系列合成'">
+                <div class="flex-[3_0_0%] flex justify-center items-center gap-10" v-if="filter==='合成'">
                     <el-icon class="">
                         <Menu />
                     </el-icon>
@@ -77,13 +78,14 @@
                 
 
                 <div style="flex: 5;text-align: left;" v-if="filter==='盲盒'">{{ item.intro }}</div>
+                <div style="flex: 5;text-align: left;" v-if="filter==='合成'">{{ item.intro }}</div>
                 <div style="flex: 5;text-align: left;" v-if="filter==='预发行'">{{ item.shortDescription }}</div>
 
                 <div style="flex: 2;text-align: left;" v-if="filter==='预发行'">{{ new Date(item.issueTime).toLocaleString() }}</div>
 
                 <div style="flex: 2;text-align: left;" v-if="filter==='空投'">{{ item.dropCount }}</div>
-                <div style="flex: 2;text-align: left;" v-if="filter==='空投'">{{ new Date(item.dropTime).toLocaleString() }}</div>
-                <div style="flex: 2;text-align: left;" v-if="filter==='空投'">{{ new Date(item.endTime).toLocaleString() }}</div>
+                <div style="flex: 3;text-align: left;" v-if="filter==='空投'">{{ new Date(item.dropTime).toLocaleString() }}</div>
+                <div style="flex: 3;text-align: left;" v-if="filter==='空投'">{{ new Date(item.endTime).toLocaleString() }}</div>
 
                 </el-skeleton>
                 
@@ -108,6 +110,7 @@ import { getAllCollections } from '../api/collections'
 import { getAllBlindBoxs } from '../api/blindBox'
 import { getAllDrops } from '../api/drop'
 import { getIssueDates } from '../api/issueDate'
+import { getAllAlbums } from '../api/album'
 
 
 const filterListIndex = FilterListIndexStore();
@@ -132,6 +135,9 @@ watch(filter, async (newFilter) => {
             break;
         case '空投':
             displayCollections.value = await getAllDrops();
+            break;
+        case '合成':
+            displayCollections.value = await getAllAlbums();
             break;
         case '预发行':
             displayCollections.value = await getIssueDates();

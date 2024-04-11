@@ -30,6 +30,7 @@
     "noFallthroughCasesInSwitch": true
   },
   "compilerOptions": {
+    "esModuleInterop": true,
     "allowJs": true,
     "noEmit": true,
     "skipLibCheck": true,
