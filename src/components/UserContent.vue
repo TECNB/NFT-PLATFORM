@@ -59,8 +59,8 @@
                 </div>
             </div> -->
             <div class="UserContentDetail">
-                    <OrderTable objectId="4zy42fesbar8yg0hj2jm5218" />
-                </div>
+                <OrderTable source="user" class="w-full rounded-[20px]" objectId="4zy42fesbar8yg0hj2jm5218" />
+            </div>
         </div>
 
         <!-- 已创建的藏品 -->

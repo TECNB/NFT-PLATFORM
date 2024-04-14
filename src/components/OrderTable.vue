@@ -23,7 +23,7 @@
             <el-table v-loading="loading" :data="tableData" class="tableBox" table-layout="fixed"
                 :row-style="{ height: '100px' }" height="100%">
 
-                <el-table-column label="活动名称" width="100">
+                <el-table-column label="活动名称" width="100" v-if="props.source!=='user'">
                     <template v-slot="{ row }">
                         <div class="flex justify-start items-center gap-5">
                             <el-icon class="">
@@ -86,7 +86,7 @@ import { getOrders } from '../api/order';
 import { getUserById } from '../api/user';
 
 
-const props = defineProps(['dateOrder', 'typeOrder','objectId']);
+const props = defineProps(['dateOrder', 'typeOrder','objectId','source']);
 
 
 const items = ref(['全部订单', '待付款', '申诉中', '退款中', '已完成']);
@@ -225,11 +225,11 @@ const handleSelectionChange = (val: []) => {
 }
 
 .Table {
-    width: auto;
+    // width: auto;
     height: 100%;
 
     background: #fff;
-    border-radius: 16px;
+    // border-radius: 16px;
 
 
 
@@ -247,7 +247,7 @@ const handleSelectionChange = (val: []) => {
 
         height: 100%;
         background: #fff;
-        border-radius: 16px;
+        border-radius: 20px;
 
         padding: 16px;
 

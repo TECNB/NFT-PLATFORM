@@ -83,6 +83,8 @@ onMounted(() => {
 <style lang="scss" scoped>
 .UserFilterSection {
     display: flex;
+    position: relative;
+    z-index: 99;
 
     justify-content: space-between;
     align-items: center;

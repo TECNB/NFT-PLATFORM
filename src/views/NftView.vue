@@ -228,7 +228,7 @@
                 </div>
 
                 <div class="h-[85%]">
-                    <OrderTable :objectId="collectionItem.objectId" />
+                    <OrderTable class="rounded-2xl" :objectId="collectionItem.objectId" />
                 </div>
 
             </div>
