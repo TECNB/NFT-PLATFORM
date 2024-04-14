@@ -1,7 +1,7 @@
 <template>
     <div class="UserFilterSection">
         <div class="Type">
-            <p>分类</p>
+            <p>{{ props.source === 'activity' ? '种类' : '分类' }}</p>
             <el-icon :size="16" @click="toggleTypeList" :class="isTypeListVisible ? 'rotate-180' : 'rotate-0'">
                 <ArrowDownBold />
             </el-icon>
@@ -24,7 +24,8 @@
         <div class="Condition">
             <p>最近收到</p>
             <!-- 根据isConditionListVisible决定class是rotate-0还是rotate-180 -->
-            <el-icon :size="16" @click="toggleConditionList" :class="isConditionListVisible ? 'rotate-180' : 'rotate-0'">
+            <el-icon :size="16" @click="toggleConditionList"
+                :class="isConditionListVisible ? 'rotate-180' : 'rotate-0'">
                 <ArrowDownBold />
             </el-icon>
 
@@ -56,7 +57,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue"
 
-import {getAllTypes} from '../api/type'
+import { getAllTypes } from '../api/type'
+
+
+const props = defineProps(['source']);
 
 // 定义变量控制是否展示ConditionList
 let isConditionListVisible = ref(false);
@@ -74,9 +78,36 @@ const toggleTypeList = () => {
 };
 
 onMounted(() => {
-    getAllTypes().then((res) => {
-        typeList.value = res;
-    })
+
+    if (props.source === 'activity') {
+        typeList.value = [
+            {
+                objectId: '1',
+                name: '盲盒'
+            },
+            {
+                objectId: '2',
+                name: '合成合集'
+            },
+            // {
+            //     objectId: '3',
+            //     name: '展览'
+            // },
+            // {
+            //     objectId: '4',
+            //     name: '讲座'
+            // },
+            // {
+            //     objectId: '5',
+            //     name: '其他'
+            // }
+        
+        ];
+    } else {
+        getAllTypes().then((res) => {
+            typeList.value = res;
+        })
+    }
 })
 </script>
 
@@ -116,6 +147,7 @@ onMounted(() => {
         border: 0.5px solid var(--text-200);
 
         padding: 12px;
+
         .rotate-180 {
             transform: rotate(180deg);
             transition: 0.25s ease-out;

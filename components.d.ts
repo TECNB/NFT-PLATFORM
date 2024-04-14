@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ActivityBox: typeof import('./src/components/ActivityBox.vue')['default']
+    ActivityTable: typeof import('./src/components/ActivityTable.vue')['default']
     AIBox: typeof import('./src/components/AIBox.vue')['default']
     AlbumBox: typeof import('./src/components/AlbumBox.vue')['default']
     CartList: typeof import('./src/components/CartList.vue')['default']

@@ -121,6 +121,10 @@
 
         <!-- 活动 -->
         <div class="UserContentItem" v-if="UserIndex.index == 5">
+            <UserFilterSection source="activity"/>
+            <div class="UserContentDetail">
+                <ActivityTable class="w-full rounded-[20px]" objectId="4zy42fesbar8yg0hj2jm5218" :authorId="userInfo.user.objectId"/>
+            </div>
             <!-- <div class="UserContentDetail">
                 <h2>没有要显示的项目</h2>
                 <button style="color: white;background-color: var(--accent-200);margin-top: 20px;">返回所有项目</button>

@@ -53,12 +53,12 @@ import MainNavbar from '../components/MainNavbar.vue'
 let helpList = ref([
     {
         title: '开始使用',
-        description: '了解如何创建账户,设置钱包以及在 Opensea 上可以做什么',
+        description: '了解如何创建账户,设置钱包以及在 HyperStar 上可以做什么',
         cover: '/src/assets/images/start.png'
     },
     {
         title: '购买',
-        description: '了解如何购买首个 NFT,了解gas 费,并查看 0pensea 上什么免gas费',
+        description: '了解如何购买首个 NFT,了解gas 费,并查看 HyperStar 上什么免gas费',
         cover: '/src/assets/images/buy.png'
     },
     {
@@ -67,13 +67,13 @@ let helpList = ref([
         cover: '/src/assets/images/sell.png'
     },
     {
-        title: '创建NFT',
+        title: '创建数字藏品',
         description: '了解如何创建首个 NFT 以及如何创建 NFT 系列',
         cover: '/src/assets/images/createNft.png'
     },
     {
         title: '投放系列',
-        description: '了解如何直接在OpenSea上设置投放',
+        description: '了解如何直接在 HyperStar 上设置投放',
         cover: '/src/assets/images/createSeries.png'
     },
     {
@@ -83,17 +83,17 @@ let helpList = ref([
     },
     {
         title: '用户安全',
-        description: '了解 OpenSea 反欺诈和用户安全流程的更多信息',
+        description: '了解 HyperStar 反欺诈和用户安全流程的更多信息',
         cover: '/src/assets/images/userSecurity.png'
     },
     {
         title: '开发人员',
-        description: '了解如何通过 Opensea 进行开发',
+        description: '了解如何通过 HyperStar 进行开发',
         cover: '/src/assets/images/developer.png'
     },
     {
         title: '常见问题',
-        description: '查阅 OpenSea 常见问题的答案',
+        description: '查阅 HyperStar 常见问题的答案',
         cover: '/src/assets/images/problem.png'
     },
 ])
