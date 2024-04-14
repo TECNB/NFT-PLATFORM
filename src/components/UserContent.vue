@@ -130,6 +130,9 @@
                 <h2>没有要显示的项目</h2>
                 <button style="color: white;background-color: var(--accent-200);margin-top: 20px;">返回所有项目</button>
             </div> -->
+            <div class="UserContentDetail">
+                <OfferTable source="offerUser" class="w-full rounded-[20px] -mt-5"/>
+            </div>
         </div>
         <MaskLayer :ifShow="isActivityBoxVisible" />
         <ActivityBox :ifShow="isActivityBoxVisible" :detail="Detail" @updateIfShow="updateIsActivityBoxVisible" />

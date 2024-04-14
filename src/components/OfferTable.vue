@@ -4,7 +4,7 @@
             <!--下面为表格数据-->
             <el-scrollbar height="100%">
                 <el-table :data="tableData" class="tableBox" table-layout="fixed" :row-style="{ height: '100px' }">
-                    <el-table-column v-if="props.source==='user'" prop="objectId" label="藏品名称"></el-table-column>
+                    <el-table-column v-if="props.source !== 'NFT'" prop="objectId" label="藏品名称"></el-table-column>
                     <el-table-column prop="price" label="价格"></el-table-column>
                     <el-table-column prop="Number" label="数量"></el-table-column>
                     <el-table-column prop="Endline" label="到期时间"></el-table-column>
@@ -30,27 +30,53 @@ import { ref } from "vue"
 // props
 const props = defineProps(['source']);
 
-const tableData = ref([
-    {
-        objectId: '东大寺',
-        price: "¥ 9",
-        Number: '1',
-        Endline: '10分钟后',
-        offerStatus: '正常',
-        statusType: 'success',
-        offerUser: 'TEC',
-    },
-    {
-        objectId: '东大寺',
-        price: "¥ 8",
-        Number: '1',
-        Endline: '1分钟前',
-        offerStatus: '已过期',
-        statusType: 'danger',
-        offerUser: 'TEC',
-    },
+const tableData = ref([]);
 
-]);
+if (props.source === 'user'||props.source === 'NFT') {
+    console.log('user')
+    tableData.value = [
+        {
+            objectId: '东大寺',
+            price: "¥ 9",
+            Number: '1',
+            Endline: '10分钟后',
+            offerStatus: '正常',
+            statusType: 'success',
+            offerUser: 'TEC',
+        },
+        {
+            objectId: '东大寺',
+            price: "¥ 8",
+            Number: '1',
+            Endline: '1分钟前',
+            offerStatus: '已过期',
+            statusType: 'danger',
+            offerUser: 'TEC',
+        },
+    ]
+} else {
+    tableData.value = [
+        {
+            objectId: '凛冽城堡',
+            price: "¥ 9",
+            Number: '1',
+            Endline: '10分钟后',
+            offerStatus: '正常',
+            statusType: 'success',
+            offerUser: 'YM-Speaking',
+        },
+        {
+            objectId: '凛冽城堡',
+            price: "¥ 8",
+            Number: '1',
+            Endline: '1分钟前',
+            offerStatus: '已过期',
+            statusType: 'danger',
+            offerUser: 'YM-Speaking',
+        },
+    ]
+}
+
 </script>
 
 <style lang="scss" scoped>
