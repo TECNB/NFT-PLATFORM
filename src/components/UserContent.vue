@@ -42,7 +42,7 @@
         <!-- 交易中的藏品 -->
         <div class="UserContentItem" v-if="UserIndex.index == 2">
             <UserFilterSection />
-            <div v-if="isSellingCollectionNull" class="UserContentDetail">
+            <!-- <div v-if="isSellingCollectionNull" class="UserContentDetail">
                 <h2>未找到创建的项目</h2>
                 <button class="text-white bg-accent-200 mt-5 p-2">返回所有项目</button>
             </div>
@@ -57,7 +57,10 @@
                     <p style="font-size: 16px; font-weight: normal;">交易价格</p>
                     <p>¥ {{ item.price }}</p>
                 </div>
-            </div>
+            </div> -->
+            <div class="UserContentDetail">
+                    <OrderTable objectId="4zy42fesbar8yg0hj2jm5218" />
+                </div>
         </div>
 
         <!-- 已创建的藏品 -->

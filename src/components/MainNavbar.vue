@@ -66,7 +66,6 @@
                 <el-icon :size="20">
                     <User />
                 </el-icon>
-
             </div>
             <transition name="fade">
                 <div class="MainNavbarUserMenu" v-if="isUserMenuVisible" @mouseover="showUserMenu"
@@ -470,8 +469,8 @@ const showCartList = () => {
         .MainNavbarUserMenu {
             position: absolute;
             z-index: 99999;
-            top: 70px;
-            right: 210px;
+            top: 60px;
+            right: 150px;
 
             display: flex;
             flex-direction: column;
