@@ -30,9 +30,12 @@
         <!-- 已作出的报价 -->
         <div class="UserContentItem" v-if="UserIndex.index == 1">
             <!-- <UserFilterSection /> -->
-            <div class="UserContentDetail">
+            <!-- <div class="UserContentDetail">
                 <h2>没有要显示的报价</h2>
                 <button class="text-white bg-accent-200 mt-5 p-2">返回所有项目</button>
+            </div> -->
+            <div class="UserContentDetail">
+                <OfferTable source="user" class="w-full rounded-[20px] -mt-5"/>
             </div>
         </div>
 
@@ -77,10 +80,12 @@
                     <p>¥ {{ item.price }}</p>
                 </div>
                 <transition name="fade">
-                    <div v-if="ifShowMore[index]" @click.native.stop.prevent="updateIsActivityBoxVisible(true,item)"
+                    <div v-if="ifShowMore[index]" @click.native.stop.prevent="updateIsActivityBoxVisible(true, item)"
                         class="absolute right-0 bottom-0 w-full h-9 rounded-b-2xl bg-accent-200 cursor-pointer">
                         <div class="flex justify-center items-center gap-5 h-full">
-                            <el-icon color="#FFF"><CirclePlusFilled /></el-icon>
+                            <el-icon color="#FFF">
+                                <CirclePlusFilled />
+                            </el-icon>
                             <p class="text-white">举行活动</p>
                         </div>
                     </div>
@@ -261,6 +266,7 @@ const updateIsActivityBoxVisible = (value: boolean, detail: any) => {
 .fade-leave-to {
     opacity: 0;
 }
+
 .UserContent {
     width: 100%;
     padding-bottom: 20px;

@@ -165,7 +165,7 @@
                         </el-icon>
                         <p style="font-size: 20px;">报价</p>
                     </div>
-                    <OfferTable />
+                    <OfferTable class="rounded-b-2xl" />
 
                 </div>
             </div>

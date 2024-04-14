@@ -4,6 +4,7 @@
             <!--下面为表格数据-->
             <el-scrollbar height="100%">
                 <el-table :data="tableData" class="tableBox" table-layout="fixed" :row-style="{ height: '100px' }">
+                    <el-table-column v-if="props.source==='user'" prop="objectId" label="藏品名称"></el-table-column>
                     <el-table-column prop="price" label="价格"></el-table-column>
                     <el-table-column prop="Number" label="数量"></el-table-column>
                     <el-table-column prop="Endline" label="到期时间"></el-table-column>
@@ -26,8 +27,12 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
+// props
+const props = defineProps(['source']);
+
 const tableData = ref([
     {
+        objectId: '东大寺',
         price: "¥ 9",
         Number: '1',
         Endline: '10分钟后',
@@ -36,6 +41,7 @@ const tableData = ref([
         offerUser: 'TEC',
     },
     {
+        objectId: '东大寺',
         price: "¥ 8",
         Number: '1',
         Endline: '1分钟前',
@@ -53,13 +59,13 @@ const tableData = ref([
 }
 
 .Table {
-    width: auto;
+    // width: auto;
     height: 100%;
 
     background: #fff;
 
     // 左下角以及右下角角度为16px
-    border-radius: 0 0 20px 20px;
+    // border-radius: 0 0 20px 20px;
 
     margin-left: -20px;
     margin-right: -20px;
