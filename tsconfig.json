@@ -1,40 +1,37 @@
 {
-  " ": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
-    "skipLibCheck": true,
-    "types": [
-      "element-plus/global",
-      "node"
-    ],
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    /* Bundler mode */
-    // "moduleResolution": "bundler",
-    "moduleResolution": "node",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "preserve",
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
-  },
+  "target": "ES2020", // 指定了编译后的 JavaScript 代码目标为 ES2020 标准
+  "useDefineForClassFields": true, // 启用了类字段的定义
+  "module": "ESNext", // 指定模块化方式为 ESNext
+  "lib": [
+    "ES2020",
+    "DOM",
+    "DOM.Iterable"
+  ], // 指定了项目中可用的库文件
+  "skipLibCheck": true, // 跳过对库文件的检查，加快编译速度
+  "types": [
+    "element-plus/global",
+    "node"
+  ], // 指定了项目中需要引入的类型声明文件
+  "esModuleInterop": true, // 启用了模块间的默认导入导出转换
+  "allowSyntheticDefaultImports": true, // 允许在没有默认导出时从模块中导入默认导出
+  "moduleResolution": "node", // 指定模块解析策略为 Node.js 风格
+  "allowImportingTsExtensions": true, // 允许导入 TypeScript 扩展名的模块
+  "resolveJsonModule": true, // 允许导入 JSON 格式的模块
+  "isolatedModules": true, // 将每个文件视为独立的模块
+  "noEmit": true, // 禁止编译器输出任何文件
+  "jsx": "preserve", // 保留 JSX 代码以便后续转换
+  "strict": true, // 启用严格模式
+  "noUnusedLocals": true, // 检测并禁止未使用的局部变量
+  "noUnusedParameters": true, // 检测并禁止未使用的参数
+  "noFallthroughCasesInSwitch": true, // 禁止在 switch 语句中出现穿透（没有 break）的情况
+
   "compilerOptions": {
-    "esModuleInterop": true,
-    "allowJs": true,
-    "noEmit": true,
-    "skipLibCheck": true,
+    "esModuleInterop": true, // 启用了模块间的默认导入导出转换
+    "allowJs": true, // 允许编译 JavaScript 文件
+    "noEmit": true, // 禁止编译器输出任何文件
+    "skipLibCheck": true // 跳过对库文件的检查，加快编译速度
   },
+  
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
@@ -42,10 +39,10 @@
     "auto-imports.d.ts",
     "src/utils/V3.js",
     "src/utils/ImageAuditing.js"
-  ],
+  ], // 指定要包含在编译中的文件列表
   "references": [
     {
-      "path": "./tsconfig.node.json"
+      "path": "./tsconfig.node.json" // 引用其他 tsconfig 文件的路径
     }
   ]
 }
