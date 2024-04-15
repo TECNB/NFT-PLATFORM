@@ -349,6 +349,7 @@ const uploadFile = async () => {
     await getImageAuditing(LocationUrl.value!).then((res) => {
         result = res as AuditResult;
         loading.value = false;
+        console.log("result:", result)
 
     }).catch((err) => {
         console.log(err)
@@ -483,10 +484,16 @@ const handleGetImageAuditing = (result: AuditResult, imageUrl: string) => {
         checked.value = false;
         switch (resultLabel) {
             case "Porn":
-                ElMessage.error("图片审核不通过，图片中包含色情内容")
+                ElMessage.error("图片审核不通过,图片中包含色情内容")
                 break;
             case "Terrorism":
-                ElMessage.error("图片审核不通过，图片中包含暴力内容")
+                ElMessage.error("图片审核不通过,图片中包含暴力内容")
+                break;
+            case "Politics":
+                ElMessage.error("图片审核不通过,图片中包含政治内容")
+                break;
+            case "Ads":
+                ElMessage.error("图片审核不通过,图片中包含广告内容")
                 break;
         }
     } else if (resultData == 2) {

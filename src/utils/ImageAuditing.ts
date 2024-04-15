@@ -28,7 +28,7 @@ export async function getImageAuditing(detectUrl: string) {
             Key: '',  // 存储桶内的图片文件，必须字段
             Query: {
                 'ci-process': 'sensitive-content-recognition', // 图片审核的处理接口，必须字段
-                'biz-type': 'bd4575d0e81311ee8556525400662d48', // 敏感内容识别的 biztype，必须字段
+                'biz-type': '166c465afacd11eea10c525400b75156', // 敏感内容识别的 biztype，必须字段
                 'detect-url': detectUrl, // 图片的 URL 地址，必须字段
             },
         }, function (err:any, data:any) {
