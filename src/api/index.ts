@@ -3,7 +3,8 @@ import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } f
 // 引入ErrorResult接口
 import  {ErrorResult}  from '../interfaces/ErrorResult';
 
-const URL: string = 'http://42.192.90.134:5173'
+const URL: string = ''
+// const URL: string = 'http://42.192.90.134:5173'
 // const URL: string = 'http://localhost:5173'
 enum RequestEnums {
     TIMEOUT = 20000,
@@ -39,6 +40,7 @@ class RequestHttp {
                     ...config,
                     headers: {
                         'Token': token, // 请求头中携带token信息
+                        'Access-Control-Allow-Origin': '*', // 添加允许跨域的头部
                     }
                 }
             },
