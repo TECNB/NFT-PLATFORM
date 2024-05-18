@@ -12,18 +12,25 @@
             </div>
         </div>
         <div class="Title">
-            <span v-if="!ifRegister&&!ifresetPassword">登入</span>
-            <span v-if="ifRegister&&!ifresetPassword">注册</span>
-            <span v-if="!ifresetPassword&&!ifresetPassword">NFT Platform</span>
+            <span v-if="!ifRegister && !ifresetPassword">登入</span>
+            <span v-if="ifRegister && !ifresetPassword">注册</span>
+            <span v-if="!ifresetPassword && !ifresetPassword">NFT Platform</span>
 
             <span v-if="ifresetPassword">重设密码</span>
-            
 
-            
+
+
         </div>
 
         <!-- 下面为用户名输入框 -->
-        <el-input v-model="username" placeholder="用户名或手机号" class="mt-4">
+        <el-input v-if="!ifRegister" v-model="username" placeholder="用户名或手机号" class="mt-4">
+            <template #prefix>
+                <el-icon class="el-input__icon">
+                    <user />
+                </el-icon>
+            </template>
+        </el-input>
+        <el-input v-if="ifRegister" v-model="username" placeholder="用户名" class="mt-4">
             <template #prefix>
                 <el-icon class="el-input__icon">
                     <user />
@@ -31,11 +38,21 @@
             </template>
         </el-input>
         <!-- 下面为手机号输入框 -->
-        <el-input v-model="phone" placeholder="手机号" class="mt-4" v-if="ifRegister">
+        <el-input v-model="phone" placeholder="手机号" class="mt-4" v-if="ifRegister&&!ifresetPassword">
 
             <template #prefix>
                 <el-icon class="el-input__icon">
-                    <user />
+                    <Phone />
+                </el-icon>
+            </template>
+        </el-input>
+
+        <!-- 下面为旧密码输入框 -->
+        <el-input v-model="oldPassword" placeholder="旧密码" class="mt-4" v-if="ifresetPassword">
+
+            <template #prefix>
+                <el-icon class="el-input__icon">
+                    <Lock />
                 </el-icon>
             </template>
         </el-input>
@@ -49,21 +66,24 @@
             </template>
         </el-input>
         <div class="flex justify-between items-center gap-2">
-            <p v-if="!ifRegister" @click="ifRegister=true,ifresetPassword=false" class="text-right text-accent-100 mt-3 hover:text-primary-100">没有账号?</p>
-            <p v-if="ifRegister" @click="ifRegister=false,ifresetPassword=false" class="text-right text-accent-100 mt-3 hover:text-primary-100">已有账号?</p>
-            <p v-if="!ifresetPassword" @click="ifresetPassword=true" class="text-right text-accent-100 mt-3 hover:text-primary-100">忘记密码?</p>
+            <p v-if="!ifRegister" @click="ifRegister = true, ifresetPassword = false"
+                class="text-right text-accent-100 mt-3 hover:text-primary-100">没有账号?</p>
+            <p v-if="ifRegister" @click="ifRegister = false, ifresetPassword = false"
+                class="text-right text-accent-100 mt-3 hover:text-primary-100">已有账号?</p>
+            <p v-if="!ifresetPassword" @click="ifresetPassword = true"
+                class="text-right text-accent-100 mt-3 hover:text-primary-100">忘记密码?</p>
         </div>
-        
+
 
 
         <div class="Button">
-            <div class="Login" @click="handleLogin" v-if="!ifRegister&& !ifresetPassword">
+            <div class="Login" @click="handleLogin" v-if="!ifRegister && !ifresetPassword">
                 <p>登录</p>
             </div>
-            <div class="Sign" @click="handleSignup" v-if="ifRegister&& !ifresetPassword">
+            <div class="Sign" @click="handleSignup" v-if="ifRegister && !ifresetPassword">
                 <p>注册</p>
             </div>
-            <div class="Login" @click="handleLogin" v-if="ifresetPassword">
+            <div class="Login" @click="handleUpdatePassword" v-if="ifresetPassword">
                 <p>确定</p>
             </div>
         </div>
@@ -76,14 +96,14 @@ import { AxiosError } from 'axios';
 
 
 // 引入ErrorResult接口
-import  {ErrorResult}  from '../interfaces/ErrorResult';
+import { ErrorResult } from '../interfaces/ErrorResult';
 
 
 // 引入userInfoStore
 import { userInfoStore } from '../stores/UserInfoStore';
 
 
-import { login, signup } from '../api/user'
+import { login, signup, updatePasswordByOld } from '../api/user'
 
 
 
@@ -104,6 +124,8 @@ let username = ref('')
 let phone = ref('')
 // 定义password
 let password = ref('')
+// 定义oldPassword
+let oldPassword = ref('')
 //定义ifRegister
 let ifRegister = ref(false)
 //定义ifresetPassword
@@ -172,13 +194,52 @@ const handleSignup = async () => {
     signupForm.append("password", password.value)
     signupForm.append("phone", phone.value)
 
-    await signup(signupForm).then(response =>{
+    await signup(signupForm).then(response => {
         console.log("注册返回:" + response);
 
         // 回到登录状态
         ifRegister.value = false
 
         ElMessage.success('注册成功,请登录')
+
+    }).catch((error: AxiosError) => {
+        // 获取到 AxiosError 中的 error
+        // 处理错误的情况
+        console.log("错误:" + error);
+
+        // 这里可以根据你的需要，从 error 对象中获取更多信息
+        if (error.response) {
+            console.log("响应状态码:" + error.response.status);
+            console.log("响应数据:" + (error.response.data as ErrorResult).status);
+        } else if (error.request) {
+            console.log("请求未收到响应");
+        } else {
+            console.log("发生了错误：" + error.message);
+        }
+    });
+
+}
+
+const handleUpdatePassword = async () => {
+    if(oldPassword.value === password.value){
+        ElMessage.error('新密码不能与旧密码相同')
+        return
+    }
+    // 清空loginForm
+    loginForm = new FormData();
+
+    loginForm.append("username", username.value)
+    loginForm.append("oldPassword", oldPassword.value)
+    loginForm.append("password", password.value)
+
+
+    await updatePasswordByOld(loginForm).then(response => {
+        console.log("重设密码返回:" + response);
+
+        // 回到登录状态
+        ifresetPassword.value = false
+
+        ElMessage.success('重设密码成功,请登录')
 
     }).catch((error: AxiosError) => {
         // 获取到 AxiosError 中的 error

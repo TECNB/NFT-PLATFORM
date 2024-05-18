@@ -19,6 +19,11 @@ export const updatePassword = (params:any) => {
     // 返回的数据格式可以和服务端约定
     return axios.put<User>('api/user/me/updatePassword', params);
 }
+// 通过旧密码修改密码
+export const updatePasswordByOld = (params:any) => {
+    // 返回的数据格式可以和服务端约定
+    return axios.post<User>('api/user/resetPassword', params);
+}
 
 // 通过token查看个人数据
 export const check = () => {
