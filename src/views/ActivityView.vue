@@ -38,7 +38,7 @@
 
 
             </div>
-            <div class="StatisticsContentDetail border-t border-solid border-gray-300 p-3" v-for="(item, index) in displayCollections" :key="index">
+            <div class="StatisticsContentDetail border-t border-solid border-gray-300 p-3 hover:bg-bg-200" v-for="(item, index) in displayCollections" :key="index" @click="updateIsQRCodeBoxVisible(true,item.objectId)">
                 <div class="flex-[3_0_0%] flex justify-center items-center gap-10" v-if="filter==='盲盒'">
                     <el-icon class="">
                         <MessageBox />
@@ -74,7 +74,7 @@
                     </div>
 
                 </div>
-                <div style="flex: 2;text-align: left;" v-if="filter==='盲盒'">{{ item.price }} ETH</div>
+                <div style="flex: 2;text-align: left;" v-if="filter==='盲盒'">¥ {{ item.price }}</div>
                 
 
                 <div style="flex: 5;text-align: left;" v-if="filter==='盲盒'">{{ item.intro }}</div>
@@ -93,6 +93,9 @@
         </div>
         <MaskLayer :ifShow="isFilterVisible" />
         <FilterList :ifShow="isFilterVisible" :filter="filter" @updateIfShow="updateIsFilterVisible" @updateFilter="setFilter"/>
+
+        <MaskLayer :ifShow="isQRCodeBoxVisible" />
+        <QRCodeBox :ifShow="isQRCodeBoxVisible" :buyingObjectId="buyingObjectId" @updateIfShow="updateIsQRCodeBoxVisible" />
     </div>
 </template>
 
@@ -121,6 +124,10 @@ const displayCollections = ref([]);
 
 // 筛选条件
 const filter = ref('盲盒');
+
+// 定义变量isQRCodeBoxVisible
+let isQRCodeBoxVisible = ref(false);
+let buyingObjectId = ref('');
 
 let loading = ref(false)
 
@@ -153,6 +160,7 @@ onMounted(async () => {
     displayCollections.value = await getAllBlindBoxs();
 })
 
+
 const isFilterVisible = ref(false);
 
 const updateIsFilterVisible = (value: boolean) => {
@@ -161,7 +169,11 @@ const updateIsFilterVisible = (value: boolean) => {
 const setFilter = (value: string) => {
     filter.value = value;
 }
-
+// 实现updateIsQRCodeBoxVisible方法
+const updateIsQRCodeBoxVisible = (newIsQRCodeBoxVisible: boolean,objectId:string) => {
+    buyingObjectId.value = objectId;
+    isQRCodeBoxVisible.value = newIsQRCodeBoxVisible;
+};
 
 const choseFilter = () => {
     isFilterVisible.value = true;
@@ -266,7 +278,7 @@ const choseFilter = () => {
             font-size: 20px;
             font-weight: bold;
 
-            margin-top: 10px;
+
 
             .StatisticsContentDetailName {
                 display: flex;

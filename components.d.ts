@@ -44,6 +44,8 @@ declare module 'vue' {
     OfferTable: typeof import('./src/components/OfferTable.vue')['default']
     OrderTable: typeof import('./src/components/OrderTable.vue')['default']
     PayBox: typeof import('./src/components/PayBox.vue')['default']
+    QRCodeBox: typeof import('./src/components/QRCodeBox.vue')['default']
+    QRCodeGenerator: typeof import('./src/components/QRCodeGenerator.vue')['default']
     Rank: typeof import('./src/components/Rank.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

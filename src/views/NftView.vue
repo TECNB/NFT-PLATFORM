@@ -127,7 +127,7 @@
                     <p style="font-size: 32px;font-weight: bold;">¥ {{ collectionItem.price }}</p>
                     <div class="NftViewBodyRightPriceButton">
                         <div class="button">
-                            <div class="buyWord" @click="updateIsPayBoxVisible(true)">
+                            <div class="buyWord" @click="updateIsQRCodeBoxVisible(true)">
                                 <p>立即购买</p>
                             </div>
                             <div class="cartIcon" @click="addCart">
@@ -268,8 +268,8 @@
             </div>
         </div>
 
-        <MaskLayer :ifShow="isPayBoxVisible" />
-        <PayBox :ifShow="isPayBoxVisible" @updateIfShow="updateIsPayBoxVisible" />
+        <MaskLayer :ifShow="isQRCodeBoxVisible" />
+        <QRCodeBox :ifShow="isQRCodeBoxVisible" :buyingObjectId="collectionItem.objectId" @updateIfShow="updateIsQRCodeBoxVisible" />
 
         <MaskLayer :ifShow="isOfferBoxVisible" />
         <OfferBox :ifShow="isOfferBoxVisible" :detail="collectionItem" @updateIfShow="updateIsOfferBoxVisibleVisible" />
@@ -294,6 +294,7 @@ import MainNavbar from '../components/MainNavbar.vue'
 import MaskLayer from '../components/MaskLayer.vue'
 // 引入PayBox
 import PayBox from '../components/PayBox.vue'
+import QRCodeBox from "../components/QRCodeBox.vue";
 import OrderTable from '../components/OrderTable.vue'
 import OfferTable from '../components/OfferTable.vue'
 import OfferBox from '../components/OfferBox.vue'
@@ -330,8 +331,8 @@ let myPricesChart: echarts.ECharts | null = null;
 // 建立一个变量，该变量内有商品的信息，类型为Collection
 let collectionItem: Ref<Collection> = ref() as Ref<Collection>
 
-// 定义变量isPayBoxVisible
-let isPayBoxVisible = ref(false);
+// 定义变量isQRCodeBoxVisible
+let isQRCodeBoxVisible = ref(false);
 // 定义变量isOfferBoxVisible
 let isOfferBoxVisible = ref(false);
 let objectId = ref('');
@@ -451,9 +452,9 @@ const addCart = () => {
     ElMessage.success('添加购物车成功');
 }
 
-// 实现updateIsPayBoxVisible方法
-const updateIsPayBoxVisible = (newIsPayBoxVisible: boolean) => {
-    isPayBoxVisible.value = newIsPayBoxVisible;
+// 实现updateIsQRCodeBoxVisible方法
+const updateIsQRCodeBoxVisible = (newIsQRCodeBoxVisible: boolean) => {
+    isQRCodeBoxVisible.value = newIsQRCodeBoxVisible;
 };
 // 实现updateIsOfferBoxVisibleVisible方法
 const updateIsOfferBoxVisibleVisible = (newIsOfferBoxVisible: boolean) => {
