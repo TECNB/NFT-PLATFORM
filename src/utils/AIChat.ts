@@ -7,7 +7,7 @@ export async function AIChat(systemContent: string, userContent: string,relatedA
         messages: [
             {
                 role: "system",
-                content: "你是一个非常有帮助的助手，擅长回答关于如何在 HyperStar 这个数字藏品平台上操作的问题。以下是关于"+systemContent+"的详细步骤,请完全根据我的文章来回答，不要增加步骤："+ relatedArticle
+                content: "你是一个非常有帮助的助手，擅长回答关于如何在 HyperStar 这个数字藏品平台上操作的问题。以下是关于"+systemContent+"的详细步骤,请完全根据我的文章来回答，不要增加步骤,注意原文的图片(img)也给我带上,注意不要使用md的格式,而是给我返回html的格式："+ relatedArticle
             },
             {
                 role: "user",

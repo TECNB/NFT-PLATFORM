@@ -56,12 +56,15 @@ const routes: Array<RouteRecordRaw> = [
         path: "/help",
         name: "HelpView",
         component: () => import("../views/HelpView.vue"),
+        children: [
+            {
+                path: "start",
+                name: "start",
+                component: () => import("../components/help/Start.vue"),
+            },
+        ],
     },
-    {
-        path: "/start",
-        name: "start",
-        component: () => import("../components/Start.vue"),
-    },
+    
     {
         path: "/setting",
         name: "SettingView",

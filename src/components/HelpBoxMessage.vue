@@ -98,7 +98,7 @@
                             src="https://static.intercomassets.com/avatars/6926984/square_128/custom_avatar-1708977529.png"
                             alt="">
                         <div class="bg-gray-100 rounded-lg p-5">
-                            <p class="text-left" v-html="answer"></p>
+                            <p class="text-left" v-html="answer" ref="answerContent" @click="onImageClick"></p>
                         </div>
                     </div>
                     <p class="text-left text-sm text-gray-400 ml-16 mt-2">机器人 刚刚</p>
@@ -107,9 +107,11 @@
                 <!-- 重新开始按钮 -->
                 <div v-if="selectedSubQuestion !== '' && !loadingSubQuestion"
                     class="flex justify-center items-center w-full mt-10">
-                    
-                    <div @click="resetChat" class="bg-accent-100 w-full flex justify-center items-center gap-5 rounded-lg p-3 text-white hover:bg-accent-200 cursor-pointer">
-                        <el-icon size="20"><Refresh /></el-icon>
+                    <div @click="resetChat"
+                        class="bg-accent-100 w-full flex justify-center items-center gap-5 rounded-lg p-3 text-white hover:bg-accent-200 cursor-pointer">
+                        <el-icon size="20">
+                            <Refresh />
+                        </el-icon>
                         <p>重新开始</p>
                     </div>
                 </div>
@@ -120,61 +122,82 @@
 </template>
 
 <script setup lang="ts">
-import { ref,onMounted } from "vue"
+import { ref, onMounted, nextTick } from 'vue';
+import Viewer from 'viewerjs';
+import 'viewerjs/dist/viewer.css';
 
 // 引入AIChat
-import { AIChat } from '../utils/AIChat'; 
-import { fetchMarkdown } from '../utils/fetchMarkdown'; 
+import { AIChat } from '../utils/AIChat';
+import { fetchMarkdown } from '../utils/fetchMarkdown';
 
 const markdownContent = ref<string>('');
-
-
-let systemContent = ref('')
-let userContent = ref('')
-let relatedArticle = ref('')
-let answer = ref()
-
+let systemContent = ref('');
+let userContent = ref('');
+let relatedArticle = ref('');
+let answer = ref('');
 const questions = ref([
-    { title: "账户", subQuestions: ["创建一个帐户", "登录或退出", "编辑我的帐户信息", "如何收藏物品"] ,relatedArticle:""},
+    { title: "账户", subQuestions: ["创建一个帐户", "登录或退出", "编辑我的帐户信息", "如何收藏物品"], relatedArticle: "" },
     { title: "购买、销售和转让物品", subQuestions: ["购买物品", "销售物品", "转让物品"] },
     { title: "创建项目和集合", subQuestions: ["创建项目", "管理集合"] },
     { title: "开发和API", subQuestions: ["API文档", "开发者支持"] },
     { title: "安全问题", subQuestions: ["帐户安全", "数据保护"] },
     { title: "其他", subQuestions: ["常见问题", "联系支持"] }
-])
+]);
 
-const currentQuestion = ref<any>('')
-const selectedSubQuestion = ref('')
-const loading = ref(false)
-const loadingSubQuestion = ref(false)
+const currentQuestion = ref<any>('');
+const selectedSubQuestion = ref('');
+const loading = ref(false);
+const loadingSubQuestion = ref(false);
+const answerContent = ref<HTMLElement | null>(null);
+let viewer: Viewer | null = null;
 
-const selectQuestion = async(index: number) => {
+const selectQuestion = async (index: number) => {
     markdownContent.value = await fetchMarkdown('../article/如何创建 HyperStar 账户？.md');
-    console.log(markdownContent.value);
-    currentQuestion.value = questions.value[index]
-    loading.value = true
-    systemContent.value = currentQuestion.value.title
-    relatedArticle.value = markdownContent.value
+    currentQuestion.value = questions.value[index];
+    loading.value = true;
+    systemContent.value = currentQuestion.value.title;
+    relatedArticle.value = markdownContent.value;
     setTimeout(() => {
-        loading.value = false
-    }, 1000)
+        loading.value = false;
+    }, 1000);
 }
 
-const selectSubQuestion = async(subQuestion: string) => {
-    selectedSubQuestion.value = subQuestion
-    loadingSubQuestion.value = true
-    userContent.value = "怎么实现"+selectedSubQuestion.value
-    await AIChat(systemContent.value,userContent.value,relatedArticle.value).then((res) => {
-        // 将换行符替换为 <br>
-        answer.value = res.replace(/\n/g, '<br>')
-        console.log(answer.value)
-        loadingSubQuestion.value = false
-    })
+const selectSubQuestion = async (subQuestion: string) => {
+    selectedSubQuestion.value = subQuestion;
+    loadingSubQuestion.value = true;
+    userContent.value = "怎么实现" + selectedSubQuestion.value;
+    await AIChat(systemContent.value, userContent.value, relatedArticle.value).then((res) => {
+        answer.value = res.replace(/\n/g, '<br>');
+        loadingSubQuestion.value = false;
+        nextTick(() => {
+            if (answerContent.value) {
+                viewer = new Viewer(answerContent.value, {
+                    filter(image) {
+                        return image.tagName === 'IMG';
+                    }
+                });
+            }
+        });
+    });
 }
 
 const resetChat = () => {
-    currentQuestion.value = ''
-    selectedSubQuestion.value = ''
+    currentQuestion.value = '';
+    selectedSubQuestion.value = '';
+    if (viewer) {
+        viewer.destroy();
+        viewer = null;
+    }
+}
+
+onMounted(() => {
+    // Optional: Any other initialization logic
+});
+
+const onImageClick = () => {
+    if (viewer) {
+        viewer.show();
+    }
 }
 </script>
 
