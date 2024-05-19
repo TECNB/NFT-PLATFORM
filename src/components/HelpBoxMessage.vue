@@ -136,12 +136,12 @@ let userContent = ref('');
 let relatedArticle = ref('');
 let answer = ref('');
 const questions = ref([
-    { title: "账户", subQuestions: ["创建一个帐户", "登录或退出", "编辑我的帐户信息", "如何收藏物品"], relatedArticlePath: "../article/开始使用.md" },
-    { title: "全站排行", subQuestions: ["作用", "如何查看", "类型介绍","如何切换类型"] },
-    { title: "了解个人信息", subQuestions: ["自己创建的藏品在哪", "怎么修改已创建藏品的价格","交易情况"] },
-    { title: "独特功能", subQuestions: ["API文档", "开发者支持"] },
-    { title: "开始创建数字藏品", subQuestions: ["帐户安全", "数据保护"] },
-    { title: "特色活动", subQuestions: ["作用", "如何查看", "类型介绍","如何切换类型"] }
+    { title: "账户", subQuestions: ["创建一个帐户", "登录或退出", "编辑我的帐户信息", "如何收藏物品"], relatedArticlePath: "start" },
+    { title: "全站排行", subQuestions: ["作用", "如何查看", "类型介绍","如何切换类型"] , relatedArticlePath: "ranking" },
+    { title: "了解个人信息", subQuestions: ["自己创建的藏品在哪", "怎么修改已创建藏品的价格","交易情况"] , relatedArticlePath: "profile" },
+    { title: "独特功能", subQuestions: ["如何使用AI创作功能", "如何获取空投","如何使用AI客服"] , relatedArticlePath: "benefits" },
+    { title: "开始创建数字藏品", subQuestions: ["如何创建数字藏品", "上传内容规定"] , relatedArticlePath: "createNft" },
+    { title: "特色活动", subQuestions: ["作用", "如何查看", "类型介绍","如何切换类型"] , relatedArticlePath: "specialEvents" }
 ]);
 
 const currentQuestion = ref<any>('');
@@ -167,7 +167,7 @@ const selectQuestion = async (index: number) => {
 const selectSubQuestion = async (subQuestion: string) => {
     selectedSubQuestion.value = subQuestion;
     loadingSubQuestion.value = true;
-    userContent.value = "怎么实现" + selectedSubQuestion.value;
+    userContent.value = "说说hyperStar平台中"+selectedSubQuestion.value+ "相关的部分";
     await AIChat(systemContent.value, userContent.value, relatedArticle.value).then((res) => {
         answer.value = res.replace(/\n/g, '<br>');
         loadingSubQuestion.value = false;

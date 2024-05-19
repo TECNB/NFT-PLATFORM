@@ -12,8 +12,8 @@
         <!-- 路由导航 -->
         <div class="flex justify-start items-center gap-5 mt-10">
                 <el-breadcrumb separator-class="el-icon-arrow-right">
-                    <el-breadcrumb-item :to="{ path: '/help' }">首页</el-breadcrumb-item>
-                    <el-breadcrumb-item>帮助中心</el-breadcrumb-item>
+                    <el-breadcrumb-item :to="{ path: '/help' }">帮助</el-breadcrumb-item>
+                    <el-breadcrumb-item>探索个人资料</el-breadcrumb-item>
                 </el-breadcrumb>
             </div>
         <div class="h-full w-full mt-10 flex ">
