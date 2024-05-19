@@ -51,65 +51,56 @@ import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import MainNavbar from '../components/MainNavbar.vue';
+import startCover from '../assets/images/start.png';
+import buyCover from '../assets/images/buy.png';
+import sellCover from '../assets/images/sell.png';
+import createNftCover from '../assets/images/createNft.png';
+import createSeriesCover from '../assets/images/createSeries.png';
+import userContentCover from '../assets/images/userContent.png';
+import userSecurityCover from '../assets/images/userSecurity.png';
+import developerCover from '../assets/images/developer.png';
+import problemCover from '../assets/images/problem.png';
+
 
 const route = useRoute();
 const router = useRouter();
 
-// 建立一个数组用于存放标题,描述,封面,路径
 let helpList = ref([
     {
         title: '开始使用',
         description: '了解如何创建账户,设置钱包以及在 HyperStar 上可以做什么',
-        cover: '/src/assets/images/start.png',
-        path: '/help/start' // 添加路径
+        cover: startCover,
+        path: '/help/start' // 修改后的路径
     },
     {
-        title: '购买',
-        description: '了解如何购买首个 NFT,了解gas 费,并查看 HyperStar 上什么免gas费',
-        cover: '/src/assets/images/buy.png',
-        path: '/help/buy' // 添加路径
+        title: '全站排行',
+        description: '探索全站用户和作品的排名，发现最受欢迎和最有潜力的创作者和收藏品。',
+        cover: buyCover,
+        path: '/help/ranking' // 修改后的路径
     },
     {
-        title: '出售',
-        description: '学习如何发布要出售的 NFT,并了解发布待售 NFT 的不同方法',
-        cover: '/src/assets/images/sell.png',
-        path: '/help/sell' // 添加路径
+        title: '探索个人资料',
+        description: '深入了解个人资料页面的功能，包括编辑个人信息、查看收藏以及管理你的数字藏品。',
+        cover: sellCover,
+        path: '/help/profile' // 修改后的路径
+    },
+    {
+        title: '福利功能',
+        description: '了解HyperStar所提供的福利功能,获取专属福利和奖励。',
+        cover: createNftCover,
+        path: '/help/benefits' // 修改后的路径
     },
     {
         title: '创建数字藏品',
-        description: '了解如何创建首个 NFT 以及如何创建 NFT 系列',
-        cover: '/src/assets/images/createNft.png',
-        path: '/help/createNft' // 添加路径
+        description: '了解如何直接在 HyperStar 上设置投放，发布你的数字作品，并吸引全球收藏家的关注。',
+        cover: createSeriesCover,
+        path: '/help/createNft' // 修改后的路径
     },
     {
-        title: '投放系列',
-        description: '了解如何直接在 HyperStar 上设置投放',
-        cover: '/src/assets/images/createSeries.png',
-        path: '/help/createSeries' // 添加路径
-    },
-    {
-        title: '用户内容',
-        description: '我们的服务条款请查阅https：//opensea。io/tos,其中概述了我们的用户行为和内容政策。您可…',
-        cover: '/src/assets/images/userContent.png',
-        path: '/help/userContent' // 添加路径
-    },
-    {
-        title: '用户安全',
-        description: '了解 HyperStar 反欺诈和用户安全流程的更多信息',
-        cover: '/src/assets/images/userSecurity.png',
-        path: '/help/userSecurity' // 添加路径
-    },
-    {
-        title: '开发人员',
-        description: '了解如何通过 HyperStar 进行开发',
-        cover: '/src/assets/images/developer.png',
-        path: '/help/developer' // 添加路径
-    },
-    {
-        title: '常见问题',
-        description: '查阅 HyperStar 常见问题的答案',
-        cover: '/src/assets/images/problem.png',
-        path: '/help/problem' // 添加路径
+        title: '特色活动',
+        description: '探索 HyperStar 的特色活动，赢取独家奖励，提升你的知名度和影响力。',
+        cover: userContentCover,
+        path: '/help/specialEvents' // 修改后的路径
     },
 ]);
 

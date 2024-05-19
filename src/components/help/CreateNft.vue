@@ -88,7 +88,7 @@ const scrollToAnchor = (hash: string) => {
 };
 
 onMounted(async () => {
-    markdownContent.value = await fetchMarkdown('start');
+    markdownContent.value = await fetchMarkdown('createNft');
     nextTick(() => {
         generateToc();
         scrollToAnchor(route.hash);

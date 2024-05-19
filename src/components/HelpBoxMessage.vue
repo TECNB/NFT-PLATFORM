@@ -136,12 +136,12 @@ let userContent = ref('');
 let relatedArticle = ref('');
 let answer = ref('');
 const questions = ref([
-    { title: "账户", subQuestions: ["创建一个帐户", "登录或退出", "编辑我的帐户信息", "如何收藏物品"], relatedArticle: "" },
-    { title: "购买、销售和转让物品", subQuestions: ["购买物品", "销售物品", "转让物品"] },
-    { title: "创建项目和集合", subQuestions: ["创建项目", "管理集合"] },
-    { title: "开发和API", subQuestions: ["API文档", "开发者支持"] },
-    { title: "安全问题", subQuestions: ["帐户安全", "数据保护"] },
-    { title: "其他", subQuestions: ["常见问题", "联系支持"] }
+    { title: "账户", subQuestions: ["创建一个帐户", "登录或退出", "编辑我的帐户信息", "如何收藏物品"], relatedArticlePath: "../article/开始使用.md" },
+    { title: "全站排行", subQuestions: ["作用", "如何查看", "类型介绍","如何切换类型"] },
+    { title: "了解个人信息", subQuestions: ["自己创建的藏品在哪", "怎么修改已创建藏品的价格","交易情况"] },
+    { title: "独特功能", subQuestions: ["API文档", "开发者支持"] },
+    { title: "开始创建数字藏品", subQuestions: ["帐户安全", "数据保护"] },
+    { title: "特色活动", subQuestions: ["作用", "如何查看", "类型介绍","如何切换类型"] }
 ]);
 
 const currentQuestion = ref<any>('');
@@ -152,11 +152,13 @@ const answerContent = ref<HTMLElement | null>(null);
 let viewer: Viewer | null = null;
 
 const selectQuestion = async (index: number) => {
-    markdownContent.value = await fetchMarkdown('../article/如何创建 HyperStar 账户？.md');
+    markdownContent.value = await fetchMarkdown(questions.value[index].relatedArticlePath as string);
     currentQuestion.value = questions.value[index];
+    
     loading.value = true;
     systemContent.value = currentQuestion.value.title;
     relatedArticle.value = markdownContent.value;
+    console.log("relatedArticle:"+relatedArticle.value);
     setTimeout(() => {
         loading.value = false;
     }, 1000);

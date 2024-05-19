@@ -62,6 +62,32 @@ const routes: Array<RouteRecordRaw> = [
                 name: "start",
                 component: () => import("../components/help/Start.vue"),
             },
+            {
+                path: "profile",
+                name: "profile",
+                component: () => import("../components/help/Profile.vue"),
+            },
+            {
+                path: "ranking",
+                name: "ranking",
+                component: () => import("../components/help/Ranking.vue"),
+            },
+            {
+                path: "specialEvents",
+                name: "specialEvents",
+                component: () => import("../components/help/SpecialEvents.vue"),
+            },
+            {
+                path: "createNft",
+                name: "createNft",
+                component: () => import("../components/help/CreateNft.vue"),
+            },
+            {
+                path: "benefits",
+                name: "benefits",
+                component: () => import("../components/help/Benefits.vue"),
+            },
+
         ],
     },
     
