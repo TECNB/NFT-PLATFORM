@@ -6,22 +6,37 @@
             </el-icon>
             <p class="text-white text-lg font-bold flex-1">HyperStar</p>
         </div>
-        <el-scrollbar>
-            <div class="flex justify-start items-center flex-col h-[550px] p-5">
-
-                <!-- 初始问话：你好!👋 我们能帮上什么忙？ -->
-                <div class="w-full">
-                    <div class="flex justify-start items-center gap-5">
+        <el-scrollbar height="580px" ref="scrollbarRef">
+            <div class="flex justify-start items-center flex-col p-5" ref="innerRef">
+                <!-- 对话记录 -->
+                <div class="w-full" v-for="(message, index) in conversationHistory" :key="index">
+                    <div v-if="message.type === 'question'" class="flex justify-end items-center w-full my-5">
+                        <div class="bg-accent-100 rounded-lg p-5">
+                            <p class="text-white">{{ message.text }}</p>
+                        </div>
+                    </div>
+                    <div v-else-if="message.type === 'answer'" class="flex justify-start items-center gap-5">
                         <img class="w-10 h-10"
                             src="https://static.intercomassets.com/avatars/6926984/square_128/custom_avatar-1708977529.png"
                             alt="">
                         <div class="bg-gray-100 rounded-lg p-5">
-                            <p>你好!👋 我们能帮上什么忙？</p>
+                            <p class="text-left" v-html="message.text" ref="answerContent" @click="onImageClick"></p>
                         </div>
-
                     </div>
-
-
+                    <!-- 相关文章 -->
+                    <div class="flex justify-start items-center w-full ml-16 mt-3"
+                        v-if="ifEnd && currentQuestion !== '' && selectedSubQuestion !== '' && !loadingSubQuestion && message.relatedArticlePath">
+                        <p>相关文章:</p>
+                        <router-link :to="'/help/' + message.relatedArticlePath"
+                            class="text-accent-100 hover:text-primary-100">点击查看</router-link>
+                    </div>
+                    <div v-else-if="message.type === 'loading'" class="flex justify-start items-center gap-5">
+                        <img class="w-10 h-10"
+                            src="https://static.intercomassets.com/avatars/6926984/square_128/custom_avatar-1708977529.png"
+                            alt="">
+                        <div class="w-full bg-gray-100 rounded-lg p-5" v-loading="true" element-loading-text="生成中...">
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 提问的大标题数组 -->
@@ -32,130 +47,46 @@
                         <p class="text-accent-200">{{ question.title }}</p>
                     </div>
                 </div>
-                <!-- 选择的提问的大标题 -->
-                <div v-if="currentQuestion !== ''" class="w-full my-5">
-                    <div class="flex justify-end items-center w-full">
-                        <div class="bg-accent-100 rounded-lg p-5">
-                            <p class="text-white">{{ currentQuestion.title }}</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- 选择的提问的大标题后的生成中的样式 -->
-                <div v-if="currentQuestion !== '' && loading" class="w-full">
-                    <div class="flex justify-start items-center gap-5">
-                        <img class="w-10 h-10"
-                            src="https://static.intercomassets.com/avatars/6926984/square_128/custom_avatar-1708977529.png"
-                            alt="">
-                        <div class="w-full bg-gray-100 rounded-lg p-5" v-loading="loading"
-                            element-loading-text="生成中...">
-                        </div>
-                    </div>
-                </div>
 
-                <!-- 选择的提问的大标题后的回复 -->
-                <div v-if="currentQuestion !== '' && !loading" class="w-full">
-                    <div class="flex justify-start items-center gap-5">
-                        <img class="w-10 h-10"
-                            src="https://static.intercomassets.com/avatars/6926984/square_128/custom_avatar-1708977529.png"
-                            alt="">
-                        <div class="bg-gray-100 rounded-lg p-5">
-                            <p class="text-left">谢谢你的回复。听起来你需要一些{{ currentQuestion.title }}方面的帮助。以下哪个主题最能描述您的问题？</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- 提问的副标题数组 -->
-                <!-- <div v-if="currentQuestion !== '' && !loading && selectedSubQuestion === ''"
-                    class="flex-1 flex justify-start items-end flex-col gap-2 w-full mt-10">
-                    <div v-for="(subQuestion, index) in currentQuestion.subQuestions" :key="index"
-                        @click="selectSubQuestion(subQuestion)"
-                        class="bg-bg-100 rounded-lg w-max p-3 cursor-pointer hover:bg-accent-100">
-                        <p class="text-accent-200">{{ subQuestion }}</p>
-                    </div>
-                </div> -->
-                
-                <!-- 提问的副标题的输入框 -->
-                <div class="w-full flex items-center mt-48 gap-2"
-                    v-if="currentQuestion !== '' && !loading && selectedSubQuestion === ''">
-                    <div class="flex justify-center items-center bg-bg-100 hover:bg-bg-200 h-full aspect-square rounded-full cursor-pointer"  @click="resetChat()">
-                        <el-icon color="var(--primary-100)">
-                            <Plus />
-                        </el-icon>
-                    </div>
-                    <el-input v-model="inputSubQuestion" placeholder="给“AI客服”发送消息">
-                        <!-- <template #prefix>
-                            <el-icon color="var(--text-100)" class="el-input__icon">
-                                <UserFilled />
-                            </el-icon>
 
-                        </template> -->
-                    </el-input>
-                    <div class="flex justify-center items-center bg-accent-100 hover:bg-accent-200 h-full aspect-square rounded-lg cursor-pointer"  @click="selectSubQuestion(inputSubQuestion)">
-                        <el-icon color="#FFF">
-                            <Position />
-                        </el-icon>
-                    </div>
-                </div>
 
-                <!-- 选择的提问的副标题 -->
-                <div v-if="selectedSubQuestion !== ''" class="w-full my-5">
-                    <div class="flex justify-end items-center w-full">
-                        <div class="bg-accent-100 rounded-lg p-5">
-                            <p class="text-white">{{ selectedSubQuestion }}</p>
-                        </div>
-                    </div>
-                </div>
+            </div>
 
-                <!-- 选择的提问的副标题后的生成中的样式 -->
-                <div v-if="selectedSubQuestion !== '' && loadingSubQuestion" class="w-full">
-                    <div class="flex justify-start items-center gap-5">
-                        <img class="w-10 h-10"
-                            src="https://static.intercomassets.com/avatars/6926984/square_128/custom_avatar-1708977529.png"
-                            alt="">
-                        <div class="w-full bg-gray-100 rounded-lg p-5" v-loading="loadingSubQuestion"
-                            element-loading-text="生成中...">
-                        </div>
-                    </div>
+            <!-- 提问的副标题的输入框 -->
+            <div class="w-full flex items-center gap-2 mt-auto absolute bottom-16 p-5"
+                v-if="currentQuestion !== '' && !loading && !loadingSubQuestion && ifEnd">
+                <div class="flex justify-center items-center bg-bg-100 hover:bg-bg-200 h-9 aspect-square rounded-full cursor-pointer"
+                    @click="resetChat()">
+                    <el-icon color="var(--primary-100)">
+                        <Plus />
+                    </el-icon>
                 </div>
-                <!-- 选择的提问的副标题后的回复 -->
-                <div v-if="selectedSubQuestion !== '' && !loadingSubQuestion" class="w-full">
-                    <div class="flex justify-start items-center gap-5">
-                        <img class="w-10 h-10"
-                            src="https://static.intercomassets.com/avatars/6926984/square_128/custom_avatar-1708977529.png"
-                            alt="">
-                        <div class="bg-gray-100 rounded-lg p-5">
-                            <p class="text-left" v-html="answer" ref="answerContent" @click="onImageClick"></p>
-                        </div>
-                    </div>
-                    <div class="flex justify-start items-center ml-16 mt-3" v-if="ifEnd">
-                        <p>相关文章:</p>
-                        <router-link :to="'/help/' + currentQuestion.relatedArticlePath"
-                            class="text-accent-100 hover:text-primary-100">点击查看</router-link>
-                    </div>
+                <el-input v-model="inputSubQuestion" placeholder="给“AI客服”发送消息"></el-input>
+                <div class="flex justify-center items-center bg-accent-100 hover:bg-accent-200 h-9 aspect-square rounded-lg cursor-pointer"
+                    @click="sendSubQuestion">
+                    <el-icon color="#FFF">
+                        <Position />
+                    </el-icon>
                 </div>
-
-                <!-- 重新开始按钮 -->
-                <!-- <div v-if="selectedSubQuestion !== '' && !loadingSubQuestion"
-                    class="flex justify-center items-center w-full mt-10">
-                    <div @click="resetChat"
-                        class="bg-accent-100 w-full flex justify-center items-center gap-5 rounded-lg p-3 text-white hover:bg-accent-200 cursor-pointer">
-                        <el-icon size="20">
-                            <Refresh />
-                        </el-icon>
-                        <p>重新开始</p>
-                    </div>
-                </div> -->
             </div>
         </el-scrollbar>
-
     </div>
 </template>
 
+
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted, nextTick, watch } from 'vue';
 import Viewer from 'viewerjs';
 import 'viewerjs/dist/viewer.css';
 import { AIChat } from '../utils/AIChat';
 import { fetchMarkdown } from '../utils/fetchMarkdown';
+import { ElMessage } from 'element-plus';
+
+
+import { ElScrollbar as ElScrollbarType } from 'element-plus';
+
+const innerRef = ref<HTMLDivElement>()
+const scrollbarRef = ref<InstanceType<typeof ElScrollbarType>>()
 
 const markdownContent = ref<string>('');
 let systemContent = ref('');
@@ -177,10 +108,26 @@ const inputSubQuestion = ref('');
 const loading = ref(false);
 const loadingSubQuestion = ref(false);
 const answerContent = ref<HTMLElement | null>(null);
+const scrollContainer = ref<HTMLElement | null>(null);
 let viewer: Viewer | null = null;
 let reader: ReadableStreamDefaultReader<Uint8Array> | null = null;
 
-const ifEnd = ref(false);
+const ifEnd = ref(true);
+let isFirstPush = true;
+
+const conversationHistory = ref([
+    { type: 'answer', text: '你好!👋 我们能帮上什么忙？', relatedArticlePath: '' }
+]);
+
+// 监听 conversationHistory 变化，并在变化后滚动到容器底部
+watch(conversationHistory.value, () => {
+    console.log("conversationHistory改变")
+    nextTick(() => {
+        // 滚动到底部
+        scrollbarRef.value?.scrollTo({ top: innerRef.value?.clientHeight || 0, behavior: 'smooth' });
+
+    })
+});
 
 const selectQuestion = async (index: number) => {
     markdownContent.value = await fetchMarkdown(questions.value[index].relatedArticlePath as string);
@@ -189,14 +136,28 @@ const selectQuestion = async (index: number) => {
     loading.value = true;
     systemContent.value = currentQuestion.value.title;
     relatedArticle.value = markdownContent.value;
+    conversationHistory.value.push({ type: 'question', text: currentQuestion.value.title, relatedArticlePath: '' });
+    conversationHistory.value.push({ type: 'loading', text: '生成中...', relatedArticlePath: '' });
+
     setTimeout(() => {
         loading.value = false;
+        conversationHistory.value.pop(); // 移除loading状态
+        conversationHistory.value.push({ type: 'answer', text: `谢谢你的回复。听起来你需要一些${currentQuestion.value.title}方面的帮助。以下哪个主题最能描述您的问题？`, relatedArticlePath: '' });
     }, 1000);
 }
 
-const selectSubQuestion = async (subQuestion: string) => {
-    selectedSubQuestion.value = subQuestion;
+const sendSubQuestion = async () => {
+    if (!inputSubQuestion.value.trim()) {
+        ElMessage.warning('请输入内容');
+        return;
+    }
+
+    selectedSubQuestion.value = inputSubQuestion.value;
     loadingSubQuestion.value = true;
+    conversationHistory.value.push({ type: 'question', text: inputSubQuestion.value, relatedArticlePath: '' });
+    conversationHistory.value.push({ type: 'loading', text: '生成中...', relatedArticlePath: '' });
+    inputSubQuestion.value = '';
+
     userContent.value = `${selectedSubQuestion.value}`;
 
     console.log('systemContent:', systemContent.value);
@@ -218,11 +179,17 @@ const selectSubQuestion = async (subQuestion: string) => {
 
         // 更新显示文本的函数
         const typeText = async (text: string) => {
-            for (const char of text) {
-                typingEffect += char;
-                answer.value = typingEffect.replace(/\n/g, '<br>');
-                await new Promise(resolve => setTimeout(resolve, delay));  // 延迟模拟打字效果
+            typingEffect += text;
+            answer.value = typingEffect.replace(/\n/g, '<br>');
+            if (isFirstPush) {
+                // 第一个字符，执行 push 操作
+                conversationHistory.value.push({ type: 'answer', text: answer.value, relatedArticlePath: currentQuestion.value.relatedArticlePath });
+            } else {
+                // 修改数组最后一个对象的 text 属性
+                conversationHistory.value[conversationHistory.value.length - 1].text = answer.value;
             }
+
+            await new Promise(resolve => setTimeout(resolve, delay));  // 延迟模拟打字效果
         };
 
         // 处理流数据的异步函数
@@ -242,7 +209,14 @@ const selectSubQuestion = async (subQuestion: string) => {
                 for (let i = 0; i < lines.length - 1; i++) {
                     const line = lines[i];
                     if (line.trim() === 'data: [DONE]') {  // 检查是否为结束标志
+                        inputSubQuestion.value = '';
+                        isFirstPush = true
                         ifEnd.value = true;
+                        nextTick(() => {
+                            // 滚动到底部
+                            scrollbarRef.value?.scrollTo({ top: innerRef.value?.clientHeight || 0, behavior: 'smooth' });
+
+                        })
                         return;
                     }
                     if (line.startsWith('data: ')) {  // 检查行是否以 'data: ' 开头
@@ -255,13 +229,12 @@ const selectSubQuestion = async (subQuestion: string) => {
                                     if (!firstContentReceived) {
                                         firstContentReceived = true;
                                         loadingSubQuestion.value = false;  // 第一次收到内容后停止加载指示
+
+                                        conversationHistory.value.pop(); // 移除loading状态
                                     }
-                                    // console.log('content:', content);  // 打印内容
 
                                     // 检查是否是 img 标签
                                     if (content.includes('img')) {
-                                        console.log('检测到image标签');  // 输出完整的 img 标签内容
-                                        console.log('img 标签开始时answer.value:', answer.value);  // 输出完整的 img 标签内容
                                         isImgTag = true;
                                         imgTagBuffer += content;
                                     } else if (isImgTag) {
@@ -270,12 +243,12 @@ const selectSubQuestion = async (subQuestion: string) => {
                                             isImgTag = false;
                                             typingEffect += imgTagBuffer;
                                             answer.value = typingEffect.replace(/\n/g, '<br>');
-                                            console.log('img 标签结束时answer.value:', answer.value);  // 输出完整的 img 标签内容
 
                                             imgTagBuffer = '';  // 清空缓冲区
                                         }
                                     } else {
                                         await typeText(content);
+                                        isFirstPush = false;  // 之后都不是第一个字符
                                     }
                                 }
                             } catch (e) {
@@ -286,12 +259,15 @@ const selectSubQuestion = async (subQuestion: string) => {
                 }
                 partialData = lines[lines.length - 1];  // 保留最后一个未处理的部分
             }
+
         };
 
         processStream();  // 调用处理流的函数
     } catch (error) {
         console.error(error);
         loadingSubQuestion.value = false;  // 出错时停止加载指示
+        conversationHistory.value.pop(); // 移除loading状态
+        ElMessage.error('生成回复时网络波动，请重试');
     }
 }
 
@@ -300,6 +276,7 @@ const resetChat = () => {
     currentQuestion.value = '';
     selectedSubQuestion.value = '';
     answer.value = '';
+    conversationHistory.value = [{ type: 'answer', text: '你好!👋 我们能帮上什么忙？', relatedArticlePath: '' }];
     if (viewer) {
         viewer.destroy();
         viewer = null;
@@ -324,10 +301,9 @@ const onImageClick = () => {
         }
     });
 }
-const search = async () => {
-    // 搜索逻辑
-}
 </script>
+
+
 
 
 <style lang="scss" scoped>
