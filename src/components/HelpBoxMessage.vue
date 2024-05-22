@@ -51,6 +51,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- 选择的提问的大标题后的回复 -->
                 <div v-if="currentQuestion !== '' && !loading" class="w-full">
                     <div class="flex justify-start items-center gap-5">
@@ -63,14 +64,38 @@
                     </div>
                 </div>
                 <!-- 提问的副标题数组 -->
-                <div v-if="currentQuestion !== '' && !loading && selectedSubQuestion === ''"
+                <!-- <div v-if="currentQuestion !== '' && !loading && selectedSubQuestion === ''"
                     class="flex-1 flex justify-start items-end flex-col gap-2 w-full mt-10">
                     <div v-for="(subQuestion, index) in currentQuestion.subQuestions" :key="index"
                         @click="selectSubQuestion(subQuestion)"
                         class="bg-bg-100 rounded-lg w-max p-3 cursor-pointer hover:bg-accent-100">
                         <p class="text-accent-200">{{ subQuestion }}</p>
                     </div>
+                </div> -->
+                
+                <!-- 提问的副标题的输入框 -->
+                <div class="w-full flex items-center mt-48 gap-2"
+                    v-if="currentQuestion !== '' && !loading && selectedSubQuestion === ''">
+                    <div class="flex justify-center items-center bg-bg-100 hover:bg-bg-200 h-full aspect-square rounded-full cursor-pointer"  @click="resetChat()">
+                        <el-icon color="var(--primary-100)">
+                            <Plus />
+                        </el-icon>
+                    </div>
+                    <el-input v-model="inputSubQuestion" placeholder="给“AI客服”发送消息">
+                        <!-- <template #prefix>
+                            <el-icon color="var(--text-100)" class="el-input__icon">
+                                <UserFilled />
+                            </el-icon>
+
+                        </template> -->
+                    </el-input>
+                    <div class="flex justify-center items-center bg-accent-100 hover:bg-accent-200 h-full aspect-square rounded-lg cursor-pointer"  @click="selectSubQuestion(inputSubQuestion)">
+                        <el-icon color="#FFF">
+                            <Position />
+                        </el-icon>
+                    </div>
                 </div>
+
                 <!-- 选择的提问的副标题 -->
                 <div v-if="selectedSubQuestion !== ''" class="w-full my-5">
                     <div class="flex justify-end items-center w-full">
@@ -79,6 +104,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- 选择的提问的副标题后的生成中的样式 -->
                 <div v-if="selectedSubQuestion !== '' && loadingSubQuestion" class="w-full">
                     <div class="flex justify-start items-center gap-5">
@@ -102,12 +128,13 @@
                     </div>
                     <div class="flex justify-start items-center ml-16 mt-3" v-if="ifEnd">
                         <p>相关文章:</p>
-                        <router-link :to="'/help/' + currentQuestion.relatedArticlePath" class="text-accent-100 hover:text-primary-100">点击查看</router-link>
+                        <router-link :to="'/help/' + currentQuestion.relatedArticlePath"
+                            class="text-accent-100 hover:text-primary-100">点击查看</router-link>
                     </div>
                 </div>
 
                 <!-- 重新开始按钮 -->
-                <div v-if="selectedSubQuestion !== '' && !loadingSubQuestion"
+                <!-- <div v-if="selectedSubQuestion !== '' && !loadingSubQuestion"
                     class="flex justify-center items-center w-full mt-10">
                     <div @click="resetChat"
                         class="bg-accent-100 w-full flex justify-center items-center gap-5 rounded-lg p-3 text-white hover:bg-accent-200 cursor-pointer">
@@ -116,7 +143,7 @@
                         </el-icon>
                         <p>重新开始</p>
                     </div>
-                </div>
+                </div> -->
             </div>
         </el-scrollbar>
 
@@ -146,6 +173,7 @@ const questions = ref([
 
 const currentQuestion = ref<any>('');
 const selectedSubQuestion = ref('');
+const inputSubQuestion = ref('');
 const loading = ref(false);
 const loadingSubQuestion = ref(false);
 const answerContent = ref<HTMLElement | null>(null);
@@ -170,6 +198,10 @@ const selectSubQuestion = async (subQuestion: string) => {
     selectedSubQuestion.value = subQuestion;
     loadingSubQuestion.value = true;
     userContent.value = `${selectedSubQuestion.value}`;
+
+    console.log('systemContent:', systemContent.value);
+    console.log('userContent:', userContent.value);
+    console.log('relatedArticle:', relatedArticle.value);
 
     try {
         const response = await AIChat(systemContent.value, userContent.value, relatedArticle.value);
@@ -292,6 +324,9 @@ const onImageClick = () => {
         }
     });
 }
+const search = async () => {
+    // 搜索逻辑
+}
 </script>
 
 
@@ -306,5 +341,29 @@ const onImageClick = () => {
 
 :deep(.el-loading-spinner .el-loading-text) {
     color: var(--accent-200);
+}
+
+.el-input {
+    height: 40px;
+
+    border-radius: 12px;
+    border: 0.5px solid var(--text-200);
+    border: 0;
+    background-color: white;
+
+    font-size: 18px;
+    font-weight: 500;
+
+
+    :deep(.el-input__wrapper) {
+        border-radius: 12px;
+        background-color: white;
+
+    }
+
+
+    :deep(.is-focus) {
+        box-shadow: 0 0 0 1px var(--accent-200)
+    }
 }
 </style>

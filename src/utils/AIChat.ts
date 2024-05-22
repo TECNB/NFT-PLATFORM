@@ -18,7 +18,7 @@ export async function AIChat(systemContent: string, userContent: string, related
     const response = await fetch('https://api.chatanywhere.tech/v1/chat/completions', {
         method: 'POST',
         headers: {
-            'Authorization': 'sk-3T3uY2Xp1Hkp31v8j9SGgMKhu7mRNaQjXWhndLqeWrsCld7e',
+            'Authorization': 'sk-w0rnneIjBG8HwjpGoOUPSLxbHiqbGBMP39V0P6b4p8dab3Yt',
             'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
             'Content-Type': 'application/json'
         },
