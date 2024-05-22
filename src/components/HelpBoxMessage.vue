@@ -125,8 +125,6 @@
 import { ref, onMounted, nextTick } from 'vue';
 import Viewer from 'viewerjs';
 import 'viewerjs/dist/viewer.css';
-
-// 引入AIChat
 import { AIChat } from '../utils/AIChat';
 import { fetchMarkdown } from '../utils/fetchMarkdown';
 
@@ -150,6 +148,7 @@ const loading = ref(false);
 const loadingSubQuestion = ref(false);
 const answerContent = ref<HTMLElement | null>(null);
 let viewer: Viewer | null = null;
+let reader: ReadableStreamDefaultReader<Uint8Array> | null = null;
 
 const selectQuestion = async (index: number) => {
     markdownContent.value = await fetchMarkdown(questions.value[index].relatedArticlePath as string);
@@ -158,7 +157,6 @@ const selectQuestion = async (index: number) => {
     loading.value = true;
     systemContent.value = currentQuestion.value.title;
     relatedArticle.value = markdownContent.value;
-    console.log("relatedArticle:"+relatedArticle.value);
     setTimeout(() => {
         loading.value = false;
     }, 1000);
@@ -167,41 +165,129 @@ const selectQuestion = async (index: number) => {
 const selectSubQuestion = async (subQuestion: string) => {
     selectedSubQuestion.value = subQuestion;
     loadingSubQuestion.value = true;
-    userContent.value = "说说hyperStar平台中"+selectedSubQuestion.value+ "相关的部分";
-    await AIChat(systemContent.value, userContent.value, relatedArticle.value).then((res) => {
-        answer.value = res.replace(/\n/g, '<br>');
-        loadingSubQuestion.value = false;
-        nextTick(() => {
-            if (answerContent.value) {
-                viewer = new Viewer(answerContent.value, {
-                    filter(image) {
-                        return image.tagName === 'IMG';
-                    }
-                });
+    userContent.value = `说说hyperStar平台中${selectedSubQuestion.value}相关的部分`;
+
+    try {
+        const response = await AIChat(systemContent.value, userContent.value, relatedArticle.value);
+        answer.value = '';
+        reader = response.body?.getReader() || null;  // 获取流读取器
+        const decoder = new TextDecoder('utf-8');  // 创建文本解码器
+
+        let typingEffect = '';
+        let delay = 10;  // 打字效果的延迟时间
+        let firstContentReceived = false;
+        let partialData = '';
+        let imgTagBuffer = '';  // 用于存储完整的 <img> 标签内容
+        let isImgTag = false;  // 标记是否正在处理 <img> 标签
+
+        // 更新显示文本的函数
+        const typeText = async (text: string) => {
+            for (const char of text) {
+                typingEffect += char;
+                answer.value = typingEffect.replace(/\n/g, '<br>');
+                await new Promise(resolve => setTimeout(resolve, delay));  // 延迟模拟打字效果
             }
-        });
-    });
+        };
+
+        // 处理流数据的异步函数
+        const processStream = async () => {
+            while (true) {
+                if (!reader) break;
+                const { value, done } = await reader.read();  // 读取流数据
+                if (done) break;
+
+                // 将二进制数据解码为字符串
+                const text = decoder.decode(value, { stream: true });
+                partialData += text;  // 将新数据追加到 partialData 中
+                const lines = partialData.split('\n');  // 按行分割数据
+
+                // 处理每一行数据
+                for (let i = 0; i < lines.length - 1; i++) {
+                    const line = lines[i];
+                    if (line.trim() === 'data: [DONE]') {  // 检查是否为结束标志
+                        return;
+                    }
+                    if (line.startsWith('data: ')) {  // 检查行是否以 'data: ' 开头
+                        const jsonStr = line.substring(6);  // 获取 JSON 字符串
+                        if (jsonStr) {
+                            try {
+                                const jsonObj = JSON.parse(jsonStr);  // 解析 JSON 字符串
+                                const content = jsonObj.choices[0]?.delta?.content;  // 获取内容
+                                if (content) {
+                                    if (!firstContentReceived) {
+                                        firstContentReceived = true;
+                                        loadingSubQuestion.value = false;  // 第一次收到内容后停止加载指示
+                                    }
+                                    console.log('content:', content);  // 打印内容
+
+                                    // 检查是否是 img 标签
+                                    if (content.includes('img')) {
+                                        console.log('检测到image标签');  // 输出完整的 img 标签内容
+                                        console.log('img 标签开始时answer.value:', answer.value);  // 输出完整的 img 标签内容
+                                        isImgTag = true;
+                                        imgTagBuffer += content;
+                                    } else if (isImgTag) {
+                                        imgTagBuffer += content;
+                                        if (content.includes('>')) {  // 检查 img 标签是否结束
+                                            isImgTag = false;
+                                            typingEffect += imgTagBuffer;
+                                            answer.value = typingEffect.replace(/\n/g, '<br>');
+                                            console.log('img 标签结束时answer.value:', answer.value);  // 输出完整的 img 标签内容
+
+                                            imgTagBuffer = '';  // 清空缓冲区
+                                        }
+                                    } else {
+                                        await typeText(content);
+                                    }
+                                }
+                            } catch (e) {
+                                console.error('Error parsing JSON:', e);  // 解析 JSON 出错时输出错误信息
+                            }
+                        }
+                    }
+                }
+                partialData = lines[lines.length - 1];  // 保留最后一个未处理的部分
+            }
+        };
+
+        processStream();  // 调用处理流的函数
+    } catch (error) {
+        console.error(error);
+        loadingSubQuestion.value = false;  // 出错时停止加载指示
+    }
 }
 
+// 重置聊天的函数
 const resetChat = () => {
     currentQuestion.value = '';
     selectedSubQuestion.value = '';
+    answer.value = '';
     if (viewer) {
         viewer.destroy();
         viewer = null;
     }
-}
-
-onMounted(() => {
-    // Optional: Any other initialization logic
-});
-
-const onImageClick = () => {
-    if (viewer) {
-        viewer.show();
+    if (reader) {
+        reader.cancel();
+        reader = null;
     }
 }
+
+// 在组件挂载时执行的函数
+onMounted(() => {
+    
+});
+const onImageClick = () => {
+    // 可选：其他初始化逻辑
+    nextTick(() => {
+        if (answerContent.value) {
+            viewer = new Viewer(answerContent.value, {
+                url: 'src',
+            });
+        }
+    });
+}
 </script>
+
 
 <style lang="scss" scoped>
 :deep(.el-loading-mask) {
