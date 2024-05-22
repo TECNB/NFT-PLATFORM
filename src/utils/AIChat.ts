@@ -1,7 +1,7 @@
 // AIChat.ts
 export async function AIChat(systemContent: string, userContent: string, relatedArticle: string): Promise<Response> {
     const data = JSON.stringify({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o",
         messages: [
             {
                 role: "system",
@@ -9,16 +9,16 @@ export async function AIChat(systemContent: string, userContent: string, related
             },
             {
                 role: "user",
-                content: `请详细说明 HyperStar 平台中 ${userContent} 相关的部分。不要带上原文的序号，不要增加步骤和不相关的部分。但是，相关的内容你必须用序号的方式归纳。注意：如果原文中有相关图片 (img)，请告诉我并使用 HTML 格式返回。`
+                content: userContent
             }
         ],
         stream: true
     });
     
-    const response = await fetch('https://api.chatanywhere.tech/v1/chat/completions', {
+    const response = await fetch('https://api.gptapi.us/v1/chat/completions', {
         method: 'POST',
         headers: {
-            'Authorization': 'sk-w0rnneIjBG8HwjpGoOUPSLxbHiqbGBMP39V0P6b4p8dab3Yt',
+            'Authorization': 'sk-BhcZcQ4KbJW8wmgX96F33d91B14c41CaAf23C4F15d1483Ec',
             'User-Agent': 'Apifox/1.0.0 (https://apifox.com)',
             'Content-Type': 'application/json'
         },

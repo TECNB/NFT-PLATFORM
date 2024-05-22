@@ -6,7 +6,7 @@
             </el-icon>
             <p class="text-white text-lg font-bold flex-1">HyperStar</p>
         </div>
-        <el-scrollbar height="580px" ref="scrollbarRef">
+        <el-scrollbar height="600px" ref="scrollbarRef">
             <div class="flex justify-start items-center flex-col p-5" ref="innerRef">
                 <!-- 对话记录 -->
                 <div class="w-full" v-for="(message, index) in conversationHistory" :key="index">
@@ -53,7 +53,7 @@
             </div>
 
             <!-- 提问的副标题的输入框 -->
-            <div class="w-full flex items-center gap-2 mt-auto absolute bottom-16 p-5"
+            <div class="w-full flex items-center gap-2 mt-auto absolute bottom-14 p-5"
                 v-if="currentQuestion !== '' && !loading && !loadingSubQuestion && ifEnd">
                 <div class="flex justify-center items-center bg-bg-100 hover:bg-bg-200 h-9 aspect-square rounded-full cursor-pointer"
                     @click="resetChat()">
@@ -99,7 +99,8 @@ const questions = ref([
     { title: "了解个人信息", subQuestions: ["自己创建的藏品在哪", "怎么修改已创建藏品的价格", "交易情况"], relatedArticlePath: "profile" },
     { title: "独特功能", subQuestions: ["如何使用AI创作功能", "如何获取空投", "如何使用AI客服"], relatedArticlePath: "benefits" },
     { title: "开始创建数字藏品", subQuestions: ["如何创建数字藏品", "上传内容规定"], relatedArticlePath: "createNft" },
-    { title: "特色活动", subQuestions: ["作用", "如何查看", "类型介绍", "如何切换类型"], relatedArticlePath: "specialEvents" }
+    { title: "特色活动", subQuestions: ["作用", "如何查看", "类型介绍", "如何切换类型"], relatedArticlePath: "specialEvents" },
+    { title: "其他问题", subQuestions: [""], relatedArticlePath: "" }
 ]);
 
 const currentQuestion = ref<any>('');
@@ -121,7 +122,6 @@ const conversationHistory = ref([
 
 // 监听 conversationHistory 变化，并在变化后滚动到容器底部
 watch(conversationHistory.value, () => {
-    console.log("conversationHistory改变")
     nextTick(() => {
         // 滚动到底部
         scrollbarRef.value?.scrollTo({ top: innerRef.value?.clientHeight || 0, behavior: 'smooth' });
@@ -142,7 +142,7 @@ const selectQuestion = async (index: number) => {
     setTimeout(() => {
         loading.value = false;
         conversationHistory.value.pop(); // 移除loading状态
-        conversationHistory.value.push({ type: 'answer', text: `谢谢你的回复。听起来你需要一些${currentQuestion.value.title}方面的帮助。以下哪个主题最能描述您的问题？`, relatedArticlePath: '' });
+        conversationHistory.value.push({ type: 'answer', text: `谢谢你的回复。听起来你需要一些${currentQuestion.value.title}方面的帮助。请在下方输入框中描述您的问题问题`, relatedArticlePath: '' });
     }, 1000);
 }
 
@@ -151,8 +151,13 @@ const sendSubQuestion = async () => {
         ElMessage.warning('请输入内容');
         return;
     }
+    if(systemContent.value === '其他问题'){
+        selectedSubQuestion.value = `${inputSubQuestion.value}`;
+    }else{
+        selectedSubQuestion.value = `请详细说明 HyperStar 平台中 ${inputSubQuestion.value} 相关的部分。不要带上原文的序号，不要增加步骤和不相关的部分。但是，相关的内容你必须用序号的方式归纳。注意：如果原文中有相关图片 (img)，请告诉我并使用 HTML 格式返回。`;
+    }
 
-    selectedSubQuestion.value = inputSubQuestion.value;
+    
     loadingSubQuestion.value = true;
     conversationHistory.value.push({ type: 'question', text: inputSubQuestion.value, relatedArticlePath: '' });
     conversationHistory.value.push({ type: 'loading', text: '生成中...', relatedArticlePath: '' });
