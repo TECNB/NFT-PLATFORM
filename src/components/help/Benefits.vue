@@ -39,10 +39,9 @@
 <script lang="ts" setup>
 import { ref, onMounted, nextTick } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { fetchMarkdown } from '../../utils/fetchMarkdown'; // 假设工具类在这个路径下
+import { fetchMarkdown } from '../../utils/fetchMarkdown';
 
 import MainNavbar from '../../components/MainNavbar.vue'
-
 
 const router = useRouter();
 const route = useRoute();
@@ -56,6 +55,11 @@ const selectedIndex = ref(0);
 
 const selectItem = (index: number) => {
     selectedIndex.value = index;
+    const id = toc.value[index].id;
+    const element = document.getElementById(id);
+    if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+    }
 };
 
 const generateToc = () => {
@@ -72,12 +76,39 @@ const generateToc = () => {
         };
     });
 
-    // 将生成的锚点添加到实际的 DOM 中
     const realContent = document.querySelector('.text-left');
     if (realContent) {
         realContent.innerHTML = content.innerHTML;
     }
 };
+
+const observeHeaders = () => {
+    const options = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.id;
+                const index = toc.value.findIndex(item => item.id === id);
+                if (index !== -1) {
+                    selectedIndex.value = index;
+                }
+            }
+        });
+    }, options);
+
+    toc.value.forEach(item => {
+        const element = document.getElementById(item.id);
+        if (element) {
+            observer.observe(element);
+        }
+    });
+};
+
 const scrollToAnchor = (hash: string) => {
     if (hash) {
         const element = document.querySelector(hash);
@@ -91,9 +122,11 @@ onMounted(async () => {
     markdownContent.value = await fetchMarkdown('benefits');
     nextTick(() => {
         generateToc();
+        observeHeaders();
         scrollToAnchor(route.hash);
     });
 });
+
 router.afterEach((to) => {
     if (to.hash) {
         nextTick(() => {
@@ -102,7 +135,6 @@ router.afterEach((to) => {
     }
 });
 
-// search方法
 const search = async () => {
     // 搜索功能的实现
 }

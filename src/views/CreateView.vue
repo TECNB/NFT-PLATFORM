@@ -72,7 +72,7 @@
                         </div>
                     </div>
                     <div class="flex gap-1">
-                        <p class="text-left font-medium cursor-pointer text-accent-100 hover:text-accent-200">详细了解</p>
+                        <router-link :to="'/help'" class="text-left font-medium cursor-pointer text-accent-100 hover:text-accent-200">详细了解</router-link>
                         <p class="text-left font-medium">每个选项</p>
                     </div>
                 </div>

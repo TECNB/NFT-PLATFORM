@@ -18,8 +18,10 @@
                         <div class="bg-gray-100 rounded-lg p-5">
                             <p>你好!👋 我们能帮上什么忙？</p>
                         </div>
+
                     </div>
-                    <p class="text-left text-sm text-gray-400 ml-16 mt-2">机器人 2小时前</p>
+
+
                 </div>
 
                 <!-- 提问的大标题数组 -->
@@ -48,7 +50,6 @@
                             element-loading-text="生成中...">
                         </div>
                     </div>
-                    <p class="text-left text-sm text-gray-400 ml-16 mt-2">机器人 刚刚</p>
                 </div>
                 <!-- 选择的提问的大标题后的回复 -->
                 <div v-if="currentQuestion !== '' && !loading" class="w-full">
@@ -60,7 +61,6 @@
                             <p class="text-left">谢谢你的回复。听起来你需要一些{{ currentQuestion.title }}方面的帮助。以下哪个主题最能描述您的问题？</p>
                         </div>
                     </div>
-                    <p class="text-left text-sm text-gray-400 ml-16 mt-2">机器人 刚刚</p>
                 </div>
                 <!-- 提问的副标题数组 -->
                 <div v-if="currentQuestion !== '' && !loading && selectedSubQuestion === ''"
@@ -89,7 +89,6 @@
                             element-loading-text="生成中...">
                         </div>
                     </div>
-                    <p class="text-left text-sm text-gray-400 ml-16 mt-2">机器人 刚刚</p>
                 </div>
                 <!-- 选择的提问的副标题后的回复 -->
                 <div v-if="selectedSubQuestion !== '' && !loadingSubQuestion" class="w-full">
@@ -101,7 +100,10 @@
                             <p class="text-left" v-html="answer" ref="answerContent" @click="onImageClick"></p>
                         </div>
                     </div>
-                    <p class="text-left text-sm text-gray-400 ml-16 mt-2">机器人 刚刚</p>
+                    <div class="flex justify-start items-center ml-16 mt-3" v-if="ifEnd">
+                        <p>相关文章:</p>
+                        <router-link :to="'/help/' + currentQuestion.relatedArticlePath" class="text-accent-100 hover:text-primary-100">点击查看</router-link>
+                    </div>
                 </div>
 
                 <!-- 重新开始按钮 -->
@@ -135,11 +137,11 @@ let relatedArticle = ref('');
 let answer = ref('');
 const questions = ref([
     { title: "账户", subQuestions: ["创建一个帐户", "登录或退出", "编辑我的帐户信息", "如何收藏物品"], relatedArticlePath: "start" },
-    { title: "全站排行", subQuestions: ["作用", "如何查看", "类型介绍","如何切换类型"] , relatedArticlePath: "ranking" },
-    { title: "了解个人信息", subQuestions: ["自己创建的藏品在哪", "怎么修改已创建藏品的价格","交易情况"] , relatedArticlePath: "profile" },
-    { title: "独特功能", subQuestions: ["如何使用AI创作功能", "如何获取空投","如何使用AI客服"] , relatedArticlePath: "benefits" },
-    { title: "开始创建数字藏品", subQuestions: ["如何创建数字藏品", "上传内容规定"] , relatedArticlePath: "createNft" },
-    { title: "特色活动", subQuestions: ["作用", "如何查看", "类型介绍","如何切换类型"] , relatedArticlePath: "specialEvents" }
+    { title: "全站排行", subQuestions: ["作用", "如何查看", "类型介绍", "如何切换类型"], relatedArticlePath: "ranking" },
+    { title: "了解个人信息", subQuestions: ["自己创建的藏品在哪", "怎么修改已创建藏品的价格", "交易情况"], relatedArticlePath: "profile" },
+    { title: "独特功能", subQuestions: ["如何使用AI创作功能", "如何获取空投", "如何使用AI客服"], relatedArticlePath: "benefits" },
+    { title: "开始创建数字藏品", subQuestions: ["如何创建数字藏品", "上传内容规定"], relatedArticlePath: "createNft" },
+    { title: "特色活动", subQuestions: ["作用", "如何查看", "类型介绍", "如何切换类型"], relatedArticlePath: "specialEvents" }
 ]);
 
 const currentQuestion = ref<any>('');
@@ -150,10 +152,12 @@ const answerContent = ref<HTMLElement | null>(null);
 let viewer: Viewer | null = null;
 let reader: ReadableStreamDefaultReader<Uint8Array> | null = null;
 
+const ifEnd = ref(false);
+
 const selectQuestion = async (index: number) => {
     markdownContent.value = await fetchMarkdown(questions.value[index].relatedArticlePath as string);
     currentQuestion.value = questions.value[index];
-    
+
     loading.value = true;
     systemContent.value = currentQuestion.value.title;
     relatedArticle.value = markdownContent.value;
@@ -165,7 +169,7 @@ const selectQuestion = async (index: number) => {
 const selectSubQuestion = async (subQuestion: string) => {
     selectedSubQuestion.value = subQuestion;
     loadingSubQuestion.value = true;
-    userContent.value = `说说hyperStar平台中${selectedSubQuestion.value}相关的部分`;
+    userContent.value = `${selectedSubQuestion.value}`;
 
     try {
         const response = await AIChat(systemContent.value, userContent.value, relatedArticle.value);
@@ -174,7 +178,7 @@ const selectSubQuestion = async (subQuestion: string) => {
         const decoder = new TextDecoder('utf-8');  // 创建文本解码器
 
         let typingEffect = '';
-        let delay = 10;  // 打字效果的延迟时间
+        let delay = 20;  // 打字效果的延迟时间
         let firstContentReceived = false;
         let partialData = '';
         let imgTagBuffer = '';  // 用于存储完整的 <img> 标签内容
@@ -191,6 +195,7 @@ const selectSubQuestion = async (subQuestion: string) => {
 
         // 处理流数据的异步函数
         const processStream = async () => {
+            ifEnd.value = false;
             while (true) {
                 if (!reader) break;
                 const { value, done } = await reader.read();  // 读取流数据
@@ -205,6 +210,7 @@ const selectSubQuestion = async (subQuestion: string) => {
                 for (let i = 0; i < lines.length - 1; i++) {
                     const line = lines[i];
                     if (line.trim() === 'data: [DONE]') {  // 检查是否为结束标志
+                        ifEnd.value = true;
                         return;
                     }
                     if (line.startsWith('data: ')) {  // 检查行是否以 'data: ' 开头
@@ -218,7 +224,7 @@ const selectSubQuestion = async (subQuestion: string) => {
                                         firstContentReceived = true;
                                         loadingSubQuestion.value = false;  // 第一次收到内容后停止加载指示
                                     }
-                                    console.log('content:', content);  // 打印内容
+                                    // console.log('content:', content);  // 打印内容
 
                                     // 检查是否是 img 标签
                                     if (content.includes('img')) {
@@ -274,7 +280,7 @@ const resetChat = () => {
 
 // 在组件挂载时执行的函数
 onMounted(() => {
-    
+
 });
 const onImageClick = () => {
     // 可选：其他初始化逻辑
