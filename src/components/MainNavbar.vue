@@ -62,7 +62,7 @@
                 </el-icon>
                 <p class="pl-3">钱包</p>
             </div>
-            <div class="MainNavbarUserInfo" @mouseover="showUserMenu" @mouseleave="hideUserMenu">
+            <div class="MainNavbarUserInfo" @click="toggleUserMenu" >
                 <el-icon :size="20">
                     <User />
                 </el-icon>
@@ -328,6 +328,9 @@ const isUserMenuVisible = ref(false);
 
 const showUserMenu = () => {
     isUserMenuVisible.value = true;
+};
+const toggleUserMenu = () => {
+    isUserMenuVisible.value = !isUserMenuVisible.value;
 };
 
 const hideUserMenu = () => {
