@@ -35,7 +35,7 @@
                 <button class="text-white bg-accent-200 mt-5 p-2">返回所有项目</button>
             </div> -->
             <div class="UserContentDetail">
-                <OfferTable source="user" class="w-full rounded-[20px] -mt-5"/>
+                <OfferTable source="user" class="w-full rounded-[20px] -mt-5" />
             </div>
         </div>
 
@@ -65,12 +65,12 @@
 
         <!-- 已创建的藏品 -->
         <div class="UserContentItem" v-if="UserIndex.index == 3">
-            <UserFilterSection />
+            <UserFilterSection  @update:selectedTypes="handleSelectedTypesUpdate" @update:selected-condition="handleSelectedConditionUpdate"/>
             <div v-if="isCreatedCollectionNull" class="UserContentDetail">
                 <h2>未找到创建的项目</h2>
                 <button class="text-white bg-accent-200 mt-5 p-2">返回所有项目</button>
             </div>
-            <div v-if="!isCreatedCollectionNull" v-for="(item, index) in CreatedCollection.collections" :key="index"
+            <div v-if="!isCreatedCollectionNull" v-for="(item, index) in displayCreatedCollection" :key="index"
                 @click="toNft(item.objectId)" class="CollectionListItem" @mouseenter="toggleifShowMore(index)"
                 @mouseleave="toggleifShowMore(index)">
                 <div class="CollectionListItemImage h-40 w-60 cursor-pointer" style="">
@@ -121,9 +121,10 @@
 
         <!-- 活动 -->
         <div class="UserContentItem" v-if="UserIndex.index == 5">
-            <UserFilterSection source="activity"/>
+            <UserFilterSection source="activity" @update:selectedTypes="handleSelectedTypesUpdate" @update:selected-condition="handleSelectedConditionUpdate" />
             <div class="UserContentDetail">
-                <ActivityTable class="w-full rounded-[20px]" objectId="4zy42fesbar8yg0hj2jm5218" :authorId="userInfo.user.objectId"/>
+                <ActivityTable class="w-full rounded-[20px]" :authorId="userInfo.user.objectId"
+                    :typeSelected="typeSelected" :conditionSelected="conditionSelected"/>
             </div>
             <!-- <div class="UserContentDetail">
                 <h2>没有要显示的项目</h2>
@@ -138,7 +139,7 @@
                 <button style="color: white;background-color: var(--accent-200);margin-top: 20px;">返回所有项目</button>
             </div> -->
             <div class="UserContentDetail">
-                <OfferTable source="offerUser" class="w-full rounded-[20px] -mt-5"/>
+                <OfferTable source="offerUser" class="w-full rounded-[20px] -mt-5" />
             </div>
         </div>
         <MaskLayer :ifShow="isActivityBoxVisible" />
@@ -177,6 +178,8 @@ let isFavoriteCollectionNull = ref(true);
 let isSellingCollectionNull = ref(true);
 let isCreatedCollectionNull = ref(true);
 
+let displayCreatedCollection = ref([])
+
 let loading = ref(false)
 
 // 控制是否展示更多选项
@@ -185,6 +188,8 @@ let ifShowMore = ref([])
 let isActivityBoxVisible = ref(false)
 // 活动框的详情
 let Detail = ref({})
+const typeSelected = ref([]);
+const conditionSelected = ref('价格降序');
 
 
 onMounted(async () => {
@@ -232,6 +237,7 @@ onMounted(async () => {
     let createdCollectionItemsLength = CreatedCollection.collections.length
 
     // 如果collectionItemsLength=0时，isOwnedCollectionNull为true
+    console.log(favoriteCollectionItemsLength)
     if (favoriteCollectionItemsLength !== 0) {
         isFavoriteCollectionNull.value = false
     }
@@ -245,6 +251,27 @@ onMounted(async () => {
         isCreatedCollectionNull.value = false
     }
 })
+
+const handleSelectedTypesUpdate = (selectedTypes: string[]) => {
+    typeSelected.value = selectedTypes;
+    displayCreatedCollection.value = CreatedCollection.collections
+    // 根据选中的type更新CreatedCollection.collections，如果CreatedCollection.collections中的categoryId不在selectedTypes中，则删除
+    displayCreatedCollection.value = CreatedCollection.collections.filter((item) => {
+        return selectedTypes.includes(item.categoryId)
+    })
+    
+    
+};
+const handleSelectedConditionUpdate = (selectedCondition: string) => {
+    conditionSelected.value = selectedCondition;
+    displayCreatedCollection.value = CreatedCollection.collections
+    // 根据选中的condition更新CreatedCollection.collections
+    if (selectedCondition === '价格降序') {
+        displayCreatedCollection.value.sort((a, b) => b.price - a.price);
+    } else if (selectedCondition === '价格升序') {
+        displayCreatedCollection.value.sort((a, b) => a.price - b.price);
+    }
+};
 
 const toNft = (objectId: string) => {
     router.push({

@@ -6,10 +6,15 @@
                 <ArrowDownBold />
             </el-icon>
             <div class="TypeList" v-if="isTypeListVisible">
-                <!-- 勾选框 -->
-                <div class="TypeListItem" v-for="type in typeList" :key="type.objectId">
+                <div v-if=" props.source=== 'activity'" class="TypeListItem" v-for="type in typeList">
                     <label>
-                        <input type="checkbox" name="type" :value="type.objectId" checked>
+                        <input type="checkbox" name="type" :value="type.name" v-model="selectedTypes">
+                        <span class="ml-5">{{ type.name }}</span>
+                    </label>
+                </div>
+                <div v-else class="TypeListItem" v-for="type in typeList">
+                    <label>
+                        <input type="checkbox" name="type" :value="type.objectId" v-model="selectedTypes">
                         <span class="ml-5">{{ type.name }}</span>
                     </label>
                 </div>
@@ -22,63 +27,54 @@
             <input type="text" placeholder="按名称搜索">
         </div>
         <div class="Condition">
-            <p>最近收到</p>
-            <!-- 根据isConditionListVisible决定class是rotate-0还是rotate-180 -->
-            <el-icon :size="16" @click="toggleConditionList"
-                :class="isConditionListVisible ? 'rotate-180' : 'rotate-0'">
+            <p>筛选</p>
+            <el-icon :size="16" @click="toggleConditionList" :class="isConditionListVisible ? 'rotate-180' : 'rotate-0'">
                 <ArrowDownBold />
             </el-icon>
-
             <div class="ConditionList" v-if="isConditionListVisible">
-                <div class="ConditionListItem">
-                    <p>最近收到</p>
+                <div 
+                    class="ConditionListItem" 
+                    v-for="(condition, index) in conditionList" 
+                    :key="index" 
+                    :class="{ selected: selectedCondition === condition }" 
+                    @click="selectCondition(condition)"
+                >
+                    <p>{{ condition }}</p>
                 </div>
-                <div class="ConditionListItem">
-                    <p>价格从高到低</p>
-                </div>
-                <div class="ConditionListItem">
-                    <p>价格从低到高</p>
-                </div>
-                <div class="ConditionListItem">
-                    <p>最近创建的</p>
-                </div>
-                <div class="ConditionListItem">
-                    <p>最高销售价格</p>
-                </div>
-                <div class="ConditionListItem">
-                    <p>最早的</p>
-                </div>
-
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
-
-import { getAllTypes } from '../api/type'
-
+import { onMounted, ref, watch } from 'vue';
+import { getAllTypes } from '../api/type';
 
 const props = defineProps(['source']);
+const emit = defineEmits(['update:selectedTypes', 'update:selectedCondition']);
 
-// 定义变量控制是否展示ConditionList
 let isConditionListVisible = ref(false);
-// 定义变量控制是否展示TypeList
 let isTypeListVisible = ref(false);
-
 let typeList = ref([]);
-// 定义一个函数用于控制ConditionList的显示与隐藏
+let selectedTypes = ref([]);
+let selectedCondition = ref('价格降序');
+
+const conditionList = ['价格降序', '价格升序'];
+
 const toggleConditionList = () => {
     isConditionListVisible.value = !isConditionListVisible.value;
 };
-// 控制是否展示TypeList
+
 const toggleTypeList = () => {
     isTypeListVisible.value = !isTypeListVisible.value;
 };
 
-onMounted(() => {
+const selectCondition = (condition) => {
+    selectedCondition.value = condition;
+    emit('update:selectedCondition', condition);
+};
 
+onMounted(() => {
     if (props.source === 'activity') {
         typeList.value = [
             {
@@ -88,28 +84,28 @@ onMounted(() => {
             {
                 objectId: '2',
                 name: '合成合集'
-            },
-            // {
-            //     objectId: '3',
-            //     name: '展览'
-            // },
-            // {
-            //     objectId: '4',
-            //     name: '讲座'
-            // },
-            // {
-            //     objectId: '5',
-            //     name: '其他'
-            // }
-        
+            }
         ];
+        selectedTypes.value = typeList.value.map(type => type.name);
     } else {
         getAllTypes().then((res) => {
             typeList.value = res;
-        })
+            selectedTypes.value = typeList.value.map(type => type.objectId);
+        });
     }
-})
+    
+});
+
+watch(selectedTypes, (newSelectedTypes) => {
+    emit('update:selectedTypes', newSelectedTypes);
+    console.log(newSelectedTypes);
+});
+
+watch(selectedCondition, (newCondition) => {
+    emit('update:selectedCondition', newCondition);
+});
 </script>
+
 
 <style lang="scss" scoped>
 .UserFilterSection {
@@ -193,7 +189,7 @@ onMounted(() => {
                 background-color: rgba(0, 0, 0, 0.1);
             }
 
-            // 勾选框变大，勾选背景颜色为var(--bg-100)，勾选时颜色为var(--bg-200)
+            /* 勾选框变大，勾选背景颜色为var(--bg-100)，勾选时颜色为var(--bg-200) */
             input[type="checkbox"] {
                 transform: scale(1.5);
 
@@ -260,6 +256,7 @@ onMounted(() => {
             justify-content: center;
             align-items: flex-start;
             flex-direction: column;
+            gap: 10px;
 
             position: absolute;
             top: 60px;
@@ -285,9 +282,13 @@ onMounted(() => {
                 padding: 15px;
             }
 
-            .ConditionListItem:hover {
+            .ConditionListItem:hover{
                 cursor: pointer;
                 background-color: rgba(0, 0, 0, 0.1);
+            }
+            .ConditionListItem.selected {
+                cursor: pointer;
+                background-color: rgba(0, 0, 0, 0.2);
             }
         }
     }

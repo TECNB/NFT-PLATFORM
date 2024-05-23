@@ -1,43 +1,19 @@
 <template>
     <div class="Table">
-
         <div class="body">
-            <!-- 表格 -->
-            <!-- 以下为订单的第一行订单状态筛选 -->
-
-
-            <!--下面为第一行的Nav-->
-            <div class="tableBar">
-                <!--下面为Nav中的搜索框-->
-                <!--clearable: 表示输入框是否具有清除按钮，允许用户清空输入-->
-                <!--@keyup.enter.native="handleQuery": 这是一个事件监听器，
-            当用户按下"Enter"键时，
-            会触发handleQuery方法，handleQuery方法通常用于执行搜索操作。-->
-
-                <!-- <el-button type="primary" @click="addMemberHandle('add')">
-                        + 添加学生
-                    </el-button> -->
-            </div>
-            <!--下面为表格数据-->
-
-            <el-table v-loading="loading" :data="tableData" class="tableBox" table-layout="fixed"
-                :row-style="{ height: '100px' }" height="100%">
-
-                <el-table-column label="活动名称" width="100" v-if="props.source!=='user'">
+            <el-table v-loading="loading" :data="tableData" class="tableBox" table-layout="fixed" :row-style="{ height: '100px' }" height="100%">
+                <el-table-column label="活动名称" width="120" v-if="props.source !== 'user'">
                     <template v-slot="{ row }">
                         <div class="flex justify-start items-center gap-5">
-                            <el-icon class="">
+                            <el-icon>
                                 <MessageBox />
                             </el-icon>
-                            <p>盲盒</p>
+                            <p>{{ row.type }}</p>
                         </div>
                     </template>
                 </el-table-column>
-                
                 <el-table-column prop="name" label="名称"></el-table-column>
                 <el-table-column prop="intro" label="介绍"></el-table-column>
-
-
                 <el-table-column prop="price" label="价格">
                     <template v-slot="{ row }">
                         <p>¥ {{ row.price }}</p>
@@ -45,170 +21,92 @@
                 </el-table-column>
                 <el-table-column prop="createTime" label="日期" sortable>
                     <template v-slot="{ row }">
-                        <!-- 解析日期，格式如下：2024-04-01T16:33:00.127+08:00,精确到秒 -->
                         {{ new Date(row.createdAt).toLocaleString() }}
                     </template>
                 </el-table-column>
-
             </el-table>
-
-
-
-            <!-- 下面是page相关的管理配置 -->
-
-
         </div>
-
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, Ref, watch } from 'vue';
-// ElConfigProvider 组件
-import { ElConfigProvider } from 'element-plus';
-// 引入中文包
-import zhCn from 'element-plus/es/locale/lang/zh-cn';
+import { ref, onMounted, watch } from 'vue';
+import { getAllBlindBoxs } from '../api/blindBox';
+import { getAllAlbums } from '../api/album';
 
-import { Order } from '../interfaces/Order';
+const props = defineProps(['dateOrder', 'typeOrder', 'source', 'authorId', 'typeSelected', 'conditionSelected']);
 
-import { getOrders } from '../api/order';
-import { getUserById } from '../api/user';
-import { getAllBlindBoxs } from '../api/blindBox'
-import { BlindBox } from '../interfaces/BlindBox';
-
-
-const props = defineProps(['dateOrder', 'typeOrder','objectId','source','authorId']);
-
-
-const items = ref(['全部订单', '待付款', '申诉中', '退款中', '已完成']);
-const selectedIndex = ref(0);
 const loading = ref(false);
-
-
-
-const input = ref('');
-const tableData: Ref<BlindBox[]> = ref([]);
-
-
-
+const tableData = ref([]);
+const allData = ref([]);
 const pageSize = ref(10);
-const counts = ref(tableData.value.length);
 const page = ref(1);
-const user = 'admin';
-const allData = ref<BlindBox[]>([]);
 
-
-
-
-// 通过watch监听props.dateOrder的变化
-watch(() => props.dateOrder, (newVal) => {
-    if (newVal == "日期正序") {
-        tableData.value.sort((a, b) => {
-            return a.createdAt > b.createdAt ? 1 : -1;
-        });
-    } else if (newVal == "日期倒序") {
-        tableData.value.sort((a, b) => {
-            return a.createdAt < b.createdAt ? 1 : -1;
-        });
-    }
-});
-// 通过watch监听props.typeOrder的变化
-// watch(() => props.typeOrder, (newVal) => {
-//     if (newVal == "已完成") {
-//         // 筛选出finishState为true的数据
-//         tableData.value = allData.value.filter((item) => item.finishState == true);
-//         counts.value = tableData.value.length;
-
-//     } else if (newVal == "未完成") {
-//         // 筛选出finishState为false的数据
-//         tableData.value = allData.value.filter((item) => item.finishState == false);
-//         counts.value = tableData.value.length;
-//     }
-// });
-
-
-
-
-
-onMounted(async () => {
+const fetchTableData = async () => {
     loading.value = true;
-    allData.value = await getAllBlindBoxs();
-    counts.value = allData.value.length;
-    // tableData.value 为res中选择pageSize.value行数据
-    tableData.value = allData.value.slice((page.value - 1) * pageSize.value, page.value * pageSize.value).filter((item) => item.authorId === props.authorId);
+    const requests = [];
 
+    if (props.typeSelected.includes('盲盒')) {
+        requests.push(getAllBlindBoxs().then(data => data.map(item => ({ ...item, type: '盲盒' }))));
+    }
 
-    // 遍历订单数据，获取订单的创建者信息
-    // for (let i = 0; i < tableData.value.length; i++) {
-    //     const creatorId = tableData.value[i].creator;
-    //     const creator = await getUserById(creatorId);
-    //     tableData.value[i].creator = creator.username;
+    if (props.typeSelected.includes('合成合集')) {
+        requests.push(getAllAlbums().then(data => data.map(item => ({ ...item, type: '合成合集' }))));
+    }
 
-    //     const solderId = tableData.value[i].solder;
-    //     const solder = await getUserById(solderId);
-    //     tableData.value[i].solder = solder.username;
-    // }
-    loading.value = false
-    console.log(allData.value)
-
-});
-
-
-const handleItemClick = (index: number) => {
-    selectedIndex.value = index;
+    const results = await Promise.all(requests);
+    allData.value = results.flat();
+    sortData();
+    updateTableData();
+    loading.value = false;
 };
 
-// 处理查询逻辑
-// const handleQuery = () => {
-//     // 示例的搜索逻辑（根据输入过滤数据）
-//     tableData.value = tableData.value.filter((item) =>
-//         item.itemName.toLowerCase().includes(input.value.toLowerCase())
-//     );
-//     counts.value = tableData.value.length;
-// };
-
-// 重置密码逻辑
-const resetPassword = (id: number) => {
-    // 示例的重置密码逻辑
-    console.log(id)
-};
-
-// 更改职位逻辑
-const changePosition = (id: number) => {
-    // 示例的更改职位逻辑
-    console.log(id)
-};
-
-// 处理每页显示数量变化逻辑
-const handleSizeChange = (val: number) => {
-    // 示例的处理每页显示数量变化逻辑
-    pageSize.value = val;
-    updateTableData(); // 更新显示的数据
-};
-
-// 处理当前页变化逻辑
-const handleCurrentChange = (val: any) => {
-    // 示例的处理当前页变化逻辑
-    page.value = val;
-    updateTableData(); // 更新显示的数据
+const sortData = () => {
+    if (props.conditionSelected === '价格降序') {
+        allData.value.sort((a, b) => b.price - a.price);
+    } else if (props.conditionSelected === '价格升序') {
+        allData.value.sort((a, b) => a.price - b.price);
+    }
 };
 
 const updateTableData = () => {
     const startIndex = (page.value - 1) * pageSize.value;
     const endIndex = page.value * pageSize.value;
-    tableData.value = allData.value.slice(startIndex, endIndex);
+    tableData.value = allData.value.slice(startIndex, endIndex).filter(item => item.authorId === props.authorId);
 };
 
+onMounted(fetchTableData);
 
-const multipleSelection = ref<[]>([])
-const handleSelectionChange = (val: []) => {
-    multipleSelection.value = val
-}
+watch(() => props.typeSelected, fetchTableData);
+watch(() => props.conditionSelected, () => {
+    sortData();
+    updateTableData();
+});
+watch(() => props.dateOrder, (newVal) => {
+    if (newVal === '日期正序') {
+        allData.value.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    } else if (newVal === '日期倒序') {
+        allData.value.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+    updateTableData();
+});
 
+const handleSizeChange = (val) => {
+    pageSize.value = val;
+    updateTableData();
+};
 
+const handleCurrentChange = (val) => {
+    page.value = val;
+    updateTableData();
+};
 
-
+const handleSelectionChange = (val) => {
+    console.log(val);
+};
 </script>
+
+
 
 <style lang="scss" scoped>
 :deep(.el-tag) {

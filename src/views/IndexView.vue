@@ -4,7 +4,7 @@
 		<MainNavbar />
 		<TypeNavbar />
 		<el-carousel :interval="4000" type="card" height="300px">
-			<el-carousel-item v-for="(item, index) in CollectionRanking.collections" :key="index"
+			<el-carousel-item v-for="(item, index) in CollectionRanking.collections.slice(0, 12)" :key="index"
 				style="border-radius: 20px 20px 0px 0px;" @click="toNft(item.objectId)">
 				<img :src="item.cover" alt="NFT Image"
 					style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;">
