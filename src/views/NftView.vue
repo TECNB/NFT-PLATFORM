@@ -8,7 +8,7 @@
                         <UserFilled />
                     </el-icon>
                     <div class="NftImageIconRight">
-                        <el-icon color="var(--accent-200)">
+                        <el-icon color="var(--accent-200)" @click="copyLink" class="cursor-pointer">
                             <Share />
                         </el-icon>
                         <p>26</p>
@@ -280,6 +280,8 @@
 import { ref, onMounted, Ref } from "vue"
 // 引入useRoute
 import { useRoute, useRouter } from 'vue-router'
+
+import { copyLink } from '../utils/CopyLink'
 
 import * as echarts from 'echarts';
 import pricesChartOptions from '../utils/PricesChartOptions';

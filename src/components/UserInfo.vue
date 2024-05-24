@@ -20,7 +20,7 @@
             <div class="UserInfoDetailLine1">
                 <h1 class="text-left">{{ userInfo.user?.username }}</h1>
                 <div>
-                    <el-icon size="24" class="mr-7">
+                    <el-icon size="24" class="mr-7 cursor-pointer" @click="copyLink">
                         <Share />
                     </el-icon>
                     <el-icon class="cursor-pointer" size="24" @click="toSetting">
@@ -36,7 +36,7 @@
                     <User />
                 </el-icon>
                 <p>{{ userInfo.user?.objectId }}</p>
-                <p class="ml-2 text-text-200">加入时间 {{ new Date(userInfo.user?.createdAt).toLocaleString()}}</p>
+                <p class="ml-2 text-text-200">加入时间 {{ new Date(userInfo.user?.createdAt).toLocaleString() }}</p>
             </div>
 
         </div>
@@ -46,6 +46,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
+
+import { copyLink } from '../utils/CopyLink'
 // 引入useRouter
 import { useRouter } from 'vue-router'
 
@@ -190,6 +192,7 @@ const checkFileTypeAndSize = (file: File): boolean => {
         }
     }
 }
+
 // 下面为loading的样式
 :deep(.el-loading-mask) {
     border-radius: 500px;
