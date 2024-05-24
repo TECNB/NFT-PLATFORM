@@ -189,7 +189,7 @@
 
 
             <div v-if="isShowActivity" class="border-solid border-t-[0.5px] border-text-200 -mx-5 px-5 h-[520px]">
-                <div @click="toggleIsShowFilter()"
+                <!-- <div @click="toggleIsShowFilter()"
                     class="flex justify-between items-center relative border-[0.5px] border-text-200 border-solid rounded-xl px-5 py-2 mt-5">
                     <p class="text-left text-lg">筛选</p>
                     <el-icon v-if="!isShowFilter">
@@ -211,10 +211,10 @@
                         <p class="w-full text-left font-bold rounded-xl cursor-pointer px-5 py-4 hover:bg-gray-100"
                             @click="changeFilterCondition('空投')">空投</p>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- 用v-for获取filterCondition -->
-                <div class="flex justify-start items-center gap-5 cursor-pointer w-full -mx-5 pl-5 py-5"
+                <!-- <div class="flex justify-start items-center gap-5 cursor-pointer w-full -mx-5 pl-5 py-5"
                     v-if="filterCondition.length != 0">
                     <div class="flex justify-between items-center gap-5 bg-gray-100 rounded-xl p-3"
                         v-for="condition in filterCondition" :key="condition">
@@ -225,7 +225,7 @@
                     </div>
                     <p @click="clearFilterCondition()" class="text-accent-100 cursor-pointer hover:text-accent-200">全部清除
                     </p>
-                </div>
+                </div> -->
 
                 <div class="h-[85%]">
                     <OrderTable class="rounded-2xl" :objectId="collectionItem.objectId" />

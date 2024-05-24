@@ -4,7 +4,12 @@
         <div class="body">
             <!-- 表格 -->
             <!-- 以下为订单的第一行订单状态筛选 -->
-
+            <div class="StatusSelection">
+                <div v-for="(item, index) in items" :key="index" class="item" @click="handleItemClick(index)"
+                    :class="{ active: selectedIndex === index }">
+                    <p>{{ item }}</p>
+                </div>
+            </div>
 
             <!--下面为第一行的Nav-->
             <div class="tableBar">
@@ -13,59 +18,60 @@
                 <!--@keyup.enter.native="handleQuery": 这是一个事件监听器，
             当用户按下"Enter"键时，
             会触发handleQuery方法，handleQuery方法通常用于执行搜索操作。-->
-
+                <div class="SearchInput">
+                    <el-icon :size="16">
+                        <Search />
+                    </el-icon>
+                    <input type="text" placeholder="请输入数字藏品名称">
+                </div>
+                <div class="FilterBox">
+                    <el-icon>
+                        <Operation />
+                    </el-icon>
+                    <p>筛选</p>
+                </div>
                 <!-- <el-button type="primary" @click="addMemberHandle('add')">
                         + 添加学生
                     </el-button> -->
             </div>
             <!--下面为表格数据-->
 
-            <el-table v-loading="loading" :data="tableData" class="tableBox" table-layout="fixed"
-                :row-style="{ height: '100px' }" height="100%">
+            <el-scrollbar height="100%">
+                <el-table v-loading="loading" :data="tableData" class="tableBox" table-layout="fixed"
+                    @selection-change="handleSelectionChange" :row-style="{ height: '100px' }">
+                    
+                    <el-table-column prop="createTime" label="日期" sortable>
+                        <template v-slot="{ row }">
+                            <!-- 解析日期，格式如下：2024-04-01T16:33:00.127+08:00,精确到秒 -->
+                            {{ new Date(row.createTime).toLocaleString() }}
+                        </template>
+                    </el-table-column>
 
-                <el-table-column label="活动名称" width="100" v-if="props.source!=='user'">
-                    <template v-slot="{ row }">
-                        <div class="flex justify-start items-center gap-5">
-                            <el-icon class="">
-                                <Discount />
-                            </el-icon>
-                            <p>销售</p>
-                        </div>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="createTime" label="日期" sortable>
-                    <template v-slot="{ row }">
-                        <!-- 解析日期，格式如下：2024-04-01T16:33:00.127+08:00,精确到秒 -->
-                        {{ new Date(row.createTime).toLocaleString() }}
-                    </template>
-                </el-table-column>
-                <el-table-column prop="creator" label="买家"></el-table-column>
-                <el-table-column prop="solder" label="卖家"></el-table-column>
-                <el-table-column width="90" prop="finishState" label="支付状态">
-                    <template v-slot="{ row }">
-                        <el-tag :type="row.finishState ? 'success' : 'danger'" size="large">
-                            {{ row.finishState ? '已完成' : '未完成' }}
-                        </el-tag>
-                    </template>
-                </el-table-column>
-                <el-table-column width="90" prop="finishState" label="支付状态">
-                    <template v-slot="{ row }">
-                        <el-tag :type="row.finishState ? 'success' : 'danger'" size="large">
-                            {{ row.finishState ? '已完成' : '未完成' }}
-                        </el-tag>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="price" label="价格">
-                    <template v-slot="{ row }">
-                        <p>¥ {{ row.price }}</p>
-                    </template>
-                </el-table-column>
+                    <el-table-column prop="type" label="订单来源">
+                        <template v-slot="{ row }">
+                            {{ row.type === 'buy' ? '直接购买' : '社区购买' }}
+                        </template>
+                    </el-table-column>
 
-            </el-table>
-
-
-
-            <!-- 下面是page相关的管理配置 -->
+                    <el-table-column prop="creator" label="买家"></el-table-column>
+                    <el-table-column prop="solder" label="卖家"></el-table-column>
+                    <el-table-column width="90" prop="finishState" label="订单状态">
+                        <template v-slot="{ row }">
+                            <el-tag :type="getOrderStatusType(row)" size="large">
+                                {{ getOrderStatusText(row) }}
+                            </el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column width="90" prop="finishState" label="支付状态">
+                        <template v-slot="{ row }">
+                            <el-tag :type="row.finishState ? 'success' : 'danger'" size="large">
+                                {{ row.payTime!==null ? '已完成' : '未完成' }}
+                            </el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="price" label="价格"></el-table-column>
+                </el-table>
+            </el-scrollbar>
 
 
         </div>
@@ -74,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, Ref, watch } from 'vue';
+import { ref, onMounted, Ref,watch } from 'vue';
 // ElConfigProvider 组件
 import { ElConfigProvider } from 'element-plus';
 // 引入中文包
@@ -86,7 +92,7 @@ import { getOrders } from '../api/order';
 import { getUserById } from '../api/user';
 
 
-const props = defineProps(['dateOrder', 'typeOrder','objectId','source']);
+const props = defineProps(['dateOrder','typeOrder','objectId']);
 
 
 const items = ref(['全部订单', '待付款', '申诉中', '退款中', '已完成']);
@@ -107,8 +113,6 @@ const user = 'admin';
 const allData = ref<Order[]>([]);
 
 
-
-
 // 通过watch监听props.dateOrder的变化
 watch(() => props.dateOrder, (newVal) => {
     if (newVal == "日期正序") {
@@ -127,7 +131,7 @@ watch(() => props.typeOrder, (newVal) => {
         // 筛选出finishState为true的数据
         tableData.value = allData.value.filter((item) => item.finishState == true);
         counts.value = tableData.value.length;
-
+        
     } else if (newVal == "未完成") {
         // 筛选出finishState为false的数据
         tableData.value = allData.value.filter((item) => item.finishState == false);
@@ -161,6 +165,30 @@ onMounted(async () => {
     console.log(allData.value)
 
 });
+
+const getOrderStatusType = (row: { finishState: boolean; payTime?: string; dealTime?: string }) => {
+    if (row.finishState) {
+        return 'success';
+    } else if (!row.payTime) {
+        return 'warning';
+    } else if (row.payTime && !row.dealTime) {
+        return 'danger';
+    } else {
+        return 'info';
+    }
+};
+
+const getOrderStatusText = (row: { finishState: boolean; payTime?: string; dealTime?: string }) => {
+    if (row.finishState) {
+        return '已完成';
+    } else if (!row.payTime) {
+        return '待支付';
+    } else if (row.payTime && !row.dealTime) {
+        return '待处理';
+    } else {
+        return '已取消';
+    }
+};
 
 
 const handleItemClick = (index: number) => {
@@ -225,20 +253,16 @@ const handleSelectionChange = (val: []) => {
 }
 
 .Table {
-    // width: auto;
-    height: 100%;
+    width: auto;
+    height: 92%;
 
     background: #fff;
-    // border-radius: 16px;
-
-
+    border-radius: 16px;
 
     .header {
         font-size: 26px;
         text-align: start;
         border-bottom: 1px solid var(--primary-200);
-
-        padding: 16px;
     }
 
     .body {
@@ -247,7 +271,7 @@ const handleSelectionChange = (val: []) => {
 
         height: 100%;
         background: #fff;
-        border-radius: 20px;
+        border-radius: 16px;
 
         padding: 16px;
 
