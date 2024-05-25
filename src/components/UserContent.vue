@@ -59,7 +59,7 @@
                 </div>
             </div> -->
             <div class="UserContentDetail">
-                <OrderTable source="user" class="w-full rounded-[20px]" objectId="4zy42fesbar8yg0hj2jm5218" />
+                <OrderTable source="user" class="w-full rounded-[20px]" :solder="userInfo.user.objectId" />
             </div>
         </div>
 

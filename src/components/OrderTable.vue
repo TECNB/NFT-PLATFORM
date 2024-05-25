@@ -4,7 +4,7 @@
         <div class="body">
             <!-- 表格 -->
             <!-- 以下为订单的第一行订单状态筛选 -->
-            <div class="StatusSelection" v-if="props.source==='nft'">
+            <div class="StatusSelection" v-if="props.source === 'nft'">
                 <div v-for="(item, index) in items" :key="index" class="item" @click="handleItemClick(index)"
                     :class="{ active: selectedIndex === index }">
                     <p>{{ item }}</p>
@@ -12,7 +12,7 @@
             </div>
 
             <!--下面为第一行的Nav-->
-            <div class="tableBar" v-if="props.source==='nft'">
+            <div class="tableBar" v-if="props.source === 'nft'">
                 <!--下面为Nav中的搜索框-->
                 <!--clearable: 表示输入框是否具有清除按钮，允许用户清空输入-->
                 <!--@keyup.enter.native="handleQuery": 这是一个事件监听器，
@@ -39,7 +39,7 @@
             <el-scrollbar height="100%">
                 <el-table v-loading="loading" :data="tableData" class="tableBox" table-layout="fixed"
                     @selection-change="handleSelectionChange" :row-style="{ height: '100px' }">
-                    
+
                     <el-table-column prop="createTime" label="日期" sortable>
                         <template v-slot="{ row }">
                             <!-- 解析日期，格式如下：2024-04-01T16:33:00.127+08:00,精确到秒 -->
@@ -65,7 +65,7 @@
                     <el-table-column width="90" prop="finishState" label="支付状态">
                         <template v-slot="{ row }">
                             <el-tag :type="row.finishState ? 'success' : 'danger'" size="large">
-                                {{ row.payTime!==null ? '已完成' : '未完成' }}
+                                {{ row.payTime !== null ? '已完成' : '未完成' }}
                             </el-tag>
                         </template>
                     </el-table-column>
@@ -80,7 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, Ref,watch } from 'vue';
+import { ref, onMounted, Ref, watch } from 'vue';
 // ElConfigProvider 组件
 import { ElConfigProvider } from 'element-plus';
 // 引入中文包
@@ -92,7 +92,7 @@ import { getOrders } from '../api/order';
 import { getUserById } from '../api/user';
 
 
-const props = defineProps(['dateOrder','typeOrder','objectId','source']);
+const props = defineProps(['dateOrder', 'typeOrder', 'objectId', 'source','solder']);
 
 
 const items = ref(['全部订单', '待付款', '申诉中', '退款中', '已完成']);
@@ -131,7 +131,7 @@ watch(() => props.typeOrder, (newVal) => {
         // 筛选出finishState为true的数据
         tableData.value = allData.value.filter((item) => item.finishState == true);
         counts.value = tableData.value.length;
-        
+
     } else if (newVal == "未完成") {
         // 筛选出finishState为false的数据
         tableData.value = allData.value.filter((item) => item.finishState == false);
@@ -147,8 +147,14 @@ onMounted(async () => {
     loading.value = true;
     allData.value = await getOrders();
     counts.value = allData.value.length;
-    // tableData.value 为res中选择pageSize.value行数据
-    tableData.value = allData.value.slice((page.value - 1) * pageSize.value, page.value * pageSize.value).filter((item) => item.target === props.objectId);
+    if (props.source === 'nft') {
+        // tableData.value 为res中选择pageSize.value行数据
+        tableData.value = allData.value.slice((page.value - 1) * pageSize.value, page.value * pageSize.value).filter((item) => item.target === props.objectId);
+    }else{
+        // tableData.value 为res中选择pageSize.value行数据
+        tableData.value = allData.value.slice((page.value - 1) * pageSize.value, page.value * pageSize.value).filter((item) => item.solder === props.solder);
+    }
+
 
 
     // 遍历订单数据，获取订单的创建者信息
