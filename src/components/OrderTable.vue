@@ -148,6 +148,7 @@ onMounted(async () => {
     allData.value = await getOrders();
     counts.value = allData.value.length;
     if (props.source === 'nft') {
+        console.log("props.source:"+props.source)
         // tableData.value 为res中选择pageSize.value行数据
         tableData.value = allData.value.slice((page.value - 1) * pageSize.value, page.value * pageSize.value).filter((item) => item.target === props.objectId);
     }else{

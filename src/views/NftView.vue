@@ -228,7 +228,7 @@
                 </div> -->
 
                 <div class="h-[85%]">
-                    <OrderTable class="rounded-2xl" :objectId="collectionItem.objectId" />
+                    <OrderTable class="rounded-2xl" source="nft" :objectId="collectionItem.objectId" />
                 </div>
 
             </div>
