@@ -373,9 +373,9 @@ const checkFileTypeAndSize = (file: File): boolean => {
         ElMessage.error("请上传非svg格式的图片文件");
         return false;
     }
-    if (file.size < 100 * 1024) {
+    if (file.size <1 * 1024 * 1024) {
         loading.value = false;
-        ElMessage.error("上传文件大小不能小于100Kb");
+        ElMessage.error("上传文件大小不能小于1MB");
 
         return false;
     }
