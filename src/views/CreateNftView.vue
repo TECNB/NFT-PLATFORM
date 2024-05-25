@@ -438,14 +438,18 @@ const setWatermarkRule = (path: string, base64Image: string, ifCheck?: boolean):
 // 辅助函数：检查文件类型和大小
 const checkFileTypeAndSize = (file: File): boolean => {
     if (!file.type.includes("image") || file.type.includes("svg")) {
+        loading.value = false;
         ElMessage.error("请上传非svg格式的图片文件");
         return false;
     }
     if (file.size < 100 * 1024) {
+        loading.value = false;
         ElMessage.error("上传文件大小不能小于100Kb");
+
         return false;
     }
     if (file.size > 50 * 1024 * 1024) {
+        loading.value = false;
         ElMessage.error("上传文件大小不能大于50Mb");
         return false;
     }
