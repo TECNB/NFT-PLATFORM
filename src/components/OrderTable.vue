@@ -4,7 +4,7 @@
         <div class="body">
             <!-- 表格 -->
             <!-- 以下为订单的第一行订单状态筛选 -->
-            <div class="StatusSelection">
+            <div class="StatusSelection" v-if="props.source==='nft'">
                 <div v-for="(item, index) in items" :key="index" class="item" @click="handleItemClick(index)"
                     :class="{ active: selectedIndex === index }">
                     <p>{{ item }}</p>
@@ -12,7 +12,7 @@
             </div>
 
             <!--下面为第一行的Nav-->
-            <div class="tableBar">
+            <div class="tableBar" v-if="props.source==='nft'">
                 <!--下面为Nav中的搜索框-->
                 <!--clearable: 表示输入框是否具有清除按钮，允许用户清空输入-->
                 <!--@keyup.enter.native="handleQuery": 这是一个事件监听器，
@@ -92,7 +92,7 @@ import { getOrders } from '../api/order';
 import { getUserById } from '../api/user';
 
 
-const props = defineProps(['dateOrder','typeOrder','objectId']);
+const props = defineProps(['dateOrder','typeOrder','objectId','source']);
 
 
 const items = ref(['全部订单', '待付款', '申诉中', '退款中', '已完成']);
@@ -253,11 +253,11 @@ const handleSelectionChange = (val: []) => {
 }
 
 .Table {
-    width: auto;
-    height: 92%;
+    width: 100%;
+    height: 100%;
 
     background: #fff;
-    border-radius: 16px;
+    border-radius: 20px;
 
     .header {
         font-size: 26px;
@@ -271,7 +271,7 @@ const handleSelectionChange = (val: []) => {
 
         height: 100%;
         background: #fff;
-        border-radius: 16px;
+        border-radius: 20px;
 
         padding: 16px;
 
