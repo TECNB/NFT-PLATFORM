@@ -78,6 +78,20 @@ export const text2Img = (params: any, headers?: Record<any, any>) => {
     });
 }
 
+// 本地部署的AI文字生成藏品
+export const text2ImgSd = (params: any) => {
+    return Axios.post('sd-api', params, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }).catch(error => {
+        // 错误处理
+        ElMessage.error('请求失败，请稍后重试');
+        return Promise.reject(error);
+    });
+}
+
+
 // 获取自己上传的藏品
 export const getCreatedCollection = () => {
     return axios.get<Collection[]>('api/user/me/issuedCollections');

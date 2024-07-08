@@ -39,6 +39,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/tencent-download-api/, ''),
       },
+      '/sd-api': {
+        target: 'http://10.248.68.50:7860/sdapi/v1/txt2img',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/sd-api/, ''),
+      },
       // 'https://tec-1312799453.cos.ap-shanghai.myqcloud.com': {
       //   target: 'https://tec-1312799453.cos.ap-shanghai.myqcloud.com',
       //   changeOrigin: true,

@@ -96,7 +96,7 @@ let answer = ref('');
 const questions = ref([
     { title: "账户", subQuestions: ["创建一个帐户", "登录或退出", "编辑我的帐户信息", "如何收藏物品"], relatedArticlePath: "start" },
     { title: "全站排行", subQuestions: ["作用", "如何查看", "类型介绍", "如何切换类型"], relatedArticlePath: "ranking" },
-    { title: "了解个人信息", subQuestions: ["自己创建的藏品在哪", "怎么修改已创建藏品的价格", "交易情况"], relatedArticlePath: "profile" },
+    { title: "了解个人信息", subQuestions: ["如何更改头像", "如何查看自己创建的藏品", "如何修改价格","如何查看自己的交易情况","如何查看自己收到的报价","如何查看自己的正在举行的活动"], relatedArticlePath: "profile" },
     { title: "独特功能", subQuestions: ["如何使用AI创作功能", "如何获取空投", "如何使用AI客服"], relatedArticlePath: "benefits" },
     { title: "开始创建数字藏品", subQuestions: ["如何创建数字藏品", "上传内容规定"], relatedArticlePath: "createNft" },
     { title: "特色活动", subQuestions: ["作用", "如何查看", "类型介绍", "如何切换类型"], relatedArticlePath: "specialEvents" },
