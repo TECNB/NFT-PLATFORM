@@ -30,7 +30,10 @@
                         <p class="font-medium"></p>
                     </div>
                 </div>
-                <img v-else class="w-auto h-full object-contain rounded-2xl" :src="uploadedImage" alt="上传的图片" />
+                <div v-else class="flex flex-col justify-center items-center gap-5 min-h-96 w-full rounded-2xl mt-30 bg-bg-200 cursor-pointer" v-loading="loading" element-loading-text="重新生成中..." >
+                    <img class="w-auto h-full object-contain rounded-2xl" :src="uploadedImage" alt="上传的图片" />
+                </div>
+                
             </div>
             <div class="flex-1 flex justify-between flex-col gap-5 h-[420px] pt-10">
                 <!-- 下面为文本描述输入框 -->
@@ -130,13 +133,12 @@ const toggleVisibility = () => {
 
 // 实现handleText2Img方法
 const handleText2Img = async () => {
-    console.log("被点击")
-
     // if (isEmpty()) {
     //     ElMessage.error("prompt以及negativePrompt不能为空")
     //     return;
     // }
     loading.value = true;
+    console.log("触发前"+loading.value);
 
 
     // 根据categoryId从allType中找到对应的loraPrompt
@@ -171,25 +173,30 @@ const handleText2Img = async () => {
 
 
 
-    // const requestData = {
-    //     "prompt": "vibrant sunflowers chasing the sun,details",
-    //     "negative_prompt": "easynegative bad-hands-5,",
-    //     "steps": 20,
-    //     "cfg_scale": 7.0,
-    //     "height": 1024,
-    //     "width": 1024,
-    //     "sampler_name": "DPM++ 2M SDE",
-    // };
+    await text2ImgSd(requestData).then(res => {
+        const base64Data = res?.data?.images[0];
 
-    // const requestData = {
-    //     "prompt": "painting (medium), lake, water lilies",
-    //     "negative_prompt": "sketches, out of frame, lowres, text, error, cropped, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, out of frame, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck, username, watermark, signature",
-    //     "steps": 50,
-    //     "cfg_scale": 7.0,
-    //     "height": 1024,
-    //     "width": 512,
-    //     "sampler_name": "DPM++ 2M SDE"
-    // }
+        if (base64Data) {
+            const byteCharacters = atob(base64Data);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: 'image/png' });
+            uploadedImage.value = URL.createObjectURL(blob);
+            loading.value = false;
+            console.log("触发后"+loading.value);
+            ElMessage.success("生成图片成功,点击保存后返回");
+        } else {
+            throw new Error("生成图片失败");
+        }
+    }).catch((err) => {
+        console.log(err);
+        loading.value = false;
+        ElMessage.error("生成图片失败");
+    });
+
 
 
 
@@ -211,30 +218,6 @@ const handleText2Img = async () => {
     // }).catch((err) => {
     //     console.log(err);
     // })
-
-
-    await text2ImgSd(requestData).then(res => {
-        const base64Data = res?.data?.images[0];
-
-        if (base64Data) {
-            const byteCharacters = atob(base64Data);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: 'image/png' });
-            uploadedImage.value = URL.createObjectURL(blob);
-            loading.value = false;
-            ElMessage.success("生成图片成功,点击保存后返回");
-        } else {
-            throw new Error("生成图片失败");
-        }
-    }).catch((err) => {
-        console.log(err);
-        loading.value = false;
-        ElMessage.error("生成图片失败");
-    });
 }
 
 const handleSave = async () => {
