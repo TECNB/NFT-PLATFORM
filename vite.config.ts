@@ -44,6 +44,11 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/sd-api/, ''),
       },
+      '/translateText':{
+        target: 'https://openapi.youdao.com/api',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/translateText/, ''),
+      }
       // 'https://tec-1312799453.cos.ap-shanghai.myqcloud.com': {
       //   target: 'https://tec-1312799453.cos.ap-shanghai.myqcloud.com',
       //   changeOrigin: true,

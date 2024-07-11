@@ -83,6 +83,7 @@ import { ref } from 'vue';
 
 import config from "../constant/config";
 import { V3 } from "../utils/V3";
+import { translateText } from "../utils/TranslateText";
 import { paintingStyle } from "../constant/paintingStyle";
 import { getFileObject } from "../utils/GetFileObject";
 
@@ -141,12 +142,26 @@ const handleText2Img = async () => {
     // 根据categoryId从allType中找到对应的loraPrompt
     const loraPrompt = allType.find(item => item.objectId === categoryId.value)?.loraPrompt as string;
 
-    console.log("categoryId", categoryId.value);
-    console.log("loraPrompt", loraPrompt);
+    // 调用翻译接口将prompt以及negativePrompt翻译为英文
+    // TODO: 这块代码写的有点丑陋，后续有机会回来优化一下
+    let promptEN = prompt.value;
+    let negativePromptEN = negativePrompt.value;
+
+    await translateText (prompt.value).then(res => {
+        promptEN = res;
+    }).catch(err => {
+        console.log(err);
+    })
+    await translateText (negativePrompt.value).then(res => {
+        negativePromptEN = res;
+    }).catch(err => {
+        console.log(err);
+    })
+
 
     const requestData = {
-        "prompt": loraPrompt+prompt.value,
-        "negative_prompt": negativePrompt.value,
+        "prompt": loraPrompt+promptEN,
+        "negative_prompt": negativePromptEN,
         "steps": 20,
         "cfg_scale": 7.0,
         "height": 1024,
@@ -196,6 +211,8 @@ const handleText2Img = async () => {
     // }).catch((err) => {
     //     console.log(err);
     // })
+
+
     await text2ImgSd(requestData).then(res => {
         const base64Data = res?.data?.images[0];
 
@@ -226,7 +243,7 @@ const handleSave = async () => {
     // 将uploadedImage.value去掉https://aiart-1258344699.cos.ap-guangzhou.myqcloud.com/text_to_img前缀
     // 并在前面加上/tencent-download-api
     // 作为下载图片的URL
-    let text2ImgUrl = uploadedImage.value?.replace("https://aiart-1258344699.cos.ap-guangzhou.myqcloud.com/text_to_img", "/tencent-download-api");
+    let text2ImgUrl = uploadedImage.value;
 
 
     // 发送 GET 请求获取文件内容并转化为 file 对象
