@@ -96,7 +96,7 @@ const props = defineProps(['ifShow', 'uploadImage']);
 const emit = defineEmits();
 
 
-let allType: Type[] = paintingStyle;
+let allType = paintingStyle;
 let aiData: AIData = {
     aiCreator: false,
     aiDescription: "",
@@ -136,8 +136,16 @@ const handleText2Img = async () => {
     //     return;
     // }
     loading.value = true;
+
+
+    // 根据categoryId从allType中找到对应的loraPrompt
+    const loraPrompt = allType.find(item => item.objectId === categoryId.value)?.loraPrompt as string;
+
+    console.log("categoryId", categoryId.value);
+    console.log("loraPrompt", loraPrompt);
+
     const requestData = {
-        "prompt": prompt.value,
+        "prompt": loraPrompt+prompt.value,
         "negative_prompt": negativePrompt.value,
         "steps": 20,
         "cfg_scale": 7.0,
@@ -145,8 +153,11 @@ const handleText2Img = async () => {
         "width": 1024,
         "sampler_name": "DPM++ 2M SDE",
     };
+
+
+
     // const requestData = {
-    //     "prompt": "vg,<lora:vgv1-000009:0.9>,vibrant sunflowers chasing the sun,details,",
+    //     "prompt": "vibrant sunflowers chasing the sun,details",
     //     "negative_prompt": "easynegative bad-hands-5,",
     //     "steps": 20,
     //     "cfg_scale": 7.0,
@@ -156,7 +167,7 @@ const handleText2Img = async () => {
     // };
 
     // const requestData = {
-    //     "prompt": "painting (medium), lake, water lilies, <lora:monet_v2-000004:1>",
+    //     "prompt": "painting (medium), lake, water lilies",
     //     "negative_prompt": "sketches, out of frame, lowres, text, error, cropped, worst quality, low quality, jpeg artifacts, ugly, duplicate, morbid, mutilated, out of frame, extra fingers, mutated hands, poorly drawn hands, poorly drawn face, mutation, deformed, blurry, dehydrated, bad anatomy, bad proportions, extra limbs, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, extra arms, extra legs, fused fingers, too many fingers, long neck, username, watermark, signature",
     //     "steps": 50,
     //     "cfg_scale": 7.0,
