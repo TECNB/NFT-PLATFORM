@@ -103,6 +103,11 @@ const routes: Array<RouteRecordRaw> = [
         ],
     },
     {
+        path: "/text2Img",
+        name: "Text2ImgView",
+        component: () => import("../views/Text2ImgView.vue"),
+    },
+    {
         path: '/:catchAll(.*)', // 匹配所有路径
         name: "NotFoundView",
         component: () => import("../views/NotFoundView.vue"),

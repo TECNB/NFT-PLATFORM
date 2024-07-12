@@ -13,7 +13,7 @@
                 </el-icon>
             </div>
         </div>
-        <div class="flex justify-center items-center gap-5">
+        <div class="flex justify-center items-end gap-5">
             <div class="flex-1 h-[400px] flex justify-center">
                 <div v-if="!uploadedImage" v-loading="loading" element-loading-text="生成中..."
                     class="flex flex-col justify-center items-center gap-5 min-h-96 w-full border border-dashed border-text-200 rounded-2xl mt-30 bg-bg-200 cursor-pointer transition-bg-20 hover:border-solid hover:border-text-200 hover:bg-rgba-18-18-18-0.04">
@@ -60,8 +60,7 @@
                         <el-option v-for="item in allType" :key="item.objectId" :label="item.name"
                             :value="item.objectId" />
                     </el-select>
-
-
+                    <router-link to="/text2Img" class="block text-accent-200 text-lg font-bold text-right mt-5 hover:text-accent-100">查看更多参数</router-link>
                 </div>
 
                 <div class="Button">
@@ -94,6 +93,7 @@ import { Type } from "../interfaces/Type";
 import { AIData } from "../interfaces/AIData"
 
 import { uploadImage, text2Img, text2ImgSd } from "../api/collections"
+import router from '../router';
 
 
 const props = defineProps(['ifShow', 'uploadImage']);
@@ -426,7 +426,6 @@ const isEmpty = () => {
 
 
             padding: 12px;
-            margin-top: 20px;
 
         }
 
@@ -449,7 +448,6 @@ const isEmpty = () => {
 
 
             padding: 12px;
-            margin-top: 20px;
         }
     }
 
