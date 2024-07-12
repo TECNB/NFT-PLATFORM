@@ -6,7 +6,7 @@
                 <p class="text-accent-100 font-bold text-lg">基于大规模预训练模型的文本到图像生成工具，用户可以通过输入文本描述，生成对应的图像。</p>
             </div>
             <div class="w-20 bg-accent-200 p-3 rounded-xl" @click="handleSave">
-                <p class="text-white font-bold">保存</p>
+                <p class="text-white font-bold cursor-pointer">保存</p>
             </div>
 
         </div>
@@ -19,7 +19,7 @@
                         </el-icon>
                         <p class="text-xl font-bold text-gray-500">正向提示词</p>
                     </div>
-                    <el-input v-model="prompt" class="w-full mt-5" :rows="3" type="textarea" placeholder="正向提示词" />
+                    <el-input v-model="prompt" class="w-full mt-5" :rows="3" type="textarea" placeholder="请输入正向提示词" />
                 </div>
                 <div class="mt-5">
                     <div class="flex justify-start items-center gap-4">
@@ -28,18 +28,19 @@
                         </el-icon>
                         <p class="text-xl font-bold text-gray-500">反向提示词</p>
                     </div>
-                    <el-input v-model="prompt" class="w-full mt-5" :rows="3" type="textarea" placeholder="正向提示词" />
+                    <el-input v-model="negativePrompt" class="w-full mt-5" :rows="3" type="textarea"
+                        placeholder="请输入反向提示词" />
                 </div>
             </div>
             <div class="w-full flex justify-between items-center gap-5 border border-gray-300 rounded-xl p-5 mt-5">
                 <!-- 具体参数部分 -->
-                <div class="text-left w-1/2">
+                <div class="text-left w-1/2 flex flex-col gap-5">
                     <div class="flex justify-between items-start w-full gap-5">
                         <div class="w-1/2">
                             <p class="text-base font-bold text-gray-500">采样器</p>
-                            <el-select v-model="categoryId" placeholder="请点击选择采样器" size="large" :teleported="false"
+                            <el-select v-model="samplerId" placeholder="请点击选择采样器" size="large" :teleported="false"
                                 clearable class="w-1/2 mt-2">
-                                <el-option v-for="item in allType" :key="item.objectId" :label="item.name"
+                                <el-option v-for="item in samplerType" :key="item.objectId" :label="item.name"
                                     :value="item.objectId" />
                             </el-select>
                         </div>
@@ -47,27 +48,79 @@
                             <div class="flex justify-between items-center">
 
                                 <p class="text-base font-bold text-gray-500">采样迭代步数</p>
-                                <el-input-number :disabled="ifDisabled" v-model="steps" :min="0" :max="70" size="small"
+                                <el-input-number v-model="steps" :min="10" :max="70" size="small"
                                     @change="handleChange(index, $event)" :step="1" />
                             </div>
 
-                            <el-slider v-model="steps" max="70" class="mt-2"/>
+                            <el-slider v-model="steps" :min="10" max="70" class="mt-2" />
                         </div>
+                    </div>
+
+                    <div class="flex justify-between items-start w-full gap-5">
+                        <div class="w-1/2">
+                            <div class="flex justify-between items-center">
+                                <p class="text-base font-bold text-gray-500">宽度</p>
+                                <el-input-number v-model="width" :min="64" :max="1024" size="small"
+                                    @change="handleChange(index, $event)" :step="1" />
+                            </div>
+
+                            <el-slider v-model="width" :min="64" :max="1024" class="mt-2" />
+                        </div>
+                        <div class="w-1/2">
+                            <div class="flex justify-between items-center">
+                                <p class="text-base font-bold text-gray-500">高度</p>
+                                <el-input-number v-model="height" :min="64" :max="1024" size="small"
+                                    @change="handleChange(index, $event)" :step="1" />
+                            </div>
+
+                            <el-slider v-model="height" :min="64" :max="1024" class="mt-2" />
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="flex justify-between items-center">
+                            <p class="text-base font-bold text-gray-500">提示词相关性</p>
+                            <el-input-number v-model="CFGScale" :min="1" :max="30" size="small"
+                                @change="handleChange(index, $event)" :step="1" />
+                        </div>
+
+                        <el-slider v-model="CFGScale" :min="1" :max="30" class="mt-2" />
+                    </div>
+
+                    <div class="">
+                        <p class="text-base font-bold text-gray-500">图片风格</p>
+                        <el-select v-model="categoryId" placeholder="请点击选择图片风格" size="large" :teleported="false"
+                            clearable class="w-1/2 mt-2">
+                            <el-option v-for="item in paintingType" :key="item.objectId" :label="item.name"
+                                :value="item.objectId" />
+                        </el-select>
                     </div>
 
                 </div>
                 <!-- 输出图片部分 -->
                 <div class="text-left w-1/2">
-                    <div class="">
-                        <p class="text-base font-bold text-gray-500">采样器</p>
-                        <el-select v-model="categoryId" placeholder="请点击选择采样器" size="large" :teleported="false"
-                            clearable class="w-1/2 mt-2">
-                            <el-option v-for="item in allType" :key="item.objectId" :label="item.name"
-                                :value="item.objectId" />
-                        </el-select>
+                    <div class="flex-1 h-[350px] flex justify-center">
+                        <div v-if="!uploadedImage" v-loading="loading" element-loading-text="生成中..."
+                            class="flex flex-col justify-center items-center gap-5 h-full w-full border border-dashed border-text-200 rounded-2xl mt-30 bg-bg-200 cursor-pointer transition-bg-20 hover:border-solid hover:border-text-200 hover:bg-rgba-18-18-18-0.04">
+
+                            <div class="flex justify-start items-center gap-2 bg-accent-100 text-black border rounded-2xl cursor-pointer p-2"
+                                v-if="!loading" v-loading="loading" @click="handleText2Img">
+                                <el-icon>
+                                    <Promotion />
+                                </el-icon>
+                                <p class="font-medium">点击生图</p>
+                            </div>
+                            <div class="flex justify-start items-center gap-2 bg-accent-100 text-black border rounded-2xl cursor-pointer p-2"
+                                v-else>
+                                <p class="font-medium"></p>
+                            </div>
+                        </div>
+                        <div v-else
+                            class="flex flex-col justify-center items-center gap-5 min-h-96 w-full rounded-2xl mt-30 bg-bg-200 cursor-pointer"
+                            v-loading="loading" element-loading-text="重新生成中...">
+                            <img class="w-auto h-full object-contain rounded-2xl" :src="uploadedImage" ref="image" :data-source="uploadedImage"
+                                alt="上传的图片" @click="showViewer" />
+                        </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
@@ -77,9 +130,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, nextTick } from 'vue';
+
+import Viewer from 'viewerjs';
+import 'viewerjs/dist/viewer.css';
 
 import { translateText } from "../utils/TranslateText";
+import { paintingStyle } from "../constant/paintingStyle";
 import { sampler } from "../constant/sampler";
 
 import { getFileObject } from "../utils/GetFileObject";
@@ -94,7 +151,9 @@ const props = defineProps(['ifShow', 'uploadImage']);
 const emit = defineEmits();
 
 
-let allType = sampler;
+let samplerType = sampler;
+let paintingType = paintingStyle;
+
 let aiData: AIData = {
     aiCreator: false,
     aiDescription: "",
@@ -110,15 +169,23 @@ let negativePrompt = ref('')
 let loading = ref(false);
 let saveLoading = ref(false);
 let categoryId = ref("");
+let samplerId = ref("");
 let categoryName = ref("");
 
-let steps = ref(0)
+let steps = ref(20)
+let width = ref(512)
+let height = ref(512)
+let CFGScale = ref(7)
+
+let viewer: Viewer | null = null;
+
 // 定义上传后的图片URL
 const uploadedImage = ref<string | null>(null);
 // 定义一个 ref 变量来存储转化后的 file 对象
 const fileData = ref<File | null>(null);
 
-let num = ref(1);
+const image = ref<HTMLImageElement | null>(null);
+
 const handleChange = (value: number) => {
     console.log(value);
 };
@@ -139,12 +206,11 @@ const handleText2Img = async () => {
     //     return;
     // }
     loading.value = true;
-    console.log("触发前" + loading.value);
 
 
     // 根据categoryId从allType中找到对应的loraPrompt
-    // const loraPrompt = allType.find(item => item.objectId === categoryId.value)?.loraPrompt as string;
-    const loraPrompt = categoryId.value;
+    const loraPrompt = paintingType.find(item => item.objectId === categoryId.value)?.loraPrompt as string;
+    const samplerName = samplerType.find(item => item.objectId === samplerId.value)?.name as string;
 
     // 调用翻译接口将prompt以及negativePrompt翻译为英文
     // TODO: 这块代码写的有点丑陋，后续有机会回来优化一下
@@ -166,14 +232,12 @@ const handleText2Img = async () => {
     const requestData = {
         "prompt": loraPrompt + promptEN,
         "negative_prompt": negativePromptEN,
-        "steps": 20,
-        "cfg_scale": 7.0,
-        "height": 1024,
-        "width": 1024,
-        "sampler_name": "DPM++ 2M SDE",
+        "steps": steps.value,
+        "cfg_scale": CFGScale.value,
+        "width": width.value,
+        "height": height.value,
+        "sampler_name": samplerName,
     };
-
-
 
     await text2ImgSd(requestData).then(res => {
         const base64Data = res?.data?.images[0];
@@ -188,8 +252,30 @@ const handleText2Img = async () => {
             const blob = new Blob([byteArray], { type: 'image/png' });
             uploadedImage.value = URL.createObjectURL(blob);
             loading.value = false;
-            console.log("触发后" + loading.value);
             ElMessage.success("生成图片成功,点击保存后返回");
+
+            // 使用 nextTick 确保 DOM 已更新，然后初始化 Viewer.js
+            nextTick(() => {
+                if (image.value) {
+                    viewer = new Viewer(image.value, {
+                        inline: false,
+                        button: true,
+                        navbar: true,
+                        title: true,
+                        toolbar: true,
+                        tooltip: true,
+                        movable: true,
+                        zoomable: true,
+                        rotatable: true,
+                        scalable: true,
+                        transition: true,
+                        fullscreen: true,
+                        keyboard: true,
+                        url: 'data-source'
+                    });
+                }
+            });
+
         } else {
             throw new Error("生成图片失败");
         }
@@ -221,6 +307,11 @@ const handleText2Img = async () => {
     //     console.log(err);
     // })
 }
+const showViewer = () => {
+    if (viewer) {
+        viewer.show();
+    }
+}
 
 const handleSave = async () => {
     saveLoading.value = true;
@@ -240,7 +331,7 @@ const handleSave = async () => {
     await uploadImage(formData)
         .then(res => {
             ElMessage.success("保存成功");
-            categoryName.value = allType.find(item => item.objectId === categoryId.value)?.name as string;
+            categoryName.value = paintingType.find(item => item.objectId === categoryId.value)?.name as string;
 
             aiData.aiImage = res as string;
             aiData.aiCreator = true;
@@ -353,5 +444,18 @@ const isEmpty = () => {
 
 :deep(.el-input__wrapper.is-focus) {
     box-shadow: 0 0 0 1px var(--accent-200, var(--accent-100)) inset !important;
+}
+
+// 下面为loading的样式
+:deep(.el-loading-mask) {
+    border-radius: 16px;
+}
+
+:deep(.el-loading-spinner .path) {
+    stroke: var(--accent-200);
+}
+
+:deep(.el-loading-spinner .el-loading-text) {
+    color: var(--accent-200);
 }
 </style>
