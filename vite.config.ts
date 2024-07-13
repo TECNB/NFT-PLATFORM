@@ -40,7 +40,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/tencent-download-api/, ''),
       },
       '/sd-api': {
-        target: 'http://10.248.68.50:7860/sdapi/v1/txt2img',
+        target: 'http://10.248.68.50:7861/sdapi/v1/txt2img',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/sd-api/, ''),
       },

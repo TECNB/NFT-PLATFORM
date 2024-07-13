@@ -5,8 +5,8 @@
                 <p class="text-accent-200 font-bold text-3xl">AI文生图</p>
                 <p class="text-accent-100 font-bold text-lg">基于大规模预训练模型的文本到图像生成工具，用户可以通过输入文本描述，生成对应的图像。</p>
             </div>
-            <div class="w-20 bg-accent-200 p-3 rounded-xl" @click="handleSave">
-                <p class="text-white font-bold cursor-pointer">保存</p>
+            <div class="w-20 bg-accent-200 p-3 rounded-xl cursor-pointer" @click="handleSave">
+                <p class="text-white font-bold">保存</p>
             </div>
 
         </div>
@@ -98,7 +98,7 @@
                 </div>
                 <!-- 输出图片部分 -->
                 <div class="text-left w-1/2">
-                    <div class="flex-1 h-[350px] flex justify-center">
+                    <div class="flex-1 h-[350px] flex justify-center" id="loading">
                         <div v-if="!uploadedImage" v-loading="loading" element-loading-text="生成中..."
                             class="flex flex-col justify-center items-center gap-5 h-full w-full border border-dashed border-text-200 rounded-2xl mt-30 bg-bg-200 cursor-pointer transition-bg-20 hover:border-solid hover:border-text-200 hover:bg-rgba-18-18-18-0.04">
 
@@ -117,8 +117,8 @@
                         <div v-else
                             class="flex flex-col justify-center items-center gap-5 min-h-96 w-full rounded-2xl mt-30 bg-bg-200 cursor-pointer"
                             v-loading="loading" element-loading-text="重新生成中...">
-                            <img class="w-auto h-full object-contain rounded-2xl" :src="uploadedImage" ref="image" :data-source="uploadedImage"
-                                alt="上传的图片" @click="showViewer" />
+                            <img class="w-auto h-full object-contain rounded-2xl" :src="uploadedImage" ref="image"
+                                :data-source="uploadedImage" alt="上传的图片" @click="showViewer" />
                         </div>
                     </div>
                 </div>
@@ -131,6 +131,7 @@
 
 <script setup lang="ts">
 import { ref, nextTick } from 'vue';
+import { ElLoading } from 'element-plus'
 
 import Viewer from 'viewerjs';
 import 'viewerjs/dist/viewer.css';
@@ -320,6 +321,13 @@ const handleSave = async () => {
     // 并在前面加上/tencent-download-api
     // 作为下载图片的URL
     let text2ImgUrl = uploadedImage.value;
+    const loading = ElLoading.service({
+        lock: true,
+        text: '保存中',
+        background: 'rgba(255,2555,255, 0.9)',
+        customClass: 'saveLoading'
+    })
+
 
 
     // 发送 GET 请求获取文件内容并转化为 file 对象
@@ -343,11 +351,23 @@ const handleSave = async () => {
 
             emit('saveSuccess', aiData);  // 保存成功后，将图片URL传递给父组件
             saveLoading.value = false;
+            loading.close()
+
+
+
             toggleVisibility();  // 关闭AIBox 
+
         })
         .catch(err => {
             console.log(err);
         });
+
+    console.log(aiData);
+    // 跳转至CreateNftView，并携带参数aiData
+    router.push({
+        name: 'CreateNftView',
+        state: { aiData: JSON.stringify(aiData) }
+    });
 };
 
 // 判断prompt以及negativePrompt是否为空
@@ -446,16 +466,24 @@ const isEmpty = () => {
     box-shadow: 0 0 0 1px var(--accent-200, var(--accent-100)) inset !important;
 }
 
+
 // 下面为loading的样式
-:deep(.el-loading-mask) {
+:deep(#loading .el-loading-mask) {
     border-radius: 16px;
 }
 
-:deep(.el-loading-spinner .path) {
+:deep(#loading .el-loading-spinner .path) {
     stroke: var(--accent-200);
 }
 
-:deep(.el-loading-spinner .el-loading-text) {
+:deep(#loading .el-loading-spinner .el-loading-text) {
     color: var(--accent-200);
+}
+
+:deep(.el-loading-spinner .circular .path){
+    stroke: var(--accent-200);
+}
+.el-loading-spinner .el-loading-text{
+    color: var(--accent-200) !important;
 }
 </style>

@@ -47,10 +47,10 @@
                 <div class="">
                     <el-checkbox size="large" v-model="final">是否作为最终合成商品</el-checkbox>
                 </div>
-                <div class="min-h-96 w-full" v-if="uploadedImage && !isVideo" >
+                <div class="min-h-96 w-full" v-if="uploadedImage && !isVideo">
                     <img class="w-full h-full rounded-xl object-cover" :src="uploadedImage" alt="上传的图片" />
                 </div>
-                
+
                 <video v-if="uploadedImage && isVideo"
                     style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;" autoplay
                     muted loop>
@@ -82,7 +82,7 @@
                             <Plus />
                         </el-icon>
                     </div>
-                    <p v-if="selectedBlindBox.length ===0" class="text-lg font-medium">选择是否加入合集</p>
+                    <p v-if="selectedBlindBox.length === 0" class="text-lg font-medium">选择是否加入合集</p>
                     <p v-else class="text-lg font-medium">已添加至合集,点击可重新添加</p>
                 </div>
 
@@ -111,19 +111,26 @@
 
         <MaskLayer :ifShow="isAIBoxVisible" />
         <AIBox :ifShow="isAIBoxVisible" @updateIfShow="updateIsAIBoxVisible" @saveSuccess="handleSaveSuccess" />
+        <Text2ImgView class="hidden" @saveSuccess="handleSaveSuccess" />
         <!-- 下面的部分为点击保存后的loading -->
         <MaskLayer v-loading="loadingCreate" element-loading-text="藏品上传中..." backgroundColor="rgba(255, 255, 255, 0.01)"
             :ifShow="loadingCreate" />
 
         <MaskLayer v-if="isCollectionBoxBlindBoxVisible" :ifShow="isCollectionBoxBlindBoxVisible" />
         <AlbumBox v-if="isCollectionBoxBlindBoxVisible" :ifShow="isCollectionBoxBlindBoxVisible"
-            :Selected="selectedBlindBox" @updateSelectedBlindBox="handleUpdateSelectedBlindBox" @updateIfShow="updateIsisCollectionBoxBlindBoxVisible" />
+            :Selected="selectedBlindBox" @updateSelectedBlindBox="handleUpdateSelectedBlindBox"
+            @updateIfShow="updateIsisCollectionBoxBlindBoxVisible" />
     </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref, Ref } from "vue"
 import router from "../router";
+import { useRoute } from 'vue-router';
+
+
+
+import Text2ImgView from "../views/Text2ImgView.vue";
 
 
 import { getImageAuditing } from "../utils/ImageAuditing"
@@ -185,6 +192,26 @@ const uploadedFile = ref<string | null>(null);
 
 const checked = ref(false);
 
+const route = useRoute();
+
+const aiDataString = history.state.aiData as string;
+console.log('aiDataString:', aiDataString);
+let aiData = null;
+try {
+    aiData = JSON.parse(aiDataString) as AIData;
+
+    console.log('aiData:', aiData);
+} catch (error) {
+    console.error('解析 aiData 错误：', error);
+}
+
+// 初始化ai文生图相关数据
+uploadedImage.value = aiData ? aiData.aiImage : null;
+aiCreator = aiData ? aiData.aiCreator : null;
+aiDescription = aiData ? aiData.aiDescription : null;
+aiNegDescription = aiData ? aiData.aiNegDescription : null;
+aistyle = aiData ? aiData.aistyle : null;
+
 
 onMounted(async () => {
     await getAllTypes().then((res) => {
@@ -193,6 +220,8 @@ onMounted(async () => {
     }).catch((err) => {
         console.log(err)
     })
+
+
 })
 
 const toCreate = () => {
@@ -373,10 +402,10 @@ const handleAddCollection = async () => {
     formdata.append('cover', uploadedImage.value as string);
     formdata.append('final', String(final.value));
     formdata.append('checked', String(checked.value));
-    if(selectedBlindBox.value.length > 0){
+    if (selectedBlindBox.value.length > 0) {
         formdata.append('albumId', String(selectedBlindBox.value[0].objectId));
     }
-    
+
 
     if (!uploadedFile.value) {
         formdata.append('file', uploadedImage.value as string);

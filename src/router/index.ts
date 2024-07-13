@@ -16,6 +16,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "/createNftView",
         name: "CreateNftView",
         component: () => import("../views/CreateNftView.vue"),
+        props: true  // 确保路由可以接收参数
     },
     {
         path: "/createSeriesView",
