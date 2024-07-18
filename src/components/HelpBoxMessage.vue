@@ -79,6 +79,7 @@ import { ref, onMounted, nextTick, watch } from 'vue';
 import Viewer from 'viewerjs';
 import 'viewerjs/dist/viewer.css';
 import { AIChat } from '../utils/AIChat';
+import { AIChatLocal } from '../utils/AIChatLocal'
 import { fetchMarkdown } from '../utils/fetchMarkdown';
 import { ElMessage } from 'element-plus';
 
@@ -151,11 +152,12 @@ const sendSubQuestion = async () => {
         ElMessage.warning('请输入内容');
         return;
     }
-    if(systemContent.value === '其他问题'){
-        selectedSubQuestion.value = `${inputSubQuestion.value}`;
-    }else{
-        selectedSubQuestion.value = `请详细说明 HyperStar 平台中 ${inputSubQuestion.value} 相关的部分。不要带上原文的序号，不要增加步骤和不相关的部分。但是，相关的内容你必须用序号的方式归纳。注意：如果原文中有相关图片 (img)，请告诉我并使用 HTML 格式返回。`;
-    }
+    selectedSubQuestion.value = `${inputSubQuestion.value}`;
+    // if(systemContent.value === '其他问题'){
+    //     selectedSubQuestion.value = `${inputSubQuestion.value}`;
+    // }else{
+    //     selectedSubQuestion.value = `请详细说明 HyperStar 平台中 ${inputSubQuestion.value} 相关的部分。不要带上原文的序号，不要增加步骤和不相关的部分。但是，相关的内容你必须用序号的方式归纳。注意：如果原文中有相关图片 (img)，请告诉我并使用 HTML 格式返回。`;
+    // }
 
     
     loadingSubQuestion.value = true;
@@ -170,7 +172,7 @@ const sendSubQuestion = async () => {
     console.log('relatedArticle:', relatedArticle.value);
 
     try {
-        const response = await AIChat(systemContent.value, userContent.value, relatedArticle.value);
+        const response = await AIChatLocal(systemContent.value, userContent.value, relatedArticle.value);
         answer.value = '';
         reader = response.body?.getReader() || null;  // 获取流读取器
         const decoder = new TextDecoder('utf-8');  // 创建文本解码器
@@ -217,6 +219,7 @@ const sendSubQuestion = async () => {
                         inputSubQuestion.value = '';
                         isFirstPush = true
                         ifEnd.value = true;
+                        
                         nextTick(() => {
                             // 滚动到底部
                             scrollbarRef.value?.scrollTo({ top: innerRef.value?.clientHeight || 0, behavior: 'smooth' });
@@ -248,6 +251,12 @@ const sendSubQuestion = async () => {
                                             isImgTag = false;
                                             typingEffect += imgTagBuffer;
                                             answer.value = typingEffect.replace(/\n/g, '<br>');
+                                            console.log('imgTagBuffer:', imgTagBuffer);
+                                            console.log('answer:', answer.value);
+                                            // 下面是关键代码
+                                            // 否则最后一个加入imgTagBuffer的answer.value无法进入数组conversationHistory.value[conversationHistory.value.length - 1].text中
+                                            // 导致最后一张图片无法显示
+                                            conversationHistory.value[conversationHistory.value.length - 1].text = answer.value;
 
                                             imgTagBuffer = '';  // 清空缓冲区
                                         }
