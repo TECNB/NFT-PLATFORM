@@ -96,8 +96,12 @@
                     </div>
 
                 </div>
+
                 <!-- 输出图片部分 -->
                 <div class="text-left w-1/2">
+                    <!-- 进度条部分 -->
+                    <el-progress :status="success" :text-inside="true" :stroke-width="18" class="mb-5"
+                        v-if="progressLoading" color="#9A73B5" :percentage="progress" />
                     <div class="flex-1 h-[350px] flex justify-center" id="loading">
                         <div v-if="!uploadedImage" v-loading="loading" element-loading-text="生成中..."
                             class="flex flex-col justify-center items-center gap-5 h-full w-full border border-dashed border-text-200 rounded-2xl mt-30 bg-bg-200 cursor-pointer transition-bg-20 hover:border-solid hover:border-text-200 hover:bg-rgba-18-18-18-0.04">
@@ -115,7 +119,7 @@
                             </div>
                         </div>
                         <div v-else
-                            class="flex flex-col justify-center items-center gap-5 min-h-96 w-full rounded-2xl mt-30 bg-bg-200 cursor-pointer"
+                            class="flex flex-col justify-center items-center gap-5 h-[350px] w-full rounded-2xl mt-30 bg-bg-200 cursor-pointer"
                             v-loading="loading" element-loading-text="重新生成中...">
                             <img class="w-auto h-full object-contain rounded-2xl" :src="uploadedImage" ref="image"
                                 :data-source="uploadedImage" alt="上传的图片" @click="showViewer" />
@@ -144,7 +148,7 @@ import { getFileObject } from "../utils/GetFileObject";
 
 import { AIData } from "../interfaces/AIData"
 
-import { uploadImage, text2Img, text2ImgSd } from "../api/collections"
+import { uploadImage, text2Img, text2ImgSd, getProgress } from "../api/collections"
 import router from '../router';
 
 
@@ -168,6 +172,7 @@ let prompt = ref('')
 // 定义negativePrompt
 let negativePrompt = ref('')
 let loading = ref(false);
+let progressLoading = ref(false);
 let saveLoading = ref(false);
 let categoryId = ref("");
 let samplerId = ref("");
@@ -180,12 +185,17 @@ let CFGScale = ref(7)
 
 let viewer: Viewer | null = null;
 
+const progress = ref(0);
+const progressImage = ref<string | null>(null);
+
 // 定义上传后的图片URL
 const uploadedImage = ref<string | null>(null);
 // 定义一个 ref 变量来存储转化后的 file 对象
 const fileData = ref<File | null>(null);
 
 const image = ref<HTMLImageElement | null>(null);
+
+let hasProgressBeenNonZero = false;  // 新增的布尔变量
 
 const handleChange = (value: number) => {
     console.log(value);
@@ -207,7 +217,10 @@ const handleText2Img = async () => {
     //     return;
     // }
     loading.value = true;
+    progressLoading.value = true;
 
+    // 启动进度更新定时器
+    const progressInterval = setInterval(getProgressUpdates, 1000);
 
     // 根据categoryId从allType中找到对应的loraPrompt
     const loraPrompt = paintingType.find(item => item.objectId === categoryId.value)?.loraPrompt as string;
@@ -222,13 +235,12 @@ const handleText2Img = async () => {
         promptEN = res;
     }).catch(err => {
         console.log(err);
-    })
+    });
     await translateText(negativePrompt.value).then(res => {
         negativePromptEN = res;
     }).catch(err => {
         console.log(err);
-    })
-
+    });
 
     const requestData = {
         "prompt": loraPrompt + promptEN,
@@ -242,6 +254,7 @@ const handleText2Img = async () => {
 
     await text2ImgSd(requestData).then(res => {
         const base64Data = res?.data?.images[0];
+        progress.value = 0;  // 将进度条设置为 0
 
         if (base64Data) {
             const byteCharacters = atob(base64Data);
@@ -253,7 +266,9 @@ const handleText2Img = async () => {
             const blob = new Blob([byteArray], { type: 'image/png' });
             uploadedImage.value = URL.createObjectURL(blob);
             loading.value = false;
+            progressLoading.value = false;
             ElMessage.success("生成图片成功,点击保存后返回");
+
 
             // 使用 nextTick 确保 DOM 已更新，然后初始化 Viewer.js
             nextTick(() => {
@@ -276,7 +291,6 @@ const handleText2Img = async () => {
                     });
                 }
             });
-
         } else {
             throw new Error("生成图片失败");
         }
@@ -284,10 +298,11 @@ const handleText2Img = async () => {
         console.log(err);
         loading.value = false;
         ElMessage.error("生成图片失败");
+    }).finally(() => {
+
+        // 停止进度更新定时器
+        clearInterval(progressInterval);
     });
-
-
-
 
     // 调用V3接口
     // body参数为requestData
@@ -308,9 +323,45 @@ const handleText2Img = async () => {
     //     console.log(err);
     // })
 }
-const showViewer = () => {
-    if (viewer) {
-        viewer.show();
+
+const getProgressUpdates = async () => {
+    if (loading.value) {
+        await getProgress().then(res => {
+            console.log("获取进度成功", res);
+            // 将 progress.value 转换为数字并乘以 100，然后转换回字符串赋值给 res.data.progress
+            progress.value = (parseFloat(res.data.progress) * 100);
+            // 不保留小数
+            progress.value = Math.floor(progress.value);
+
+            // 检查 progress.value 是否曾经不为 0
+            if (progress.value !== 0) {
+                hasProgressBeenNonZero = true;
+            }
+
+            // 如果 progress.value 为 0 并且 hasProgressBeenNonZero 为 true，则将其设置为 100
+            if (progress.value === 0 && hasProgressBeenNonZero) {
+                progress.value = 100;
+            }
+
+            console.log("progress", progress.value);
+            if (res.data.current_image) {
+                progressImage.value = res.data.current_image;
+
+
+                const byteCharacters = atob(progressImage.value);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: 'image/png' });
+                uploadedImage.value = URL.createObjectURL(blob);
+                loading.value = false;
+            }
+            console.log("progressImage", progressImage.value);
+        }).catch(err => {
+            console.log("获取进度失败", err);
+        });
     }
 }
 
@@ -480,10 +531,11 @@ const isEmpty = () => {
     color: var(--accent-200);
 }
 
-:deep(.el-loading-spinner .circular .path){
+:deep(.el-loading-spinner .circular .path) {
     stroke: var(--accent-200);
 }
-.el-loading-spinner .el-loading-text{
+
+.el-loading-spinner .el-loading-text {
     color: var(--accent-200) !important;
 }
 </style>

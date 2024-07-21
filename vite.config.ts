@@ -44,12 +44,17 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/sd-api/, ''),
       },
+      '/sd-progress-api': {
+        target: 'http://10.248.68.50:7860/sdapi/v1/progress',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/sd-progress-api/, ''),
+      },
       '/aichat-api': {
         target: 'http://10.248.68.50:8000/v1/chat/completions',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/aichat-api/, ''),
       },
-      '/translateText':{
+      '/translateText': {
         target: 'https://openapi.youdao.com/api',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/translateText/, ''),

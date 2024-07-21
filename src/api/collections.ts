@@ -91,6 +91,19 @@ export const text2ImgSd = (params: any) => {
     });
 }
 
+// 获取本地部署的AI文字生成藏品的进度
+export const getProgress = () => {
+    return Axios.get('sd-progress-api', {
+        params: {
+            skip_current_image: false
+        }
+    }).catch(error => {
+        // 错误处理
+        ElMessage.error('请求失败，请稍后重试');
+        return Promise.reject(error);
+    });
+}
+
 
 // 获取自己上传的藏品
 export const getCreatedCollection = () => {
