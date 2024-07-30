@@ -58,7 +58,13 @@ export default defineConfig({
         target: 'https://openapi.youdao.com/api',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/translateText/, ''),
-      }
+      },
+      '/usdz': {
+        target: 'https://hyper-star-1256277779.cos.ap-nanjing.myqcloud.com/collection',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/usdz/, ''),
+      },
+      
       // 'https://tec-1312799453.cos.ap-shanghai.myqcloud.com': {
       //   target: 'https://tec-1312799453.cos.ap-shanghai.myqcloud.com',
       //   changeOrigin: true,

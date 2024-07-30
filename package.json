@@ -21,8 +21,11 @@
     "markdown-it": "^14.1.0",
     "pinia-plugin-persistedstate": "^3.2.1",
     "qrcode": "^1.5.3",
+    "three": "^0.166.0",
+    "three-usdz-loader": "^1.0.9",
     "viewerjs": "^1.11.6",
-    "vue": "^3.3.11"
+    "vue": "^3.3.11",
+    "vue-3d-loader": "^2.2.4"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",

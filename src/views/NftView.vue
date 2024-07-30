@@ -3,6 +3,8 @@
         <MainNavbar />
         <div class="NftViewBody">
             <div class="NftViewBodyLeft">
+                <vue3dLoader filePath="./models/airpods_pro.glb"
+                    :cameraPosition="{ x: 1, y: -5, z: -20 }" :height="350" />
                 <div class="NftImageIcon">
                     <el-icon>
                         <UserFilled />
@@ -23,15 +25,18 @@
                 </div>
                 <div class="NftImage" v-loading="imageLoading" element-loading-text="报价加载中...">
                     <div class="NftImageImg relative">
-                        <img v-if="!isVideo" :src="collectionItem.cover" alt=""
+                        <img v-if="!isVideo && !isUSDZ" :src="collectionItem.cover" alt=""
                             style="height: 100%; width: 100%;border-radius: 0 0 20px 20px; object-fit: cover; aspect-ratio: 1/1;">
-                        <video v-else style="height: 100%; width: 100%;border-radius: 0 0 20px 20px; object-fit: cover; aspect-ratio: 1/1;"
+                        <video v-else-if="isVideo"
+                            style="height: 100%; width: 100%;border-radius: 0 0 20px 20px; object-fit: cover; aspect-ratio: 1/1;"
                             autoplay muted loop>
-                            <source :src="collectionItem.file"
-                                type="video/mp4">
+                            <source :src="collectionItem.file" type="video/mp4">
                         </video>
+                        <div v-else ref="usdzContainer"
+                            style="height: 100%; width: 100%;border-radius: 0 0 20px 20px; object-fit: cover; aspect-ratio: 1/1;">
+                        </div>
                         <div v-if="collectionItem.aiCreator && !imageLoading"
-                            class="absolute right-3 top-3  bg-accent-200 rounded-xl px-3 py-1">
+                            class="absolute right-3 top-3 bg-accent-200 rounded-xl px-3 py-1">
                             <p class="text-white text-sm font-medium">AI</p>
                         </div>
                     </div>
@@ -86,7 +91,8 @@
                         </div>
                         <div class="flex justify-between items-center w-full">
                             <p class="text-lg font-medium">最后更新日期</p>
-                            <p class="text-base font-medium">{{new Date(collectionItem.createdAt).toLocaleString()}}</p>
+                            <p class="text-base font-medium">{{ new Date(collectionItem.createdAt).toLocaleString() }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -269,7 +275,8 @@
         </div>
 
         <MaskLayer :ifShow="isQRCodeBoxVisible" />
-        <QRCodeBox :ifShow="isQRCodeBoxVisible" :buyingObjectId="collectionItem.objectId" @updateIfShow="updateIsQRCodeBoxVisible" />
+        <QRCodeBox :ifShow="isQRCodeBoxVisible" :buyingObjectId="collectionItem.objectId"
+            @updateIfShow="updateIsQRCodeBoxVisible" />
 
         <MaskLayer :ifShow="isOfferBoxVisible" />
         <OfferBox :ifShow="isOfferBoxVisible" :detail="collectionItem" @updateIfShow="updateIsOfferBoxVisibleVisible" />
@@ -277,9 +284,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, Ref } from "vue"
+import { ref, onMounted, Ref, nextTick } from "vue"
 // 引入useRoute
 import { useRoute, useRouter } from 'vue-router'
+
+import * as THREE from 'three';
+import { USDZLoader } from 'three-usdz-loader';
+
+import { vue3dLoader } from "vue-3d-loader"; // The vue3dLoader in {...}
 
 import { copyLink } from '../utils/CopyLink'
 
@@ -357,6 +369,7 @@ let isShowFilter = ref(false);
 let isShowMore = ref(true);
 
 let isVideo = ref(false);
+const isUSDZ = ref<boolean>(false);
 
 // 切换isShowBlockChainDetail
 const toggleIsShowBlockChainDetail = () => {
@@ -413,20 +426,20 @@ onMounted(async () => {
 
     // 判断collectionItem.value的file中是否包含mp4后缀
     if (collectionItem.value.file.includes('.mp4')) {
-        // 如果包含则将isVideo设置为true
         isVideo.value = true;
         imageLoading.value = false;
-    } else {
-        isVideo.value = false;
-        // 在collectionItem.value.cover加载完成后再loading.value = false;
-        await new Promise((resolve) => {
-            const img = new Image();
-            img.src = collectionItem.value.cover;
-            img.onload = () => {
-                imageLoading.value = false;
-                resolve(null);
-            };
+    } else if (collectionItem.value.file.includes('.usdz')) {
+        isUSDZ.value = true;
+        imageLoading.value = false;
+        nextTick(() => {
+            renderUSDZModel(collectionItem.value.file);
         });
+    } else {
+        const img = new Image();
+        img.src = collectionItem.value.cover;
+        img.onload = () => {
+            imageLoading.value = false;
+        };
     }
 
 
@@ -446,6 +459,54 @@ onMounted(async () => {
     // 调用渲染图表的方法
     renderPricesChart();
 });
+
+const renderUSDZModel = async (fileUrl: string) => {
+    const container = document.querySelector("#app > div > div.NftViewBody > div.NftViewBodyLeft > div.NftImage > div > div") as HTMLElement;
+
+    if (!container) {
+        console.error('USDZ container not found');
+        return;
+    }
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    // const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    camera.position.set(0, 0, 5);
+
+    const loader = new USDZLoader();
+    const group = new THREE.Group();
+    scene.add(group);
+
+    try {
+        console.log('Loading USDZ file:', fileUrl);
+        const response = await fetch(
+            `/usdz${fileUrl.replace('https://hyper-star-1256277779.cos.ap-nanjing.myqcloud.com/collection', '')}`, 
+            {
+                headers: {
+                    'Cross-Origin-Embedder-Policy': 'require-corp',
+                    'Cross-Origin-Opener-Policy': 'same-origin',
+                }
+            }
+        );
+        console.log('response:', response);
+        const blob = await response.blob();
+        const file = new File([blob], 'model.usdz');
+
+        const loadedModel = await loader.loadFile(file, group);
+        // const animate = () => {
+        //     requestAnimationFrame(animate);
+        //     loadedModel.update();
+        //     renderer.render(scene, camera);
+        // };
+        // animate();
+    } catch (error) {
+        console.error('An error occurred loading the USDZ file:', error);
+    }
+};
 
 
 // 点击ShoppingCart图标后将该商品collectionItem添加进CartListCollection的方法
