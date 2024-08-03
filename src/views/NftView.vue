@@ -3,8 +3,6 @@
         <MainNavbar />
         <div class="NftViewBody">
             <div class="NftViewBodyLeft">
-                <vue3dLoader filePath="./models/airpods_pro.glb"
-                    :cameraPosition="{ x: 1, y: -5, z: -20 }" :height="350" />
                 <div class="NftImageIcon">
                     <el-icon>
                         <UserFilled />
@@ -25,15 +23,17 @@
                 </div>
                 <div class="NftImage" v-loading="imageLoading" element-loading-text="报价加载中...">
                     <div class="NftImageImg relative">
-                        <img v-if="!isVideo && !isUSDZ" :src="collectionItem.cover" alt=""
+                        <img v-if="!isVideo && !is3D" :src="collectionItem.cover" alt=""
                             style="height: 100%; width: 100%;border-radius: 0 0 20px 20px; object-fit: cover; aspect-ratio: 1/1;">
                         <video v-else-if="isVideo"
                             style="height: 100%; width: 100%;border-radius: 0 0 20px 20px; object-fit: cover; aspect-ratio: 1/1;"
                             autoplay muted loop>
                             <source :src="collectionItem.file" type="video/mp4">
                         </video>
-                        <div v-else ref="usdzContainer"
-                            style="height: 100%; width: 100%;border-radius: 0 0 20px 20px; object-fit: cover; aspect-ratio: 1/1;">
+                        <div ref="usdzContainer" v-else
+                            style="border-radius: 0 0 20px 20px;height: 567px;">
+                            <vue3dLoader  class="w-full h-full rounded-2xl"  :height="567"
+                                :filePath="glbFileUrl" :cameraPosition="{ x: 1, y: -5, z: -30 }" />
                         </div>
                         <div v-if="collectionItem.aiCreator && !imageLoading"
                             class="absolute right-3 top-3 bg-accent-200 rounded-xl px-3 py-1">
@@ -330,6 +330,7 @@ import { addFavoriteCollection, removeFavoriteCollection } from '../api/user'
 
 const router = useRouter();
 
+const glbFileUrl = ref<string | null>(null);
 
 // 实例化CartListCollectionStore
 let CartListCollection = CartListCollectionStore()
@@ -369,7 +370,7 @@ let isShowFilter = ref(false);
 let isShowMore = ref(true);
 
 let isVideo = ref(false);
-const isUSDZ = ref<boolean>(false);
+const is3D = ref<boolean>(false);
 
 // 切换isShowBlockChainDetail
 const toggleIsShowBlockChainDetail = () => {
@@ -428,11 +429,12 @@ onMounted(async () => {
     if (collectionItem.value.file.includes('.mp4')) {
         isVideo.value = true;
         imageLoading.value = false;
-    } else if (collectionItem.value.file.includes('.usdz')) {
-        isUSDZ.value = true;
+    } else if (collectionItem.value.file.includes('.usdz') || collectionItem.value.file.includes('.glb')) {
+        is3D.value = true;
         imageLoading.value = false;
         nextTick(() => {
             renderUSDZModel(collectionItem.value.file);
+            glbFileUrl.value = `/usdz${collectionItem.value.file.replace('https://hyper-star-1256277779.cos.ap-nanjing.myqcloud.com/collection', '')}`
         });
     } else {
         const img = new Image();
@@ -484,7 +486,7 @@ const renderUSDZModel = async (fileUrl: string) => {
     try {
         console.log('Loading USDZ file:', fileUrl);
         const response = await fetch(
-            `/usdz${fileUrl.replace('https://hyper-star-1256277779.cos.ap-nanjing.myqcloud.com/collection', '')}`, 
+            `/usdz${fileUrl.replace('https://hyper-star-1256277779.cos.ap-nanjing.myqcloud.com/collection', '')}`,
             {
                 headers: {
                     'Cross-Origin-Embedder-Policy': 'require-corp',
@@ -822,5 +824,14 @@ const toNft = (objectId: string) => {
 // 修改文字的颜色
 :deep(.el-loading-spinner .el-loading-text) {
     color: var(--accent-200);
+}
+
+:deep(.viewer-container) {
+    position: relative;
+}
+
+:deep(.viewer-canvas) {
+    position: relative;
+    border-radius: 0 0 20px 20px
 }
 </style>
