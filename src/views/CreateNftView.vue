@@ -18,8 +18,9 @@
             <div class="CreateNftViewBodyLeft">
                 <p style="font-size: 36px;font-weight: bold;">创建数字藏品</p>
                 <p style="font-size: 20px;margin-top: 10px;"> 铸造项目后，您将无法更改其任何信息。</p>
-                <div v-if="!uploadedImage" @click="openFileInput" v-loading="loading" element-loading-text="上传文件中..."
-                    class="flex flex-col justify-center items-center gap-5 min-h-96 w-full border border-dashed border-text-200 rounded-2xl mt-30 bg-bg-200 cursor-pointer transition-bg-20 mt-12 hover:border-solid hover:border-text-200 hover:bg-rgba-18-18-18-0.04">
+                <div v-if="!uploadedImage && !is3D" @click="openFileInput" v-loading="loading"
+                    element-loading-text="上传文件中..."
+                    class="flex flex-col justify-center items-center gap-5 min-h-96 w-full border border-dashed border-text-200 rounded-2xl bg-bg-200 cursor-pointer transition-bg-20 mt-12 hover:border-solid hover:border-text-200 hover:bg-rgba-18-18-18-0.04">
                     <div v-if="!loading" class=" flex flex-col justify-center items-center gap-5">
                         <el-icon size="40">
                             <Upload />
@@ -44,12 +45,31 @@
 
                     </div>
                 </div>
-                <div class="">
-                    <el-checkbox size="large" v-model="final">是否作为最终合成商品</el-checkbox>
+
+                <div class="min-h-96 w-full mt-12" v-if="uploadedFile && is3D" v-loading="loading"
+                element-loading-text="上传封面中...">
+                    <vue3dLoader class="w-full h-full rounded-xl" :height="384" :width="530"
+                        filePath="./models/airpods_pro.glb" :cameraPosition="{ x: 1, y: -5, z: -20 }" />
                 </div>
-                <div class="min-h-96 w-full" v-if="uploadedImage && !isVideo">
+
+                <div class="min-h-96 w-full mt-12" v-if="uploadedImage && !isVideo && !is3D">
                     <img class="w-full h-full rounded-xl object-cover" :src="uploadedImage" alt="上传的图片" />
                 </div>
+
+                <div class="">
+                    <div class="flex justify-start items-center gap-2 bg-accent-100 text-black border rounded-2xl cursor-pointer p-2 mt-5"
+                        @click="openFileInput" v-if="uploadedFile && is3D">
+                        <el-icon>
+                            <Plus />
+                        </el-icon>
+                        <p class="font-medium">上传封面</p>
+                        <input id="imageInput" type="file" ref="imageInput" style="display: none;" @change="uploadFile">
+                    </div>
+                    <el-checkbox size="large" v-model="final">是否作为最终合成商品</el-checkbox>
+                    
+                </div>
+                
+
 
                 <video v-if="uploadedImage && isVideo"
                     style="height: 100%; width: 100%; border-radius: 20px 20px 0px 0px; object-fit: cover;" autoplay
@@ -128,6 +148,7 @@ import { onMounted, ref, Ref } from "vue"
 import router from "../router";
 import { useRoute } from 'vue-router';
 
+import { vue3dLoader } from "vue-3d-loader"; // The vue3dLoader in {...}
 
 
 import Text2ImgView from "../views/Text2ImgView.vue";
@@ -254,15 +275,25 @@ const handleUpdateSelectedBlindBox = (data: any) => {
 
 // 通过div点击input的方法
 const openFileInput = () => {
+    console.log("openFileInput")
     const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+
+    console.log("fileInput", fileInput)
     if (fileInput) {
         fileInput.click();
+    }else{
+        const imageInput = document.getElementById('imageInput') as HTMLInputElement;
+        imageInput.click();
     }
 };
 
 // 上传图片
 const uploadFile = async () => {
-    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    let fileInput = document.getElementById('fileInput') as HTMLInputElement;
+
+    if (!fileInput) {
+        fileInput = document.getElementById('imageInput') as HTMLInputElement;
+    }
 
 
     // 暂时保存审核前的图片
@@ -292,7 +323,7 @@ const uploadFile = async () => {
     }
 
     loading.value = true;
-    
+
 
     // 判断是否是视频
     if (file.type.includes("video")) {
@@ -314,7 +345,7 @@ const uploadFile = async () => {
         isVideo.value = false;
         return;
     } else if (file.name.endsWith(".glb") || file.name.endsWith(".usdz")) {
-        is3D.value = true;
+
         // 下面是上传视频的内容
         const formData = new FormData();
         formData.append('file', file);
@@ -324,15 +355,16 @@ const uploadFile = async () => {
         await uploadImage(formData).then((res) => {
             uploadedFile.value = res as string;
             console.log("uploadedFile.value", uploadedFile.value)
+            is3D.value = true;
         }).catch((err) => {
             console.log(err);
         });
         ElMessage.success("上传3D模型文件成功,请再上传一张封面图片");
         loading.value = false;
-        is3D.value = false;
+        // is3D.value = false;
         return;
     } else {
-        console.log("file:",file)
+        console.log("file:", file)
         // 检测上传文件的质量，如果超过100Kb则提示，限制上传的文件类型为图片
         if (!checkFileTypeAndSize(file)) {
             return;
@@ -553,6 +585,7 @@ const handleGetImageAuditing = (result: AuditResult, imageUrl: string) => {
         ElMessage.info("图片等待人工审核")
     } else if (resultData == 0) {
         uploadedImage.value = imageUrl
+        is3D.value = false
         checked.value = true;
         ElMessage.success("图片审核通过")
     }
@@ -841,5 +874,13 @@ const handleGetImageAuditing = (result: AuditResult, imageUrl: string) => {
 
 :deep(.el-loading-spinner .el-loading-text) {
     color: var(--accent-200);
+}
+
+:deep(.viewer-container) {
+    position: relative;
+}
+
+:deep(.viewer-canvas) {
+    position: relative;
 }
 </style>
