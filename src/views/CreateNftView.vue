@@ -292,8 +292,12 @@ const openFileInput = () => {
 // 上传图片
 const uploadFile = async () => {
     let fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    let imageInput = document.getElementById('imageInput') as HTMLInputElement;
+    console.log("imageInput", imageInput)
 
-    if (!fileInput) {
+    if (!imageInput) {
+        fileInput = document.getElementById('fileInput') as HTMLInputElement;
+    }else{
         fileInput = document.getElementById('imageInput') as HTMLInputElement;
     }
 
