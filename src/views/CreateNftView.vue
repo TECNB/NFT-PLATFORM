@@ -187,6 +187,9 @@ const isCollectionBoxBlindBoxVisible = ref(false);
 
 // 是否是视频文件
 const isVideo = ref<boolean>(false);
+// 是否是3D模型文件
+const is3D = ref<boolean>(false);
+
 
 const uploadedFile = ref<string | null>(null);
 
@@ -196,14 +199,8 @@ const route = useRoute();
 
 const aiDataString = history.state.aiData as string;
 console.log('aiDataString:', aiDataString);
-let aiData = null;
-try {
-    aiData = JSON.parse(aiDataString) as AIData;
-
-    console.log('aiData:', aiData);
-} catch (error) {
-    console.error('解析 aiData 错误：', error);
-}
+// aiDataString不为空时，解析aiDataString
+const aiData: AIData = aiDataString ? JSON.parse(aiDataString) : null;
 
 // 初始化ai文生图相关数据
 uploadedImage.value = aiData ? aiData.aiImage : null;
@@ -295,15 +292,17 @@ const uploadFile = async () => {
     }
 
     loading.value = true;
+    
+
     // 判断是否是视频
     if (file.type.includes("video")) {
         isVideo.value = true;
-        // 下面是上传图片的内容
+        // 下面是上传视频的内容
         const formData = new FormData();
         formData.append('file', file);
         formData.append('type', 'collection')
         console.log("file:", file)
-        // 上传图片，返回图片URL
+        // 上传视频，返回视频URL
         await uploadImage(formData).then((res) => {
             uploadedFile.value = res as string;
             console.log("uploadedFile.value", uploadedFile.value)
@@ -314,7 +313,26 @@ const uploadFile = async () => {
         loading.value = false;
         isVideo.value = false;
         return;
+    } else if (file.name.endsWith(".glb") || file.name.endsWith(".usdz")) {
+        is3D.value = true;
+        // 下面是上传视频的内容
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', 'collection')
+        console.log("file:", file)
+        // 上传视频，返回视频URL
+        await uploadImage(formData).then((res) => {
+            uploadedFile.value = res as string;
+            console.log("uploadedFile.value", uploadedFile.value)
+        }).catch((err) => {
+            console.log(err);
+        });
+        ElMessage.success("上传3D模型文件成功,请再上传一张封面图片");
+        loading.value = false;
+        is3D.value = false;
+        return;
     } else {
+        console.log("file:",file)
         // 检测上传文件的质量，如果超过100Kb则提示，限制上传的文件类型为图片
         if (!checkFileTypeAndSize(file)) {
             return;
