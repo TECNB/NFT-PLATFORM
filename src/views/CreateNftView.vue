@@ -49,7 +49,7 @@
                 <div class="min-h-96 w-full mt-12" v-if="uploadedFile && is3D" v-loading="loading"
                 element-loading-text="上传封面中...">
                     <vue3dLoader class="w-full h-full rounded-xl" :height="384" :width="530"
-                        filePath="./models/airpods_pro.glb" :cameraPosition="{ x: 1, y: -5, z: -20 }" />
+                        :filePath="glbFileUrl" :cameraPosition="{ x: 1, y: -5, z: -20 }" />
                 </div>
 
                 <div class="min-h-96 w-full mt-12" v-if="uploadedImage && !isVideo && !is3D">
@@ -223,6 +223,8 @@ console.log('aiDataString:', aiDataString);
 // aiDataString不为空时，解析aiDataString
 const aiData: AIData = aiDataString ? JSON.parse(aiDataString) : null;
 
+const glbFileUrl = ref<string | null>(null);
+
 // 初始化ai文生图相关数据
 uploadedImage.value = aiData ? aiData.aiImage : null;
 aiCreator = aiData ? aiData.aiCreator : null;
@@ -356,6 +358,7 @@ const uploadFile = async () => {
             uploadedFile.value = res as string;
             console.log("uploadedFile.value", uploadedFile.value)
             is3D.value = true;
+            glbFileUrl.value = `/usdz${uploadedFile.value.replace('https://hyper-star-1256277779.cos.ap-nanjing.myqcloud.com/collection', '')}`
         }).catch((err) => {
             console.log(err);
         });
