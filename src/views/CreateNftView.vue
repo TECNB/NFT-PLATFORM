@@ -48,8 +48,8 @@
 
                 <div class="min-h-96 w-full mt-12" v-if="uploadedFile && is3D" v-loading="loading"
                 element-loading-text="上传封面中...">
-                    <vue3dLoader class="w-full h-full rounded-xl" :height="384" :width="530"
-                        :filePath="glbFileUrl" :cameraPosition="{ x: 1, y: -5, z: -20 }" />
+                    <vue3dLoader class="w-full h-full rounded-xl" :height="384" :width="530" :autoPlay="true" outputEncoding="sRGB"
+                        :filePath="glbFileUrl" :cameraPosition="{ x: 0, y: 0, z: 0 }" :backgroundColor="'#E9E4ED'" :backgroundAlpha="0.5" :pointLightFollowCamera="true"/>
                 </div>
 
                 <div class="min-h-96 w-full mt-12" v-if="uploadedImage && !isVideo && !is3D">

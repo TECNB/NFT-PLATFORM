@@ -30,10 +30,10 @@
                             autoplay muted loop>
                             <source :src="collectionItem.file" type="video/mp4">
                         </video>
-                        <div ref="usdzContainer" v-else
-                            style="border-radius: 0 0 20px 20px;height: 567px;">
-                            <vue3dLoader  class="w-full h-full rounded-2xl"  :height="567"
-                                :filePath="glbFileUrl" :cameraPosition="{ x: 1, y: -5, z: -30 }" />
+                        <div ref="usdzContainer" v-else style="border-radius: 0 0 20px 20px;height: 567px;">
+                            <vue3dLoader class="w-full h-full rounded-2xl" :height="567" :autoPlay="true"
+                                outputEncoding="sRGB" :filePath="glbFileUrl" :cameraPosition="{ x: 0, y: 0, z: 0 }"
+                                :backgroundAlpha="0.5" :pointLightFollowCamera="true" />
                         </div>
                         <div v-if="collectionItem.aiCreator && !imageLoading"
                             class="absolute right-3 top-3 bg-accent-200 rounded-xl px-3 py-1">

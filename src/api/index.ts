@@ -7,7 +7,7 @@ const URL: string = ''
 // const URL: string = 'http://42.192.90.134:5173'
 // const URL: string = 'http://localhost:5173'
 enum RequestEnums {
-    TIMEOUT = 20000,
+    TIMEOUT = 40000,
     OVERDUE = 600, // 登录失效
     FAIL = 999, // 请求失败
     SUCCESS = 200, // 请求成功
