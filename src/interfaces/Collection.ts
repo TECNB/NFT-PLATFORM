@@ -8,6 +8,7 @@ export interface Collection {
     intro: string;
     cover: string;
     file: string;
+    glbFile: string;
     authorId: string;
     categoryId: string;
     type: string;

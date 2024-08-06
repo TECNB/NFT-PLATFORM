@@ -34,7 +34,7 @@ export const paintingStyle = [
     {
         objectId: '105',
         name: '像素画',
-        loraPrompt: '',
+        loraPrompt: '<lora:Pix:1>,',
     },
     {
         objectId: '106',

@@ -433,8 +433,8 @@ onMounted(async () => {
         is3D.value = true;
         imageLoading.value = false;
         nextTick(() => {
-            renderUSDZModel(collectionItem.value.file);
-            glbFileUrl.value = `/usdz${collectionItem.value.file.replace('https://hyper-star-1256277779.cos.ap-nanjing.myqcloud.com/collection', '')}`
+            // renderUSDZModel(collectionItem.value.file);
+            glbFileUrl.value = `/usdz${collectionItem.value.glbFile.replace('https://hyper-star-1256277779.cos.ap-nanjing.myqcloud.com/collection', '')}`
         });
     } else {
         const img = new Image();

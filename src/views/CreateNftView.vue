@@ -466,11 +466,14 @@ const handleAddCollection = async () => {
 
     if (!uploadedFile.value) {
         formdata.append('file', uploadedImage.value as string);
+        formdata.append('type', "图片");
     } else {
         formdata.append('file', uploadedFile.value as string);
+        formdata.append('glbFile', uploadedFile.value as string);
+        formdata.append('type', "模型");
     }
 
-    formdata.append('type', "图片");
+    
     if (aiCreator) {
         formdata.append('aiCreator', String(aiCreator));
         formdata.append('aiDescription', aiDescription);
