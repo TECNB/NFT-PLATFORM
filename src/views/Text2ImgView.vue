@@ -48,8 +48,7 @@
                             <div class="flex justify-between items-center">
 
                                 <p class="text-base font-bold text-gray-500">采样迭代步数</p>
-                                <el-input-number v-model="steps" :min="10" :max="70" size="small"
-                                    @change="handleChange(index, $event)" :step="1" />
+                                <el-input-number v-model="steps" :min="10" :max="70" size="small" :step="1" />
                             </div>
 
                             <el-slider v-model="steps" :min="10" max="70" class="mt-2" />
@@ -60,8 +59,7 @@
                         <div class="w-1/2">
                             <div class="flex justify-between items-center">
                                 <p class="text-base font-bold text-gray-500">宽度</p>
-                                <el-input-number v-model="width" :min="64" :max="1024" size="small"
-                                    @change="handleChange(index, $event)" :step="1" />
+                                <el-input-number v-model="width" :min="64" :max="1024" size="small" :step="1" />
                             </div>
 
                             <el-slider v-model="width" :min="64" :max="1024" class="mt-2" />
@@ -69,8 +67,7 @@
                         <div class="w-1/2">
                             <div class="flex justify-between items-center">
                                 <p class="text-base font-bold text-gray-500">高度</p>
-                                <el-input-number v-model="height" :min="64" :max="1024" size="small"
-                                    @change="handleChange(index, $event)" :step="1" />
+                                <el-input-number v-model="height" :min="64" :max="1024" size="small" :step="1" />
                             </div>
 
                             <el-slider v-model="height" :min="64" :max="1024" class="mt-2" />
@@ -79,8 +76,7 @@
                     <div class="">
                         <div class="flex justify-between items-center">
                             <p class="text-base font-bold text-gray-500">提示词相关性</p>
-                            <el-input-number v-model="CFGScale" :min="1" :max="30" size="small"
-                                @change="handleChange(index, $event)" :step="1" />
+                            <el-input-number v-model="CFGScale" :min="1" :max="30" size="small" :step="1" />
                         </div>
 
                         <el-slider v-model="CFGScale" :min="1" :max="30" class="mt-2" />
@@ -100,7 +96,7 @@
                 <!-- 输出图片部分 -->
                 <div class="text-left w-1/2">
                     <!-- 进度条部分 -->
-                    <el-progress :status="success" :text-inside="true" :stroke-width="18" class="mb-5"
+                    <el-progress status="success" :text-inside="true" :stroke-width="18" class="mb-5"
                         v-if="progressLoading" color="#9A73B5" :percentage="progress" />
                     <div class="flex-1 h-[350px] flex justify-center" id="loading">
                         <div v-if="!uploadedImage" v-loading="loading" element-loading-text="生成中..."
@@ -122,7 +118,7 @@
                             class="flex flex-col justify-center items-center gap-5 h-[350px] w-full rounded-2xl mt-30 bg-bg-200 cursor-pointer"
                             v-loading="loading" element-loading-text="重新生成中...">
                             <img class="w-auto h-full object-contain rounded-2xl" :src="uploadedImage" ref="image"
-                                :data-source="uploadedImage" alt="上传的图片" @click="showViewer" />
+                                :data-source="uploadedImage" alt="上传的图片" />
                         </div>
                     </div>
                 </div>
@@ -197,9 +193,7 @@ const image = ref<HTMLImageElement | null>(null);
 
 let hasProgressBeenNonZero = false;  // 新增的布尔变量
 
-const handleChange = (value: number) => {
-    console.log(value);
-};
+
 
 
 
